@@ -1,7 +1,80 @@
-var Layout_DESKTOP = /** @class */ (function () {
-    function Layout_DESKTOP() {
+var LocalStorage_ALL = {
+    //localStorage_AR: [],
+    clcBt_EVT: null,
+    clcBt_DIV: null,
+    clcBt_ID: 0,
+    setPageOpenCalc_AEL: function () {
+        var _this = this;
+        //this.localStorage_AR.push([{ calculator: "00", history: "none" }]);
+        var calcButton_AR = document.querySelector("div.nav-button-box").children;
+        var titleArea_DIV = document.querySelector("div.cb-title");
+        for (var i = 0; i < calcButton_AR.length; i++) {
+            calcButton_AR[i].addEventListener('click', function (e) {
+                _this.clcBt_EVT = e.currentTarget;
+                _this.clcBt_DIV = _this.clcBt_EVT;
+                _this.clcBt_ID = Number(_this.clcBt_DIV.id.slice(4, 6));
+                switch (_this.clcBt_ID) {
+                    case 0:
+                        titleArea_DIV.textContent = "Kalkulator podstawowy";
+                        localStorage.setItem('calculator', '0');
+                        break;
+                    case 1:
+                        titleArea_DIV.textContent = "Kalkulator binarny";
+                        localStorage.setItem('calculator', '1');
+                        break;
+                    case 2:
+                        titleArea_DIV.textContent = "Logika matematyczna";
+                        localStorage.setItem('calculator', '2');
+                        break;
+                    case 3:
+                        titleArea_DIV.textContent = "NWD";
+                        localStorage.setItem('calculator', '3');
+                        break;
+                    case 4:
+                        titleArea_DIV.textContent = "NWW";
+                        localStorage.setItem('calculator', '4');
+                        break;
+                    case 5:
+                        titleArea_DIV.textContent = "Rozkład liczby na czynniki pierwsze";
+                        localStorage.setItem('calculator', '5');
+                        break;
+                }
+            }, false);
+        }
+    },
+    getLocalStorage: function () {
+        var titleArea_DIV = document.querySelector("div.cb-title");
+        var calcType = localStorage.getItem('calculator');
+        (calcType === undefined || calcType === null) ? calcType = "0" : calcType;
+        if (calcType) {
+            switch (Number(calcType)) {
+                case 0:
+                    titleArea_DIV.textContent = "Kalkulator podstawowy";
+                    break;
+                case 1:
+                    titleArea_DIV.textContent = "Kalkulator binarny";
+                    break;
+                case 2:
+                    titleArea_DIV.textContent = "Logika matematyczna";
+                    break;
+                case 3:
+                    titleArea_DIV.textContent = "NWD";
+                    break;
+                case 4:
+                    titleArea_DIV.textContent = "NWW";
+                    break;
+                case 5:
+                    titleArea_DIV.textContent = "Rozkład liczby na czynniki pierwsze";
+                    break;
+            }
+        }
     }
-    Layout_DESKTOP.prototype.setMenuButton_AEL = function () {
+};
+LocalStorage_ALL.getLocalStorage();
+LocalStorage_ALL.setPageOpenCalc_AEL();
+//console.log(LocalStorage_ALL.localStorage_AR);
+var Layout_DESKTOP = {
+    setMenuButton_AEL: function () {
         var menuButton_EL = document.querySelector('svg.dsk-menu-arrow');
         var isShow = false;
         menuButton_EL.addEventListener('click', function () {
@@ -13,7 +86,7 @@ var Layout_DESKTOP = /** @class */ (function () {
                         setTimeout(function () {
                             sidebar.style.left = '0px';
                             menuButton_EL.style.transform = 'rotateZ(0deg)';
-                            sidebar.style.transitionDuration = '0.5s';
+                            sidebar.style.transitionDuration = '0.35s';
                         }, 1);
                     }
                     break;
@@ -23,49 +96,23 @@ var Layout_DESKTOP = /** @class */ (function () {
                         setTimeout(function () {
                             sidebar.style.left = '-270px';
                             menuButton_EL.style.transform = 'rotateZ(180deg)';
-                            sidebar.style.transitionDuration = '0.5s';
+                            sidebar.style.transitionDuration = '0.35s';
                         }, 1);
                     }
                     break;
             }
         }, false);
-    };
-    return Layout_DESKTOP;
-}());
-;
-// MEGA WAŻNE!
-// Chociaż klasa "Layout" może działać bez konstruktora, to w przypadku,
-// gdy jest ona używana wewnątrz innej klasy (takiej jak klasa App),
-// konstruktor jest potrzebny.
-var Layout = /** @class */ (function () {
-    function Layout() {
     }
-    Layout.prototype.setAppBody_Height_AEL = function () {
+};
+Layout_DESKTOP.setMenuButton_AEL();
+var Layout_ALL = {
+    setAppBody_Height_AEL: function () {
         var appBody_EL = document.querySelector('div.app-body');
         ['load', 'resize'].forEach(function (ev) {
             addEventListener(ev, function () {
                 appBody_EL.style.height = window.innerHeight + 'px';
             }, false);
         });
-    };
-    Layout.prototype.setLayout_DESKTOP = function () {
-        var layout_DESKTOP = new Layout_DESKTOP();
-        layout_DESKTOP.setMenuButton_AEL();
-        //layout_DESKTOP.setContentCalendarBox_Width_AEL();
-    };
-    return Layout;
-}());
-;
-var App = /** @class */ (function () {
-    function App() {
     }
-    App.prototype.Main = function () {
-        var layout = new Layout();
-        layout.setAppBody_Height_AEL();
-        layout.setLayout_DESKTOP();
-    };
-    return App;
-}());
-;
-var app = new App();
-app.Main();
+};
+Layout_ALL.setAppBody_Height_AEL();
