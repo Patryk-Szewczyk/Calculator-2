@@ -3,11 +3,14 @@ var LocalStorage_ALL = {
     clcBt_EVT: null,
     clcBt_DIV: null,
     clcBt_ID: 0,
+    clcType_EL: null,
     setPageOpenCalc_AEL: function () {
         var _this = this;
         //this.localStorage_AR.push([{ calculator: "00", history: "none" }]);
-        var calcButton_AR = document.querySelector("div.nav-button-box").children;
-        var titleArea_DIV = document.querySelector("div.cb-title");
+        var calcButton_AR = document.querySelector('div.nav-button-box').children;
+        var titleArea_EL = document.querySelector('div.cb-title');
+        var calcType_EL = document.querySelectorAll('div[class^="ct-"]');
+        console.log(calcType_EL);
         for (var i = 0; i < calcButton_AR.length; i++) {
             calcButton_AR[i].addEventListener('click', function (e) {
                 _this.clcBt_EVT = e.currentTarget;
@@ -15,56 +18,126 @@ var LocalStorage_ALL = {
                 _this.clcBt_ID = Number(_this.clcBt_DIV.id.slice(4, 6));
                 switch (_this.clcBt_ID) {
                     case 0:
-                        titleArea_DIV.textContent = "Kalkulator podstawowy";
+                        titleArea_EL.textContent = 'Kalkulator podstawowy';
+                        for (var i_1 = 0; i_1 < calcType_EL.length; i_1++) {
+                            if (i_1 === _this.clcBt_ID) {
+                                _this.clcType_EL = calcType_EL[i_1];
+                                _this.clcType_EL.style.display = 'block';
+                            }
+                            else {
+                                _this.clcType_EL = calcType_EL[i_1];
+                                _this.clcType_EL.style.display = 'none';
+                            }
+                        }
                         localStorage.setItem('calculator', '0');
                         break;
                     case 1:
-                        titleArea_DIV.textContent = "Kalkulator binarny";
+                        titleArea_EL.textContent = 'Kalkulator binarny';
+                        //this.clcType_EL.style.display = "none";
+                        for (var i_2 = 0; i_2 < calcType_EL.length; i_2++) {
+                            if (i_2 === _this.clcBt_ID) {
+                                _this.clcType_EL = calcType_EL[i_2];
+                                _this.clcType_EL.style.display = 'block';
+                            }
+                            else {
+                                _this.clcType_EL = calcType_EL[i_2];
+                                _this.clcType_EL.style.display = 'none';
+                            }
+                        }
                         localStorage.setItem('calculator', '1');
                         break;
                     case 2:
-                        titleArea_DIV.textContent = "Logika matematyczna";
+                        titleArea_EL.textContent = 'Logika matematyczna';
+                        //this.clcType_EL.style.display = "none";
+                        for (var i_3 = 0; i_3 < calcType_EL.length; i_3++) {
+                            if (i_3 === _this.clcBt_ID) {
+                                _this.clcType_EL = calcType_EL[i_3];
+                                _this.clcType_EL.style.display = 'block';
+                            }
+                            else {
+                                _this.clcType_EL = calcType_EL[i_3];
+                                _this.clcType_EL.style.display = 'none';
+                            }
+                        }
                         localStorage.setItem('calculator', '2');
                         break;
                     case 3:
-                        titleArea_DIV.textContent = "NWD";
+                        titleArea_EL.textContent = 'NWD NWW Faktoryzacja';
+                        //this.clcType_EL.style.display = "none";
+                        for (var i_4 = 0; i_4 < calcType_EL.length; i_4++) {
+                            if (i_4 === _this.clcBt_ID) {
+                                _this.clcType_EL = calcType_EL[i_4];
+                                _this.clcType_EL.style.display = 'block';
+                            }
+                            else {
+                                _this.clcType_EL = calcType_EL[i_4];
+                                _this.clcType_EL.style.display = 'none';
+                            }
+                        }
                         localStorage.setItem('calculator', '3');
-                        break;
-                    case 4:
-                        titleArea_DIV.textContent = "NWW";
-                        localStorage.setItem('calculator', '4');
-                        break;
-                    case 5:
-                        titleArea_DIV.textContent = "Rozkład liczby na czynniki pierwsze";
-                        localStorage.setItem('calculator', '5');
                         break;
                 }
             }, false);
         }
     },
     getLocalStorage: function () {
-        var titleArea_DIV = document.querySelector("div.cb-title");
+        var titleArea_EL = document.querySelector('div.cb-title');
+        var calcType_EL = document.querySelectorAll('div[class^="ct-"]');
         var calcType = localStorage.getItem('calculator');
-        (calcType === undefined || calcType === null) ? calcType = "0" : calcType;
+        (calcType === undefined || calcType === null) ? calcType = '0' : calcType;
         if (calcType) {
             switch (Number(calcType)) {
                 case 0:
-                    titleArea_DIV.textContent = "Kalkulator podstawowy";
+                    titleArea_EL.textContent = 'Kalkulator podstawowy';
+                    for (var i = 0; i < calcType_EL.length; i++) {
+                        if (i === Number(calcType)) {
+                            this.clcType_EL = calcType_EL[i];
+                            this.clcType_EL.style.display = 'block';
+                        }
+                        else {
+                            this.clcType_EL = calcType_EL[i];
+                            this.clcType_EL.style.display = 'none';
+                        }
+                    }
                     break;
                 case 1:
-                    titleArea_DIV.textContent = "Kalkulator binarny";
+                    titleArea_EL.textContent = 'Kalkulator binarny';
+                    for (var i = 0; i < calcType_EL.length; i++) {
+                        if (i === Number(calcType)) {
+                            this.clcType_EL = calcType_EL[i];
+                            this.clcType_EL.style.display = 'block';
+                        }
+                        else {
+                            this.clcType_EL = calcType_EL[i];
+                            this.clcType_EL.style.display = 'none';
+                        }
+                    }
                     break;
                 case 2:
-                    titleArea_DIV.textContent = "Logika matematyczna";
+                    titleArea_EL.textContent = 'Logika matematyczna';
+                    for (var i = 0; i < calcType_EL.length; i++) {
+                        if (i === Number(calcType)) {
+                            this.clcType_EL = calcType_EL[i];
+                            this.clcType_EL.style.display = 'block';
+                        }
+                        else {
+                            this.clcType_EL = calcType_EL[i];
+                            this.clcType_EL.style.display = 'none';
+                        }
+                    }
                     break;
                 case 3:
-                    titleArea_DIV.textContent = "NWD";
-                    break;
-                case 4:
-                    titleArea_DIV.textContent = "NWW";
-                    break;
-                case 5:
-                    titleArea_DIV.textContent = "Rozkład liczby na czynniki pierwsze";
+                    titleArea_EL.textContent = 'NWD NWW Faktoryzacja';
+                    for (var i = 0; i < calcType_EL.length; i++) {
+                        if (i === Number(calcType)) {
+                            this.clcType_EL = calcType_EL[i];
+                            this.clcType_EL.style.display = 'block';
+                        }
+                        else {
+                            this.clcType_EL = calcType_EL[i];
+                            this.clcType_EL.style.display = 'none';
+                        }
+                    }
                     break;
             }
         }
@@ -94,7 +167,7 @@ var Layout_DESKTOP = {
                     {
                         isShow = false;
                         setTimeout(function () {
-                            sidebar.style.left = '-270px';
+                            sidebar.style.left = '-300px';
                             menuButton_EL.style.transform = 'rotateZ(180deg)';
                             sidebar.style.transitionDuration = '0.35s';
                         }, 1);
