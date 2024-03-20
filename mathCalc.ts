@@ -3,6 +3,7 @@ const LocalStorage_ALL: {
     clcBt_EVT: EventTarget,
     clcBt_DIV: HTMLDivElement,
     clcBt_ID: number,
+    clcType_EL: HTMLDivElement,
     getLocalStorage: Function,
     //localStorage_AR: [{ calculator: string, history: string }][]
 } = {
@@ -10,10 +11,13 @@ const LocalStorage_ALL: {
     clcBt_EVT: null,
     clcBt_DIV: null,
     clcBt_ID: 0,
+    clcType_EL: null,
     setPageOpenCalc_AEL(): void {
         //this.localStorage_AR.push([{ calculator: "00", history: "none" }]);
-        const calcButton_AR: HTMLCollection = document.querySelector("div.nav-button-box").children;
-        const titleArea_DIV: HTMLDivElement = document.querySelector("div.cb-title");
+        const calcButton_AR: HTMLCollection = document.querySelector('div.nav-button-box').children;
+        const titleArea_EL: HTMLDivElement = document.querySelector('div.cb-title');
+        const calcType_EL: NodeList = document.querySelectorAll('div[class^="ct-"]');
+        console.log(calcType_EL);
         for (let i: number = 0; i < calcButton_AR.length; i++){
             calcButton_AR[i].addEventListener('click', (e) => {
                 this.clcBt_EVT = e.currentTarget;
@@ -21,56 +25,118 @@ const LocalStorage_ALL: {
                 this.clcBt_ID = Number(this.clcBt_DIV.id.slice(4, 6));
                 switch (this.clcBt_ID) {
                     case 0:
-                        titleArea_DIV.textContent = "Kalkulator podstawowy";
+                        titleArea_EL.textContent = 'Kalkulator podstawowy';
+                        for (let i: number = 0; i < calcType_EL.length; i++) {
+                            if (i === this.clcBt_ID) {
+                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                                this.clcType_EL.style.display = 'block';
+                            } else {
+                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                                this.clcType_EL.style.display = 'none';
+                            }
+                        }
                         localStorage.setItem('calculator', '0');
                         break;
                     case 1:
-                        titleArea_DIV.textContent = "Kalkulator binarny";
+                        titleArea_EL.textContent = 'Kalkulator binarny';
+                        //this.clcType_EL.style.display = "none";
+                        for (let i: number = 0; i < calcType_EL.length; i++) {
+                            if (i === this.clcBt_ID) {
+                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                                this.clcType_EL.style.display = 'block';
+                            } else {
+                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                                this.clcType_EL.style.display = 'none';
+                            }
+                        }
                         localStorage.setItem('calculator', '1');
                         break;
                     case 2:
-                        titleArea_DIV.textContent = "Logika matematyczna";
+                        titleArea_EL.textContent = 'Logika matematyczna';
+                        //this.clcType_EL.style.display = "none";
+                        for (let i: number = 0; i < calcType_EL.length; i++) {
+                            if (i === this.clcBt_ID) {
+                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                                this.clcType_EL.style.display = 'block';
+                            } else {
+                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                                this.clcType_EL.style.display = 'none';
+                            }
+                        }
                         localStorage.setItem('calculator', '2')
                         break;
                     case 3:
-                        titleArea_DIV.textContent = "NWD";
+                        titleArea_EL.textContent = 'NWD NWW Faktoryzacja';
+                        //this.clcType_EL.style.display = "none";
+                        for (let i: number = 0; i < calcType_EL.length; i++) {
+                            if (i === this.clcBt_ID) {
+                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                                this.clcType_EL.style.display = 'block';
+                            } else {
+                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                                this.clcType_EL.style.display = 'none';
+                            }
+                        }
                         localStorage.setItem('calculator', '3');
-                        break;
-                    case 4:
-                        titleArea_DIV.textContent = "NWW";
-                        localStorage.setItem('calculator', '4');
-                        break;
-                    case 5:
-                        titleArea_DIV.textContent = "Rozkład liczby na czynniki pierwsze";
-                        localStorage.setItem('calculator', '5');
                         break;
                 }
             }, false);
         }
     },
     getLocalStorage(): void {
-        const titleArea_DIV: HTMLDivElement = document.querySelector("div.cb-title");
+        const titleArea_EL: HTMLDivElement = document.querySelector('div.cb-title');
+        const calcType_EL: NodeList = document.querySelectorAll('div[class^="ct-"]');
         let calcType = localStorage.getItem('calculator');
-        (calcType === undefined || calcType === null) ? calcType = "0" : calcType;
+        (calcType === undefined || calcType === null) ? calcType = '0' : calcType;
         if (calcType) {
             switch (Number(calcType)) {
                 case 0:
-                    titleArea_DIV.textContent = "Kalkulator podstawowy";
+                    titleArea_EL.textContent = 'Kalkulator podstawowy';
+                    for (let i: number = 0; i < calcType_EL.length; i++) {
+                        if (i === Number(calcType)) {
+                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                            this.clcType_EL.style.display = 'block';
+                        } else {
+                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                            this.clcType_EL.style.display = 'none';
+                        }
+                    }
                     break;
                 case 1:
-                    titleArea_DIV.textContent = "Kalkulator binarny";
+                    titleArea_EL.textContent = 'Kalkulator binarny';
+                    for (let i: number = 0; i < calcType_EL.length; i++) {
+                        if (i === Number(calcType)) {
+                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                            this.clcType_EL.style.display = 'block';
+                        } else {
+                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                            this.clcType_EL.style.display = 'none';
+                        }
+                    }
                     break;
                 case 2:
-                    titleArea_DIV.textContent = "Logika matematyczna";
+                    titleArea_EL.textContent = 'Logika matematyczna';
+                    for (let i: number = 0; i < calcType_EL.length; i++) {
+                        if (i === Number(calcType)) {
+                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                            this.clcType_EL.style.display = 'block';
+                        } else {
+                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                            this.clcType_EL.style.display = 'none';
+                        }
+                    }
                     break;
                 case 3:
-                    titleArea_DIV.textContent = "NWD";
-                    break;
-                case 4:
-                    titleArea_DIV.textContent = "NWW";
-                    break;
-                case 5:
-                    titleArea_DIV.textContent = "Rozkład liczby na czynniki pierwsze";
+                    titleArea_EL.textContent = 'NWD NWW Faktoryzacja';
+                    for (let i: number = 0; i < calcType_EL.length; i++) {
+                        if (i === Number(calcType)) {
+                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                            this.clcType_EL.style.display = 'block';
+                        } else {
+                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                            this.clcType_EL.style.display = 'none';
+                        }
+                    }
                     break;
             }
         }
@@ -102,7 +168,7 @@ const Layout_DESKTOP: {
                 case true: {
                     isShow = false;
                     setTimeout(() => {
-                        sidebar.style.left = '-270px';
+                        sidebar.style.left = '-300px';
                         menuButton_EL.style.transform = 'rotateZ(180deg)';
                         sidebar.style.transitionDuration = '0.35s';
                     }, 1);
