@@ -11,7 +11,7 @@ body {
 }
 
 :root {
-    --calendar-bgcolor: hsl(219, 54%, 92%);   /*OLD: hsl(219, 54%, 90%)*/
+    --calculator-bgcolor: hsl(219, 54%, 92%);   /*OLD: hsl(219, 54%, 90%)*/
     --dark-font: hsl(0, 0%, 12%);
 }
 
@@ -20,7 +20,7 @@ body {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    background-color: var(--calendar-bgcolor);
+    background-color: var(--calculator-bgcolor);
 }
 
 .app-mobile, .app-desktop {
@@ -54,7 +54,6 @@ body {
         nav {
             width: 270px;
             height: 100%;
-            /*padding: 120px 0px 0px 0px;*/
             position: absolute;
             top: 0px;
             left: -270px;
@@ -114,7 +113,7 @@ body {
                 .dsk-menu-arrow:active {
                     background-color: hsl(219, 54%, 66%);
                 }
-            .title-year-box {
+            .title-box {
                 width: auto;
                 height: 120px;
                 display: flex;
@@ -123,7 +122,7 @@ body {
                 align-items: center;
                 border: 0px solid greenyellow;  /*TEST*/
             }
-                .title-year-prp {
+                .title-prp {
                     width: auto;
                     height: auto;
                     position: relative;
@@ -139,16 +138,16 @@ body {
                     letter-spacing: 1px;
                     border: 0px solid red;  /*TEST*/
                 }
-                    .ty-value {
+                    .t-value {
                         padding: 10px 30px 0px;
                     }
-                    .ty-value::selection {
+                    .t-value::selection {
                         background-color: transparent;
                     }
-                    .ty-value:hover {
+                    .t-value:hover {
                         cursor: default;
                     }
-            .month-box {
+            .nav-button-box {
                 width: 100%;
                 height: 400px;  /*auto - ZRÓB!*/
                 display: flex;
@@ -157,7 +156,7 @@ body {
                 align-items: center;
                 border: 0px solid red;  /*TEST*/
             }
-                .mb-item {
+                .nav-button-box div {
                     width: 100%;
                     height: 45%;
                     position: relative;
@@ -175,21 +174,21 @@ body {
                     font-size: 130%;
                     font-weight: 400;
                 }
-                .mb-item:hover {
+                .nav-button-box div:hover {
                     cursor: pointer;
                     background-color: hsl(219, 54%, 59%);
                 }
-                .mb-item:active {
+                .nav-button-box div:active {
                     background-color: hsl(219, 54%, 66%);
                 }
-                .mb-item::selection {
+                .nav-button-box div::selection {
                     background-color: transparent;
                     color: white;
                 }
         :root {
             --quest-box-width: 450px;
         }
-        .calendar-space {
+        .calc-space {
             /*width: TS;*/  /*NIE PRAKTYCZNE*/
             width: calc(100% - var(--quest-box-width));
             height: 100%;
@@ -198,10 +197,10 @@ body {
             justify-content: center;
             align-items: center;
             position: relative;
-            background-color: var(--calendar-bgcolor);
+            background-color: var(--calculator-bgcolor);
             border: 0px solid crimson;  /*TEST*/
         }
-            .calendar-box {
+            .calc-box {
                 width: 100%;
                 height: 100%;
                 padding: 50px;
@@ -254,22 +253,15 @@ body {
                     .cb-title:hover {
                         cursor: default;
                     }
-        .quest-box {
+        .calcType-box {
             width: var(--quest-box-width);
             height: 100%;
             position: relative;
             background-image: linear-gradient(to right, rgb(70, 116, 200) 20%, rgb(47, 93, 177) 80%);
         }
-            :root {
-                --qb-title-height: 100px;
-                --qb-map-width: 225px;
-                --qb-map-height: 190px;
-                --qb-mc-days-title-group-height: 30px;
-                --qb-mc-days-number-group-height: calc(100% - var(--qb-mc-days-title-group-height));
-            }
-            .qb-title {
+            /*.ctb-title {
                 width: 100%;
-                height: var(--qb-title-height);
+                height: 100px;
                 display: flex;
                 flex-direction: row;
                 justify-content: center;
@@ -280,11 +272,11 @@ body {
                 font-weight: 400;
                 letter-spacing: 1px;
             }
-            .qb-title::selection {
+            .ctb-title::selection {
                 background-color: transparent;
                 color: white;
             }
-            .qb-title:hover {
+            .ctb-title:hover {
                 cursor: default;
-            }
+            }*/
 }
