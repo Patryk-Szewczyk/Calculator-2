@@ -1,32 +1,38 @@
-var LocalStorage_ALL = {
+const LocalStorage_ALL: {
+    setPageOpenCalc_AEL: Function,
+    clcBt_EVT: EventTarget,
+    clcBt_DIV: HTMLDivElement,
+    clcBt_ID: number,
+    clcType_EL: HTMLDivElement,
+    getLocalStorage: Function,
+    //localStorage_AR: [{ calculator: string, history: string }][]
+} = {
     //localStorage_AR: [],
     clcBt_EVT: null,
     clcBt_DIV: null,
     clcBt_ID: 0,
     clcType_EL: null,
-    setPageOpenCalc_AEL: function () {
-        var _this = this;
+    setPageOpenCalc_AEL(): void {
         //this.localStorage_AR.push([{ calculator: "00", history: "none" }]);
-        var calcButton_AR = document.querySelector('div.nav-button-box').children;
-        var titleArea_EL = document.querySelector('div.cb-title');
-        var calcType_EL = document.querySelectorAll('div[class^="ct-"]');
+        const calcButton_AR: HTMLCollection = document.querySelector('div.nav-button-box').children;
+        const titleArea_EL: HTMLDivElement = document.querySelector('div.cb-title');
+        const calcType_EL: NodeList = document.querySelectorAll('div[class^="ct-"]');
         console.log(calcType_EL);
-        for (var i = 0; i < calcButton_AR.length; i++) {
-            calcButton_AR[i].addEventListener('click', function (e) {
-                _this.clcBt_EVT = e.currentTarget;
-                _this.clcBt_DIV = _this.clcBt_EVT;
-                _this.clcBt_ID = Number(_this.clcBt_DIV.id.slice(4, 6));
-                switch (_this.clcBt_ID) {
+        for (let i: number = 0; i < calcButton_AR.length; i++){
+            calcButton_AR[i].addEventListener('click', (e) => {
+                this.clcBt_EVT = e.currentTarget;
+                this.clcBt_DIV = this.clcBt_EVT as HTMLDivElement;
+                this.clcBt_ID = Number(this.clcBt_DIV.id.slice(4, 6));
+                switch (this.clcBt_ID) {
                     case 0:
                         titleArea_EL.textContent = 'Kalkulator podstawowy';
-                        for (var i_1 = 0; i_1 < calcType_EL.length; i_1++) {
-                            if (i_1 === _this.clcBt_ID) {
-                                _this.clcType_EL = calcType_EL[i_1];
-                                _this.clcType_EL.style.display = 'block';
-                            }
-                            else {
-                                _this.clcType_EL = calcType_EL[i_1];
-                                _this.clcType_EL.style.display = 'none';
+                        for (let i: number = 0; i < calcType_EL.length; i++) {
+                            if (i === this.clcBt_ID) {
+                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                                this.clcType_EL.style.display = 'block';
+                            } else {
+                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                                this.clcType_EL.style.display = 'none';
                             }
                         }
                         localStorage.setItem('calculator', '0');
@@ -34,14 +40,13 @@ var LocalStorage_ALL = {
                     case 1:
                         titleArea_EL.textContent = 'Kalkulator binarny';
                         //this.clcType_EL.style.display = "none";
-                        for (var i_2 = 0; i_2 < calcType_EL.length; i_2++) {
-                            if (i_2 === _this.clcBt_ID) {
-                                _this.clcType_EL = calcType_EL[i_2];
-                                _this.clcType_EL.style.display = 'block';
-                            }
-                            else {
-                                _this.clcType_EL = calcType_EL[i_2];
-                                _this.clcType_EL.style.display = 'none';
+                        for (let i: number = 0; i < calcType_EL.length; i++) {
+                            if (i === this.clcBt_ID) {
+                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                                this.clcType_EL.style.display = 'block';
+                            } else {
+                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                                this.clcType_EL.style.display = 'none';
                             }
                         }
                         localStorage.setItem('calculator', '1');
@@ -49,29 +54,27 @@ var LocalStorage_ALL = {
                     case 2:
                         titleArea_EL.textContent = 'Logika matematyczna';
                         //this.clcType_EL.style.display = "none";
-                        for (var i_3 = 0; i_3 < calcType_EL.length; i_3++) {
-                            if (i_3 === _this.clcBt_ID) {
-                                _this.clcType_EL = calcType_EL[i_3];
-                                _this.clcType_EL.style.display = 'block';
-                            }
-                            else {
-                                _this.clcType_EL = calcType_EL[i_3];
-                                _this.clcType_EL.style.display = 'none';
+                        for (let i: number = 0; i < calcType_EL.length; i++) {
+                            if (i === this.clcBt_ID) {
+                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                                this.clcType_EL.style.display = 'block';
+                            } else {
+                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                                this.clcType_EL.style.display = 'none';
                             }
                         }
-                        localStorage.setItem('calculator', '2');
+                        localStorage.setItem('calculator', '2')
                         break;
                     case 3:
                         titleArea_EL.textContent = 'NWD NWW Faktoryzacja';
                         //this.clcType_EL.style.display = "none";
-                        for (var i_4 = 0; i_4 < calcType_EL.length; i_4++) {
-                            if (i_4 === _this.clcBt_ID) {
-                                _this.clcType_EL = calcType_EL[i_4];
-                                _this.clcType_EL.style.display = 'block';
-                            }
-                            else {
-                                _this.clcType_EL = calcType_EL[i_4];
-                                _this.clcType_EL.style.display = 'none';
+                        for (let i: number = 0; i < calcType_EL.length; i++) {
+                            if (i === this.clcBt_ID) {
+                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                                this.clcType_EL.style.display = 'block';
+                            } else {
+                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
+                                this.clcType_EL.style.display = 'none';
                             }
                         }
                         localStorage.setItem('calculator', '3');
@@ -80,61 +83,57 @@ var LocalStorage_ALL = {
             }, false);
         }
     },
-    getLocalStorage: function () {
-        var titleArea_EL = document.querySelector('div.cb-title');
-        var calcType_EL = document.querySelectorAll('div[class^="ct-"]');
-        var calcType = localStorage.getItem('calculator');
+    getLocalStorage(): void {
+        const titleArea_EL: HTMLDivElement = document.querySelector('div.cb-title');
+        const calcType_EL: NodeList = document.querySelectorAll('div[class^="ct-"]');
+        let calcType = localStorage.getItem('calculator');
         (calcType === undefined || calcType === null) ? calcType = '0' : calcType;
         if (calcType) {
             switch (Number(calcType)) {
                 case 0:
                     titleArea_EL.textContent = 'Kalkulator podstawowy';
-                    for (var i = 0; i < calcType_EL.length; i++) {
+                    for (let i: number = 0; i < calcType_EL.length; i++) {
                         if (i === Number(calcType)) {
-                            this.clcType_EL = calcType_EL[i];
+                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'block';
-                        }
-                        else {
-                            this.clcType_EL = calcType_EL[i];
+                        } else {
+                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'none';
                         }
                     }
                     break;
                 case 1:
                     titleArea_EL.textContent = 'Kalkulator binarny';
-                    for (var i = 0; i < calcType_EL.length; i++) {
+                    for (let i: number = 0; i < calcType_EL.length; i++) {
                         if (i === Number(calcType)) {
-                            this.clcType_EL = calcType_EL[i];
+                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'block';
-                        }
-                        else {
-                            this.clcType_EL = calcType_EL[i];
+                        } else {
+                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'none';
                         }
                     }
                     break;
                 case 2:
                     titleArea_EL.textContent = 'Logika matematyczna';
-                    for (var i = 0; i < calcType_EL.length; i++) {
+                    for (let i: number = 0; i < calcType_EL.length; i++) {
                         if (i === Number(calcType)) {
-                            this.clcType_EL = calcType_EL[i];
+                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'block';
-                        }
-                        else {
-                            this.clcType_EL = calcType_EL[i];
+                        } else {
+                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'none';
                         }
                     }
                     break;
                 case 3:
                     titleArea_EL.textContent = 'NWD NWW Faktoryzacja';
-                    for (var i = 0; i < calcType_EL.length; i++) {
+                    for (let i: number = 0; i < calcType_EL.length; i++) {
                         if (i === Number(calcType)) {
-                            this.clcType_EL = calcType_EL[i];
+                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'block';
-                        }
-                        else {
-                            this.clcType_EL = calcType_EL[i];
+                        } else {
+                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'none';
                         }
                     }
@@ -142,50 +141,75 @@ var LocalStorage_ALL = {
             }
         }
     }
-};
+}
 LocalStorage_ALL.getLocalStorage();
 LocalStorage_ALL.setPageOpenCalc_AEL();
 //console.log(LocalStorage_ALL.localStorage_AR);
-var Layout_DESKTOP = {
-    setMenuButton_AEL: function () {
-        var menuButton_EL = document.querySelector('svg.dsk-menu-arrow');
-        var isShow = false;
-        menuButton_EL.addEventListener('click', function () {
-            var sidebar = document.querySelector('nav.dsk-nav-menu');
-            switch (isShow) {
-                case false:
-                    {
-                        isShow = true;
-                        setTimeout(function () {
-                            sidebar.style.left = '0px';
-                            menuButton_EL.style.transform = 'rotateZ(0deg)';
-                            sidebar.style.transitionDuration = '0.35s';
-                        }, 1);
-                    }
-                    break;
-                case true:
-                    {
-                        isShow = false;
-                        setTimeout(function () {
-                            sidebar.style.left = '-300px';
-                            menuButton_EL.style.transform = 'rotateZ(180deg)';
-                            sidebar.style.transitionDuration = '0.35s';
-                        }, 1);
-                    }
-                    break;
+
+
+
+const Layout_DESKTOP: {
+    setMenuButton_AEL: Function,
+} = {
+    setMenuButton_AEL(): void {
+        const menuButton_EL: HTMLDivElement = document.querySelector('svg.dsk-menu-arrow');
+        let isShow: boolean = false;
+        menuButton_EL.addEventListener('click', () => {
+            const sidebar: HTMLElement = document.querySelector('nav.dsk-nav-menu');
+            switch (isShow){
+                case false: {
+                    isShow = true;
+                    setTimeout(() => {
+                        sidebar.style.left = '0px';
+                        menuButton_EL.style.transform = 'rotateZ(0deg)';
+                        sidebar.style.transitionDuration = '0.35s';
+                    }, 1);
+                } break;
+                case true: {
+                    isShow = false;
+                    setTimeout(() => {
+                        sidebar.style.left = '-300px';
+                        menuButton_EL.style.transform = 'rotateZ(180deg)';
+                        sidebar.style.transitionDuration = '0.35s';
+                    }, 1);
+                } break;
             }
         }, false);
     }
-};
+}
 Layout_DESKTOP.setMenuButton_AEL();
-var Layout_ALL = {
-    setAppBody_Height_AEL: function () {
-        var appBody_EL = document.querySelector('div.app-body');
-        ['load', 'resize'].forEach(function (ev) {
-            addEventListener(ev, function () {
+
+
+
+const Layout_ALL: {
+    setAppBody_Height_AEL: Function,
+} = {
+    setAppBody_Height_AEL(): void {
+        const appBody_EL: HTMLDivElement = document.querySelector('div.app-body');
+        ['load', 'resize'].forEach((ev) => {
+            addEventListener(ev, () => {
                 appBody_EL.style.height = window.innerHeight + 'px';
             }, false);
         });
     }
-};
+}
 Layout_ALL.setAppBody_Height_AEL();
+
+
+// Błąd! Przy NWW nie można używać [,]
+// Błąd! Przy FAC nie można używać [,]
+// Błąd! Muszisz podać minimum 2 liczby   // NWD i NWW
+// [liczba] | NWD | Wynik:   // [liczba]
+// [liczba] | NWW | Wynik:   // [liczba]
+// [liczba] | FAC | Wynik:   // [liczby], ["liczba pierwsza"]
+// Błąd! Wprowadź poprawne dane
+
+
+
+// Ustawienie pozycji scrollbaru na właściwym miejscu (ekran kalkulatora)
+window.addEventListener("load", () => {
+    const container: NodeListOf<Element> = document.querySelectorAll('.ct-refactoring > .screen > .screen-position > .screen-hanger > .info, .ct-refactoring > .screen > .screen-position > .screen-hanger > .value');
+    for (let i: number = 0; i < container.length; i++) {
+        container[i].scrollLeft = container[i].scrollWidth;
+    }
+}, false);
