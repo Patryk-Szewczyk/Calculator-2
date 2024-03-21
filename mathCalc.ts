@@ -194,3 +194,22 @@ const Layout_ALL: {
     }
 }
 Layout_ALL.setAppBody_Height_AEL();
+
+
+// Błąd! Przy NWW nie można używać [,]
+// Błąd! Przy FAC nie można używać [,]
+// Błąd! Muszisz podać minimum 2 liczby   // NWD i NWW
+// [liczba] | NWD | Wynik:   // [liczba]
+// [liczba] | NWW | Wynik:   // [liczba]
+// [liczba] | FAC | Wynik:   // [liczby], ["liczba pierwsza"]
+// Błąd! Wprowadź poprawne dane
+
+
+
+// Ustawienie pozycji scrollbaru na właściwym miejscu (ekran kalkulatora)
+window.addEventListener("load", () => {
+    const container: NodeListOf<Element> = document.querySelectorAll('.ct-refactoring > .screen > .screen-position > .screen-hanger > .info, .ct-refactoring > .screen > .screen-position > .screen-hanger > .value');
+    for (let i: number = 0; i < container.length; i++) {
+        container[i].scrollLeft = container[i].scrollWidth;
+    }
+}, false);
