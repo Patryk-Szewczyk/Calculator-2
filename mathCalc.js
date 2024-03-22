@@ -207,6 +207,8 @@ var Calculator_NWD_NWW_Faction_FUNCTIONS = {
     FAC_isDivided: false,
     FAC_dividedNumber: 0,
     FAC_factor: 2,
+    Both_FAC_FractedNum: [][0],
+    Both_FAC_InitialValues_STR: [],
     screen_INFO: document.querySelector('.ct-refactoring > .screen > .screen-position > .screen-hanger > .info'),
     screen_VALUE: document.querySelector('.ct-refactoring > .screen > .screen-position > .screen-hanger > .value'),
     setButtons_AEL: function () {
@@ -220,7 +222,7 @@ var Calculator_NWD_NWW_Faction_FUNCTIONS = {
                 //console.log(this.bt_ID);
                 switch (_this.bt_ID) {
                     case "NWD":
-                        _this.operation_NWD();
+                        _this.operation_NWD(_this.bt_ID);
                         break;
                     case "NWW":
                         _this.operation_NWW();
@@ -244,11 +246,45 @@ var Calculator_NWD_NWW_Faction_FUNCTIONS = {
             }, false);
         }
     },
-    operation_NWD: function () {
-        //console.log(mode);
+    operation_NWD: function (mode) {
+        console.log(mode);
+        // Jeżeli w wyrazie występuje znak [,], wyświetl błąd i zablokuj dalszą część operacji:
+        this.FAC_isNotComma = true;
+        for (var i = 0; i < this.value.length; i++) {
+            if (this.value[i] === ",") {
+                this.FAC_isNotComma = false;
+            }
+        }
+        // Rozkład liczby całkowitej na czynniki pierwsze:
+        if (this.FAC_isNotComma === false) {
+            if (this.value[this.value.length - 1] === " ") {
+                this.value = this.value.slice(0, (this.value.length - 2));
+                this.Both_FAC_InitialValues_STR = this.value.split(", ");
+                // Powrót usuniętych dwóch stringowych indeksów, aby kiedy będę dodawał liczby, pojawiały się po przecinku.
+                // Bez tej linijki przecinek znika, tzn. jest usuwany, ale nie jest ponownie wstawiany:
+                this.value = this.value += ", ";
+                //console.log(this.Both_FAC_InitialValues_STR);
+            }
+            else {
+                this.Both_FAC_InitialValues_STR = this.value.split(", ");
+                //console.log(this.Both_FAC_InitialValues_STR);
+            }
+            //this.Both_FAC_InitialValues_STR = this.value.split(", ");
+            // Wkładanie kolejno każdej liczby w metodę obliczającą rozkład liczby na czynniki pierwsze:
+            for (var i = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
+                this.Both_FAC_FractedNum = this.operation_More_FAC(Number(this.Both_FAC_InitialValues_STR[i]));
+            }
+        }
+        else if (this.FAC_isNotComma === true) {
+            this.screen_INFO.textContent = "Błąd! Przy NWD potrzeba min 2 liczb";
+        }
     },
     operation_NWW: function () {
         //console.log(mode);
+    },
+    operation_More_FAC: function (toFacNum) {
+        // Rozkład liczby całkowitej na czynniki pierwsze:
+        console.log(toFacNum);
     },
     operation_FAC: function () {
         // Jeżeli w wyrazie występuje znak [,], wyświetl błąd i zablokuj dalszą część operacji:
@@ -291,43 +327,57 @@ var Calculator_NWD_NWW_Faction_FUNCTIONS = {
             }
             else if (this.FAC_isNotComma === true) {
                 (this.value === "0") ? this.result = "0" : this.result = "Liczba pierwsza";
+                this.value = "0";
             }
             this.screen_VALUE.textContent = this.result;
+            this.value = this.result; // OSTATNIA WAŻNA ZMIANA!
         }
         else if (this.FAC_isNotComma === false) {
-            this.screen_INFO.textContent = "Błąd! Przy FAC nie można używać [,]";
+            this.screen_INFO.textContent = "Błąd! Przy FAC nie można używać znaku (,)";
         }
     },
     operation_DEL: function () {
-        // Jeżeli ostatni indeks ma wartość " " (" " za znakiem [,]), skasuj dwa miejsca, w przeciwnym razie 1:
-        if (this.value[this.value.length - 1] === " ") {
-            this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 2));
+        if (this.screen_VALUE.textContent === "Liczba pierwsza") {
+            this.value = "0";
+            this.screen_INFO.textContent = "Wartość została skasowana";
         }
         else {
-            this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 1));
-        }
-        if (this.value.length === 0) {
-            this.value = "0";
+            // Jeżeli ostatni indeks ma wartość " " (" " za znakiem [,]), skasuj dwa miejsca, w przeciwnym razie 1:
+            if (this.value[this.value.length - 1] === " ") {
+                this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 2));
+            }
+            else {
+                this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 1));
+            }
+            if (this.value.length === 0) {
+                this.value = "0";
+            }
+            this.screen_INFO.textContent = "Skrócono wartość";
         }
         this.screen_VALUE.textContent = this.value;
     },
     operation_AC: function () {
         this.value = "0";
         this.screen_VALUE.textContent = this.value;
+        this.screen_INFO.textContent = "Skasowano wartość";
     },
     operation_Comma: function () {
         this.value += ", ";
         this.screen_VALUE.textContent = this.value;
+        this.screen_INFO.textContent = "Utworzono pole na nową wartość";
     },
     operation_Number: function (numKey) {
         // Jeżeli długośc wyrazu wynosi 1 i ma on wartośc 0, skasuj 0, a wstaw cyfrę, w przeciwnym razie dodaj cyfrę do wyrażenia:
-        if (this.value.length === 1 && this.value === "0") {
-            this.value = numKey;
+        if (this.screen_INFO.textContent[this.screen_INFO.textContent.length - 1] !== ":") {
+            if (this.value.length === 1 && this.value === "0") {
+                this.value = numKey;
+            }
+            else if (this.value.length > 1 || this.value !== "0") {
+                this.value += numKey;
+            }
+            this.screen_VALUE.textContent = this.value;
+            this.screen_INFO.textContent = "Wpisano cyfrę";
         }
-        else if (this.value.length > 1 || this.value !== "0") {
-            this.value += numKey;
-        }
-        this.screen_VALUE.textContent = this.value;
     },
 };
 Calculator_NWD_NWW_Faction_FUNCTIONS.setButtons_AEL();
