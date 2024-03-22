@@ -57,16 +57,6 @@ Layout_DESKTOP.setScrollBarPosition();
 
 
 
-// Błąd! Przy NWW nie można używać [,]
-// Błąd! Przy FAC nie można używać [,]
-// Błąd! Muszisz podać minimum 2 liczby   // NWD i NWW
-// [liczba] | NWD | Wynik:   // [liczba]
-// [liczba] | NWW | Wynik:   // [liczba]
-// [liczba] | FAC | Wynik:   // [liczby], ["liczba pierwsza"]
-// Błąd! Wprowadź poprawne dane
-
-
-
 const LocalStorage_ALL: {
     setPageOpenCalc_AEL: Function,
     clcBt_EVT: EventTarget,
@@ -290,11 +280,10 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
     },
     operation_FAC(): void {
         // Jeżeli w wyrazie występuje znak [,], wyświetl błąd i zablokuj dalszą część operacji:
+        this.FAC_isNotComma = true;
         for (let i: number = 0; i < this.value.length; i++) {
             if (this.value[i] === ",") {
                 this.FAC_isNotComma = false;
-            } else {
-                this.FAC_isNotComma = true;
             }
         }
         // Rozkład liczby całkowitej na czynniki pierwsze
@@ -316,20 +305,23 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
                 }
             }
             this.screen_INFO.textContent = "FAC | " + this.value + " | Wynik:";
+            this.result = this.result.slice(0, this.result.length - 2);
             this.FAC_isNotComma = true;
+            // Wyznaczanie liczby pierwszej:
             for (let i: number = 0; i < this.result.length; i++) {
                 if (this.result[i] === ",") {
                     this.FAC_isNotComma = false;
                 }
             }
-
-            // Ogarnij wyznaczanie liczby pierwszej!
+            // Przypadek z liczbą 0:
             if (this.FAC_isNotComma === false) {
-                this.result = this.result.slice(0, this.result.length - 2);
             } else if (this.FAC_isNotComma === true) {
-                this.result = "Liczba pierwsza";
+                (this.value === "0") ? this.result = "0" : this.result = "Liczba pierwsza";
             }
             this.screen_VALUE.textContent = this.result;
+        }
+        else if (this.FAC_isNotComma === false) {
+            this.screen_INFO.textContent = "Błąd! Przy FAC nie można używać [,]";
         }
     },
     operation_DEL(): void {
@@ -363,3 +355,13 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
     },
 }
 Calculator_NWD_NWW_Faction_FUNCTIONS.setButtons_AEL();
+
+
+
+// Błąd! Przy NWW nie można używać [,]
+// Błąd! Przy FAC nie można używać [,]
+// Błąd! Muszisz podać minimum 2 liczby   // NWD i NWW
+// [liczba] | NWD | Wynik:   // [liczba]
+// [liczba] | NWW | Wynik:   // [liczba]
+// [liczba] | FAC | Wynik:   // [liczby], ["liczba pierwsza"]
+// Błąd! Wprowadź poprawne dane
