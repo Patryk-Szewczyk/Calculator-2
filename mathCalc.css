@@ -154,7 +154,7 @@ body {
                     }
             .nav-button-box {
                 width: 100%;
-                height: 400px;  /*auto - ZRÓB!*/
+                height: 400px;
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
@@ -163,7 +163,6 @@ body {
             }
                 .nav-button-box div {
                     width: 100%;
-                    /*height: 45%;*/
                     position: relative;
                     top: -12px;
                     left: 0px;
@@ -191,10 +190,9 @@ body {
                     color: white;
                 }
         :root {
-            --quest-box-width: 450px;
+            --quest-box-width: 500px;  /*OLD: 450px*/
         }
         .calc-space {
-            /*width: TS;*/  /*NIE PRAKTYCZNE*/
             width: calc(100% - var(--quest-box-width));
             height: 100%;
             display: flex;
