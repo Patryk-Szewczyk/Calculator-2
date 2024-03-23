@@ -253,13 +253,13 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
                 //console.log(this.bt_ID);
                 switch(this.bt_ID) {
                     case "NWD":
-                        this.operation_NWD(this.bt_ID);
+                        this.operation_NWD();
                         break;
                     case "NWW":
                         this.operation_NWW();
                         break;
                     case "FAC":
-                        this.operation_FAC();
+                        this.operation_FAC();  // OK
                         break;
                     case "DEL":
                         this.operation_DEL();  // OK
@@ -277,8 +277,7 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
             }, false);
         }
     },
-    operation_NWD(mode: string): void {
-        console.log(mode);
+    operation_NWD(): void {
         // Jeżeli w wyrazie występuje znak [,], wyświetl błąd i zablokuj dalszą część operacji:
         this.FAC_isNotComma = true;
         for (let i: number = 0; i < this.value.length; i++) {
@@ -289,21 +288,81 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
         // Rozkład liczby całkowitej na czynniki pierwsze:
         if (this.FAC_isNotComma === false) {
             if (this.value[this.value.length - 1] === " ") {
-                this.value = this.value.slice(0, (this.value.length - 2));
-                this.Both_FAC_InitialValues_STR = this.value.split(", ");
+                this.screen_INFO.textContent = "Błąd! Nie możesz zostawić pustego pola";
+                return;
+                // INNA OPCJA: (ignoruj to i skasuj to pole)
+                //this.value = this.value.slice(0, (this.value.length - 2));
+                //this.Both_FAC_InitialValues_STR = this.value.split(", ");
                 // Powrót usuniętych dwóch stringowych indeksów, aby kiedy będę dodawał liczby, pojawiały się po przecinku.
                 // Bez tej linijki przecinek znika, tzn. jest usuwany, ale nie jest ponownie wstawiany:
-                this.value = this.value += ", ";
-                //console.log(this.Both_FAC_InitialValues_STR);
+                //this.value = this.value += ", ";
             } else {
                 this.Both_FAC_InitialValues_STR = this.value.split(", ");
-                //console.log(this.Both_FAC_InitialValues_STR);
             }
-            //this.Both_FAC_InitialValues_STR = this.value.split(", ");
-            // Wkładanie kolejno każdej liczby w metodę obliczającą rozkład liczby na czynniki pierwsze:
+            if (this.Both_FAC_InitialValues_STR.length < 2) {
+                this.screen_INFO.textContent = "Błąd! Potrzebujesz min 2 liczby";
+                return;
+            }
+            // Sprawdzanie czy wszystkie liczby (na faktoryzację) są większe niż 1:
             for (let i: number = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
-                this.Both_FAC_FractedNum = this.operation_More_FAC(Number(this.Both_FAC_InitialValues_STR[i]));
+                if (this.Both_FAC_InitialValues_STR[i] === "0" || this.Both_FAC_InitialValues_STR[i] === "1") {
+                    this.screen_INFO.textContent = "Błąd! Liczby muszą być większe niż 1";
+                    return;
+                }
             }
+            // Wkładanie kolejno każdej liczby w metodę obliczającą rozkład liczby na czynniki pierwsze:
+            this.Both_FAC_FractedNum = [[], []];
+            for (let i: number = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
+                this.Both_FAC_FractedNum[i] = this.operation_More_FAC(Number(this.Both_FAC_InitialValues_STR[i]));
+            }
+            //console.log(this.Both_FAC_FractedNum);  // OK
+            // Obliczanie NWD:
+            this.result = 1;
+            let base_AR: number[] = this.Both_FAC_FractedNum[0];
+            //console.log(base_AR);  // OK
+            let compare_AR: number[][] = [[]];
+            for (let i: number = 1; i < this.Both_FAC_FractedNum.length; i++) {
+                compare_AR[i - 1] = this.Both_FAC_FractedNum[i];
+            }
+            //console.log(compare_AR);  // OK
+            let compaseEqualBase_TARGET: number = compare_AR.length;
+            let compaseEqualBase_COUNTER: number = 0;
+            let togetherFactor: number = 0;  // Test variable
+            let properFactor_AR: number[] = [];
+            let properFactor_VAL: number = 0;
+            for (let i: number = 0; i < base_AR.length; i++) {  // OK   |   Base VERTICAL
+                //console.log("Bazowy araj: " + i + " | " + base_AR[i]);
+                compaseEqualBase_COUNTER = 0;
+                for (let j: number = 0; j < compare_AR.length; j++) {  // OK   |   Compare HORIZONTAL
+                    //console.log("Comparowy araj: " + j);
+                    for (let k: number = 0; k < compare_AR[j].length; k++) {  // OK   |   Compare VERTICAL
+                        //console.log("[" + String(j) + String(k) + "]: " + compare_AR[j][k]);
+                        if (base_AR[i] === compare_AR[j][k]) {
+                            compaseEqualBase_COUNTER++;
+                            properFactor_VAL = compare_AR[j][k];
+                            compare_AR[j].splice(k, 1);
+                            break;
+                        }
+                    }
+                }
+                if (compaseEqualBase_COUNTER === compaseEqualBase_TARGET) {
+                    properFactor_AR.push(properFactor_VAL);
+                    togetherFactor++
+                }
+            }
+            //console.log("Wykryto wspólny czynnik: " + togetherFactor);  // OK
+            //console.log(properFactor_AR);  // OK
+            for (let i: number = 0; i < properFactor_AR.length; i++) {
+                this.result *= properFactor_AR[i];
+            }
+            this.screen_VALUE.textContent = String(this.result);
+            // Wyświeetlanie informacji:
+            this.screen_INFO.textContent = "NWD | ";
+            for (let i: number = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
+                this.screen_INFO.textContent += this.Both_FAC_InitialValues_STR[i] + ", ";
+            }
+            this.screen_INFO.textContent = this.screen_INFO.textContent.slice(0, (this.screen_INFO.textContent.length - 2));
+            this.screen_INFO.textContent += " | Wynik:";
         }
         else if (this.FAC_isNotComma === true) {
             this.screen_INFO.textContent = "Błąd! Przy NWD potrzeba min 2 liczb";
@@ -312,9 +371,28 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
     operation_NWW(): void {
         //console.log(mode);
     },
-    operation_More_FAC(toFacNum: number): void {
-        // Rozkład liczby całkowitej na czynniki pierwsze:
-        console.log(toFacNum);
+    operation_More_FAC(toFacNum: number): number[] {
+        // Rozkład liczby całkowitej na czynniki pierwsze: (metoda samodzielna zwracająca wynik)
+        //console.log(toFacNum);
+        console.clear();
+        let result_AR: number[] = [];
+        this.FAC_dividedNumber = toFacNum;
+        while (this.FAC_dividedNumber > 1) {
+            this.FAC_factor = 2;
+            this.FAC_isDivided = false;
+            while (this.FAC_isDivided === false) {
+                if (this.FAC_dividedNumber % this.FAC_factor === 0) {
+                    this.FAC_isDivided = true;
+                    result_AR.push(this.FAC_factor);
+                    this.FAC_dividedNumber = this.FAC_dividedNumber / this.FAC_factor;
+                    //alert("Czynniki: " + this.result + " | Pozostałość: " + this.FAC_dividedNumber + "| i: " + this.FAC_factor);
+                } else if (this.FAC_dividedNumber % this.FAC_factor !== 0) {
+                    this.FAC_factor++;
+                }
+            }
+        }
+        // Zwrót wyniku:
+        return result_AR;
     },
     operation_FAC(): void {
         // Jeżeli w wyrazie występuje znak [,], wyświetl błąd i zablokuj dalszą część operacji:
@@ -390,7 +468,7 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
     operation_Comma(): void {
         this.value += ", ";
         this.screen_VALUE.textContent = this.value;
-        this.screen_INFO.textContent = "Utworzono pole na nową wartość";
+        this.screen_INFO.textContent = "Utworzono pole na nową liczbę";
     },
     operation_Number(numKey: string): void {
         // Jeżeli długośc wyrazu wynosi 1 i ma on wartośc 0, skasuj 0, a wstaw cyfrę, w przeciwnym razie dodaj cyfrę do wyrażenia:
