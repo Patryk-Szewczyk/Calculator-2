@@ -47,7 +47,7 @@ body {
     }
 }
 
-@media only screen and (min-width: 900px) {  /* DESKTOP */
+@media only screen and (min-width: 1120px) {  /* DESKTOP */  /*OLD: 900*/
     .app-mobile {
         display: none;
     }
@@ -189,11 +189,8 @@ body {
                     background-color: transparent;
                     color: white;
                 }
-        :root {
-            --quest-box-width: 500px;  /*OLD: 450px*/
-        }
         .calc-space {
-            width: calc(100% - var(--quest-box-width));
+            width: 100%;
             height: 100%;
             display: flex;
             flex-direction: row;
@@ -244,7 +241,7 @@ body {
                         cursor: default;
                     }
         .calcType-box {
-            width: var(--quest-box-width);
+            width: 500px;
             height: 100%;
             position: relative;
             background-image: linear-gradient(to right, rgb(70, 116, 200) 20%, rgb(47, 93, 177) 80%);
