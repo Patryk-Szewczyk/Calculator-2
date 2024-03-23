@@ -60,7 +60,7 @@ var LocalStorage_ALL = {
         var _this = this;
         //this.localStorage_AR.push([{ calculator: "00", history: "none" }]);
         var calcButton_COLL = document.querySelector('div.nav-button-box').children;
-        var titleArea_EL = document.querySelector('div.cb-title');
+        //const titleArea_EL: HTMLDivElement = document.querySelector('div.cb-title');
         var calcType_EL = document.querySelectorAll('div[class^="ct-"]');
         for (var i = 0; i < calcButton_COLL.length; i++) {
             calcButton_COLL[i].addEventListener('click', function (e) {
@@ -69,7 +69,7 @@ var LocalStorage_ALL = {
                 _this.clcBt_ID = Number(_this.clcBt_DIV.id.slice(4, 6));
                 switch (_this.clcBt_ID) {
                     case 0:
-                        titleArea_EL.textContent = 'Kalkulator podstawowy';
+                        //titleArea_EL.textContent = 'Kalkulator podstawowy';
                         for (var i_1 = 0; i_1 < calcType_EL.length; i_1++) {
                             if (i_1 === _this.clcBt_ID) {
                                 _this.clcType_EL = calcType_EL[i_1];
@@ -83,7 +83,7 @@ var LocalStorage_ALL = {
                         localStorage.setItem('calculator', '0');
                         break;
                     case 1:
-                        titleArea_EL.textContent = 'Kalkulator binarny';
+                        //titleArea_EL.textContent = 'Kalkulator binarny';
                         //this.clcType_EL.style.display = "none";
                         for (var i_2 = 0; i_2 < calcType_EL.length; i_2++) {
                             if (i_2 === _this.clcBt_ID) {
@@ -98,7 +98,7 @@ var LocalStorage_ALL = {
                         localStorage.setItem('calculator', '1');
                         break;
                     case 2:
-                        titleArea_EL.textContent = 'Logika matematyczna';
+                        //titleArea_EL.textContent = 'Logika matematyczna';
                         //this.clcType_EL.style.display = "none";
                         for (var i_3 = 0; i_3 < calcType_EL.length; i_3++) {
                             if (i_3 === _this.clcBt_ID) {
@@ -113,7 +113,7 @@ var LocalStorage_ALL = {
                         localStorage.setItem('calculator', '2');
                         break;
                     case 3:
-                        titleArea_EL.textContent = 'NWD NWW Faktoryzacja';
+                        //titleArea_EL.textContent = 'NWD NWW Faktoryzacja';
                         //this.clcType_EL.style.display = "none";
                         for (var i_4 = 0; i_4 < calcType_EL.length; i_4++) {
                             if (i_4 === _this.clcBt_ID) {
@@ -132,14 +132,14 @@ var LocalStorage_ALL = {
         }
     },
     getLocalStorage: function () {
-        var titleArea_EL = document.querySelector('div.cb-title');
+        //const titleArea_EL: HTMLDivElement = document.querySelector('div.cb-title');
         var calcType_EL = document.querySelectorAll('div[class^="ct-"]');
         var calcType = localStorage.getItem('calculator');
         (calcType === undefined || calcType === null) ? calcType = '0' : calcType;
         if (calcType) {
             switch (Number(calcType)) {
                 case 0:
-                    titleArea_EL.textContent = 'Kalkulator podstawowy';
+                    //titleArea_EL.textContent = 'Kalkulator podstawowy';
                     for (var i = 0; i < calcType_EL.length; i++) {
                         if (i === Number(calcType)) {
                             this.clcType_EL = calcType_EL[i];
@@ -152,7 +152,7 @@ var LocalStorage_ALL = {
                     }
                     break;
                 case 1:
-                    titleArea_EL.textContent = 'Kalkulator binarny';
+                    //titleArea_EL.textContent = 'Kalkulator binarny';
                     for (var i = 0; i < calcType_EL.length; i++) {
                         if (i === Number(calcType)) {
                             this.clcType_EL = calcType_EL[i];
@@ -165,7 +165,7 @@ var LocalStorage_ALL = {
                     }
                     break;
                 case 2:
-                    titleArea_EL.textContent = 'Logika matematyczna';
+                    //titleArea_EL.textContent = 'Logika matematyczna';
                     for (var i = 0; i < calcType_EL.length; i++) {
                         if (i === Number(calcType)) {
                             this.clcType_EL = calcType_EL[i];
@@ -178,7 +178,7 @@ var LocalStorage_ALL = {
                     }
                     break;
                 case 3:
-                    titleArea_EL.textContent = 'NWD NWW Faktoryzacja';
+                    //titleArea_EL.textContent = 'NWD NWW Faktoryzacja';
                     for (var i = 0; i < calcType_EL.length; i++) {
                         if (i === Number(calcType)) {
                             this.clcType_EL = calcType_EL[i];
@@ -222,10 +222,10 @@ var Calculator_NWD_NWW_Faction_FUNCTIONS = {
                 //console.log(this.bt_ID);
                 switch (_this.bt_ID) {
                     case "NWD":
-                        _this.operation_NWD();
+                        _this.operation_NWD(); // OK
                         break;
                     case "NWW":
-                        _this.operation_NWW();
+                        _this.operation_NWW(); // OK
                         break;
                     case "FAC":
                         _this.operation_FAC(); // OK
@@ -259,12 +259,6 @@ var Calculator_NWD_NWW_Faction_FUNCTIONS = {
             if (this.value[this.value.length - 1] === " ") {
                 this.screen_INFO.textContent = "Błąd! Nie możesz zostawić pustego pola";
                 return;
-                // INNA OPCJA: (ignoruj to i skasuj to pole)
-                //this.value = this.value.slice(0, (this.value.length - 2));
-                //this.Both_FAC_InitialValues_STR = this.value.split(", ");
-                // Powrót usuniętych dwóch stringowych indeksów, aby kiedy będę dodawał liczby, pojawiały się po przecinku.
-                // Bez tej linijki przecinek znika, tzn. jest usuwany, ale nie jest ponownie wstawiany:
-                //this.value = this.value += ", ";
             }
             else {
                 this.Both_FAC_InitialValues_STR = this.value.split(", ");
@@ -285,28 +279,21 @@ var Calculator_NWD_NWW_Faction_FUNCTIONS = {
             for (var i = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
                 this.Both_FAC_FractedNum[i] = this.operation_More_FAC(Number(this.Both_FAC_InitialValues_STR[i]));
             }
-            //console.log(this.Both_FAC_FractedNum);  // OK
             // Obliczanie NWD:
             this.result = 1;
             var base_AR = this.Both_FAC_FractedNum[0];
-            //console.log(base_AR);  // OK
             var compare_AR = [[]];
             for (var i = 1; i < this.Both_FAC_FractedNum.length; i++) {
                 compare_AR[i - 1] = this.Both_FAC_FractedNum[i];
             }
-            //console.log(compare_AR);  // OK
             var compaseEqualBase_TARGET = compare_AR.length;
             var compaseEqualBase_COUNTER = 0;
-            var togetherFactor = 0; // Test variable
             var properFactor_AR = [];
             var properFactor_VAL = 0;
-            for (var i = 0; i < base_AR.length; i++) { // OK   |   Base VERTICAL
-                //console.log("Bazowy araj: " + i + " | " + base_AR[i]);
+            for (var i = 0; i < base_AR.length; i++) {
                 compaseEqualBase_COUNTER = 0;
-                for (var j = 0; j < compare_AR.length; j++) { // OK   |   Compare HORIZONTAL
-                    //console.log("Comparowy araj: " + j);
-                    for (var k = 0; k < compare_AR[j].length; k++) { // OK   |   Compare VERTICAL
-                        //console.log("[" + String(j) + String(k) + "]: " + compare_AR[j][k]);
+                for (var j = 0; j < compare_AR.length; j++) {
+                    for (var k = 0; k < compare_AR[j].length; k++) {
                         if (base_AR[i] === compare_AR[j][k]) {
                             compaseEqualBase_COUNTER++;
                             properFactor_VAL = compare_AR[j][k];
@@ -317,15 +304,13 @@ var Calculator_NWD_NWW_Faction_FUNCTIONS = {
                 }
                 if (compaseEqualBase_COUNTER === compaseEqualBase_TARGET) {
                     properFactor_AR.push(properFactor_VAL);
-                    togetherFactor++;
                 }
             }
-            //console.log("Wykryto wspólny czynnik: " + togetherFactor);  // OK
-            //console.log(properFactor_AR);  // OK
             for (var i = 0; i < properFactor_AR.length; i++) {
                 this.result *= properFactor_AR[i];
             }
             this.screen_VALUE.textContent = String(this.result);
+            this.value = this.screen_VALUE.textContent;
             // Wyświeetlanie informacji:
             this.screen_INFO.textContent = "NWD | ";
             for (var i = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
@@ -339,11 +324,92 @@ var Calculator_NWD_NWW_Faction_FUNCTIONS = {
         }
     },
     operation_NWW: function () {
-        //console.log(mode);
+        // Jeżeli w wyrazie występuje znak [,], wyświetl błąd i zablokuj dalszą część operacji:
+        this.FAC_isNotComma = true;
+        for (var i = 0; i < this.value.length; i++) {
+            if (this.value[i] === ",") {
+                this.FAC_isNotComma = false;
+            }
+        }
+        // Rozkład liczby całkowitej na czynniki pierwsze:
+        if (this.FAC_isNotComma === false) {
+            if (this.value[this.value.length - 1] === " ") {
+                this.screen_INFO.textContent = "Błąd! Nie możesz zostawić pustego pola";
+                return;
+            }
+            else {
+                this.Both_FAC_InitialValues_STR = this.value.split(", ");
+            }
+            if (this.Both_FAC_InitialValues_STR.length < 2) {
+                this.screen_INFO.textContent = "Błąd! Potrzebujesz min 2 liczby";
+                return;
+            }
+            // Sprawdzanie czy wszystkie liczby (na faktoryzację) są większe niż 1:
+            for (var i = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
+                if (this.Both_FAC_InitialValues_STR[i] === "0" || this.Both_FAC_InitialValues_STR[i] === "1") {
+                    this.screen_INFO.textContent = "Błąd! Liczby muszą być większe niż 1";
+                    return;
+                }
+            }
+            // Wkładanie kolejno każdej liczby w metodę obliczającą rozkład liczby na czynniki pierwsze:
+            this.Both_FAC_FractedNum = [[], []];
+            for (var i = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
+                this.Both_FAC_FractedNum[i] = this.operation_More_FAC(Number(this.Both_FAC_InitialValues_STR[i]));
+            }
+            // Obliczanie NWD:
+            this.result = 1;
+            var base_AR = this.Both_FAC_FractedNum[0];
+            var compare_AR = [[]];
+            for (var i = 1; i < this.Both_FAC_FractedNum.length; i++) {
+                compare_AR[i - 1] = this.Both_FAC_FractedNum[i];
+            }
+            var compaseEqualBase_TARGET = compare_AR.length;
+            var compaseEqualBase_COUNTER = 0;
+            var properFactor_AR = [];
+            var properFactor_VAL = 0;
+            for (var i = 0; i < base_AR.length; i++) {
+                compaseEqualBase_COUNTER = 0;
+                for (var j = 0; j < compare_AR.length; j++) {
+                    for (var k = 0; k < compare_AR[j].length; k++) {
+                        if (base_AR[i] === compare_AR[j][k]) {
+                            compaseEqualBase_COUNTER++;
+                            properFactor_VAL = compare_AR[j][k];
+                            compare_AR[j].splice(k, 1);
+                            break;
+                        }
+                    }
+                }
+                if (compaseEqualBase_COUNTER === compaseEqualBase_TARGET) {
+                    properFactor_AR.push(properFactor_VAL);
+                }
+            }
+            for (var i = 0; i < properFactor_AR.length; i++) {
+                this.result *= properFactor_AR[i];
+            }
+            // Obliczanie NWW:
+            var NWW_result = 0;
+            var numerator = 1;
+            var denominator = this.result;
+            for (var i = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
+                numerator *= this.Both_FAC_InitialValues_STR[i];
+            }
+            NWW_result = numerator / denominator;
+            this.screen_VALUE.textContent = String(NWW_result);
+            this.value = this.screen_VALUE.textContent;
+            // Wyświeetlanie informacji:
+            this.screen_INFO.textContent = "NWD | ";
+            for (var i = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
+                this.screen_INFO.textContent += this.Both_FAC_InitialValues_STR[i] + ", ";
+            }
+            this.screen_INFO.textContent = this.screen_INFO.textContent.slice(0, (this.screen_INFO.textContent.length - 2));
+            this.screen_INFO.textContent += " | Wynik:";
+        }
+        else if (this.FAC_isNotComma === true) {
+            this.screen_INFO.textContent = "Błąd! Przy NWD potrzeba min 2 liczb";
+        }
     },
     operation_More_FAC: function (toFacNum) {
         // Rozkład liczby całkowitej na czynniki pierwsze: (metoda samodzielna zwracająca wynik)
-        //console.log(toFacNum);
         console.clear();
         var result_AR = [];
         this.FAC_dividedNumber = toFacNum;
@@ -355,7 +421,6 @@ var Calculator_NWD_NWW_Faction_FUNCTIONS = {
                     this.FAC_isDivided = true;
                     result_AR.push(this.FAC_factor);
                     this.FAC_dividedNumber = this.FAC_dividedNumber / this.FAC_factor;
-                    //alert("Czynniki: " + this.result + " | Pozostałość: " + this.FAC_dividedNumber + "| i: " + this.FAC_factor);
                 }
                 else if (this.FAC_dividedNumber % this.FAC_factor !== 0) {
                     this.FAC_factor++;
