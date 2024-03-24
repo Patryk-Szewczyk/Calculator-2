@@ -196,7 +196,6 @@ var LocalStorage_ALL = {
 };
 LocalStorage_ALL.getLocalStorage();
 LocalStorage_ALL.setPageOpenCalc_AEL();
-//console.log(LocalStorage_ALL.localStorage_AR);
 var Calculator_Basic_FUNCTIONS = {
 //
 };
@@ -204,8 +203,126 @@ var Calculator_MathLogic_FUNCTIONS = {
 //
 };
 var Calculator_Euklides_FUNCTIONS = {
-//
+    bt_EVT: undefined,
+    bt_DIV: null,
+    bt_ID: "",
+    value: "0",
+    result: "",
+    screen_INFO: document.querySelector('.ct-euklides > .screen > .screen-position > .screen-hanger > .info'),
+    screen_VALUE: document.querySelector('.ct-euklides > .screen > .screen-position > .screen-hanger > .value'),
+    setButtons_AEL: function () {
+        var _this = this;
+        var button_COLL = document.querySelector('.ct-euklides > .buttons-group').children;
+        for (var i = 0; i < button_COLL.length; i++) {
+            button_COLL[i].addEventListener("click", function (e) {
+                _this.bt_EVT = e.currentTarget;
+                _this.bt_DIV = _this.bt_EVT;
+                _this.bt_ID = _this.bt_DIV.id;
+                switch (_this.bt_ID) {
+                    case "=":
+                        _this.operation_EUK(_this.bt_ID); // OK
+                        break;
+                    case "DEL":
+                        _this.operation_DEL(_this.bt_ID); // OK
+                        break;
+                    case "AC":
+                        _this.operation_AC(_this.bt_ID); // OK
+                        break;
+                    case ",":
+                        _this.operation_Comma(_this.bt_ID); // OK
+                        break;
+                    default:
+                        _this.operation_Number(_this.bt_ID); // OK
+                        break;
+                }
+            }, false);
+        }
+    },
+    operation_EUK: function (id) {
+        // Walidacja poprawności wpisanych danych:
+        var baseNum_AR = this.value.split(", ");
+        if (baseNum_AR.length !== 2) {
+            if (this.value[this.value.length - 1] === " ") {
+                this.screen_INFO.textContent = "Błąd! Nie wolno zostawić pustego pola";
+            }
+            else {
+                this.screen_INFO.textContent = "Błąd! Wymagana ilość liczb wynosi: 2";
+            }
+            return;
+        }
+        else {
+            if (this.value[this.value.length - 1] === " ") {
+                this.screen_INFO.textContent = "Błąd! Nie wolno zostawić pustego pola";
+                return;
+            }
+        }
+        // Algorytm euklidesa:
+        var a_LEFT = baseNum_AR[0], b_RIGHT = baseNum_AR[1];
+        while (a_LEFT !== b_RIGHT) {
+            if (a_LEFT > b_RIGHT) {
+                a_LEFT = a_LEFT - b_RIGHT;
+            }
+            else if (a_LEFT < b_RIGHT) {
+                b_RIGHT = b_RIGHT - a_LEFT;
+            }
+            // Dodatkowy przypadek: Kiedy liczby są równe - jest potrebny w kontekście poniższego dodatkowego przypadku:
+            if (a_LEFT === b_RIGHT) {
+                this.value = String(a_LEFT);
+                this.screen_VALUE.textContent = this.value;
+            }
+            // Dodatkowy przypadek: Kiedy liczby "a" i "b" mają ujemne wartości: (zapobiegnięcie nieskończonej teracji, kiedy liczby nigdy nie będą sobie równe)
+            if (a_LEFT < 0 && b_RIGHT < 0) {
+                this.value = "1";
+                this.screen_VALUE.textContent = this.value;
+                return;
+            }
+        }
+        //alert("Wynik: " + this.result);
+    },
+    operation_DEL: function (id) {
+        if (this.value[this.value.length - 1] === " ") {
+            this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 2));
+        }
+        else {
+            this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 1));
+        }
+        if (this.value.length === 0) {
+            this.value = "0";
+        }
+        this.screen_VALUE.textContent = this.value;
+        this.screen_INFO.textContent = "Skrócono wartość";
+    },
+    operation_AC: function (id) {
+        this.value = "0";
+        this.screen_VALUE.textContent = this.value;
+        this.screen_INFO.textContent = "Skasowano wartość";
+    },
+    operation_Comma: function (id) {
+        if (this.value[this.value.length - 1] !== " ") {
+            this.value += ", ";
+            this.screen_INFO.textContent = "Utworzono pole na nową liczbę";
+            this.screen_VALUE.textContent = this.value;
+        }
+        else {
+            this.screen_INFO.textContent = "Błąd! Nie wolno zostawić pustego pola";
+            return;
+        }
+    },
+    operation_Number: function (numKey) {
+        // Jeżeli długośc wyrazu wynosi 1 i ma on wartośc 0, skasuj 0, a wstaw cyfrę, w przeciwnym razie dodaj cyfrę do wyrażenia:
+        if (this.screen_INFO.textContent[this.screen_INFO.textContent.length - 1] !== ":") {
+            if (this.value.length === 1 && this.value === "0") {
+                this.value = numKey;
+            }
+            else if (this.value.length > 1 || this.value !== "0") {
+                this.value += numKey;
+            }
+            this.screen_VALUE.textContent = this.value;
+            this.screen_INFO.textContent = "Wpisano cyfrę";
+        }
+    }
 };
+Calculator_Euklides_FUNCTIONS.setButtons_AEL();
 var Calculator_NWD_NWW_Faction_FUNCTIONS = {
     bt_EVT: undefined,
     bt_DIV: null,
@@ -228,7 +345,6 @@ var Calculator_NWD_NWW_Faction_FUNCTIONS = {
                 _this.bt_EVT = e.currentTarget;
                 _this.bt_DIV = _this.bt_EVT;
                 _this.bt_ID = _this.bt_DIV.id;
-                //console.log(this.bt_ID);
                 switch (_this.bt_ID) {
                     case "NWD":
                         _this.operation_NWD(); // OK
@@ -512,8 +628,14 @@ var Calculator_NWD_NWW_Faction_FUNCTIONS = {
             this.screen_INFO.textContent = "Wartość została skasowana";
         }
         else {
-            this.value += ", ";
-            this.screen_INFO.textContent = "Utworzono pole na nową liczbę";
+            if (this.value[this.value.length - 1] !== " ") {
+                this.value += ", ";
+                this.screen_INFO.textContent = "Utworzono pole na nową liczbę";
+            }
+            else {
+                this.screen_INFO.textContent = "Błąd! Nie wolno zostawić pustego pola";
+                return;
+            }
         }
         this.screen_VALUE.textContent = this.value;
     },
