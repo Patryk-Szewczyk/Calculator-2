@@ -96,7 +96,7 @@ const LocalStorage_ALL: {
                         localStorage.setItem('calculator', '0');
                         break;
                     case 1:
-                        //titleArea_EL.textContent = 'Kalkulator binarny';
+                        //titleArea_EL.textContent = 'Logika matematyczna';
                         //this.clcType_EL.style.display = "none";
                         for (let i: number = 0; i < calcType_EL.length; i++) {
                             if (i === this.clcBt_ID) {
@@ -110,7 +110,7 @@ const LocalStorage_ALL: {
                         localStorage.setItem('calculator', '1');
                         break;
                     case 2:
-                        //titleArea_EL.textContent = 'Logika matematyczna';
+                        //titleArea_EL.textContent = 'Algorytm euklidesa';
                         //this.clcType_EL.style.display = "none";
                         for (let i: number = 0; i < calcType_EL.length; i++) {
                             if (i === this.clcBt_ID) {
@@ -161,7 +161,7 @@ const LocalStorage_ALL: {
                     }
                     break;
                 case 1:
-                    //titleArea_EL.textContent = 'Kalkulator binarny';
+                    //titleArea_EL.textContent = 'Logika matematyczna';
                     for (let i: number = 0; i < calcType_EL.length; i++) {
                         if (i === Number(calcType)) {
                             this.clcType_EL = calcType_EL[i] as HTMLDivElement;
@@ -173,7 +173,7 @@ const LocalStorage_ALL: {
                     }
                     break;
                 case 2:
-                    //titleArea_EL.textContent = 'Logika matematyczna';
+                    //titleArea_EL.textContent = 'Algorytm Euklidesa';
                     for (let i: number = 0; i < calcType_EL.length; i++) {
                         if (i === Number(calcType)) {
                             this.clcType_EL = calcType_EL[i] as HTMLDivElement;
@@ -203,6 +203,30 @@ const LocalStorage_ALL: {
 LocalStorage_ALL.getLocalStorage();
 LocalStorage_ALL.setPageOpenCalc_AEL();
 //console.log(LocalStorage_ALL.localStorage_AR);
+
+
+
+const Calculator_Basic_FUNCTIONS: {
+    //
+} = {
+    //
+}
+
+
+
+const Calculator_MathLogic_FUNCTIONS: {
+    //
+} = {
+    //
+}
+
+
+
+const Calculator_Euklides_FUNCTIONS: {
+    //
+} = {
+    //
+}
 
 
 
@@ -285,7 +309,7 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
                 this.FAC_isNotComma = false;
             }
         }
-        // Rozkład liczby całkowitej na czynniki pierwsze:
+        // Przygotowywanie liczba na faktoryzację:
         if (this.FAC_isNotComma === false) {
             if (this.value[this.value.length - 1] === " ") {
                 this.screen_INFO.textContent = "Błąd! Nie możesz zostawić pustego pola";
@@ -304,7 +328,10 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
                     return;
                 }
             }
-            // Wkładanie kolejno każdej liczby w metodę obliczającą rozkład liczby na czynniki pierwsze:
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            // PATRYKOWY algorytm na obliczanie NWD: (Algorytm EUKLIDESA działa tylko w przypadku dwóch liczba, a ja chciałem zrobić dla dowolnej ilości liczb!)
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            // Rozkład liczby na czynniki pierwsze (inna metoda, argument = 1 liczba):
             this.Both_FAC_FractedNum = [[], []];
             for (let i: number = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
                 this.Both_FAC_FractedNum[i] = this.operation_More_FAC(Number(this.Both_FAC_InitialValues_STR[i]));
@@ -339,6 +366,7 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
             for (let i: number = 0; i < properFactor_AR.length; i++) {
                 this.result *= properFactor_AR[i];
             }
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             this.screen_VALUE.textContent = String(this.result);
             this.value = this.screen_VALUE.textContent;
             // Wyświeetlanie informacji:
@@ -361,7 +389,7 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
                 this.FAC_isNotComma = false;
             }
         }
-        // Rozkład liczby całkowitej na czynniki pierwsze:
+        // Przygotowywanie liczba na faktoryzację:
         if (this.FAC_isNotComma === false) {
             if (this.value[this.value.length - 1] === " ") {
                 this.screen_INFO.textContent = "Błąd! Nie możesz zostawić pustego pola";
@@ -380,50 +408,38 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
                     return;
                 }
             }
-            // Wkładanie kolejno każdej liczby w metodę obliczającą rozkład liczby na czynniki pierwsze:
+            // Rozkład liczby na czynniki pierwsze (inna metoda, argument = 1 liczba):
             this.Both_FAC_FractedNum = [[], []];
             for (let i: number = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
                 this.Both_FAC_FractedNum[i] = this.operation_More_FAC(Number(this.Both_FAC_InitialValues_STR[i]));
             }
-            // Obliczanie NWD:
-            this.result = 1;
+            // Kasownie liczb powtarzających się w "compare_AR" (tablicy dwuwymiarowej porównawczej):
             let base_AR: number[] = this.Both_FAC_FractedNum[0];
             let compare_AR: number[][] = [[]];
             for (let i: number = 1; i < this.Both_FAC_FractedNum.length; i++) {
                 compare_AR[i - 1] = this.Both_FAC_FractedNum[i];
             }
-            let compaseEqualBase_TARGET: number = compare_AR.length;
-            let compaseEqualBase_COUNTER: number = 0;
-            let properFactor_AR: number[] = [];
-            let properFactor_VAL: number = 0;
             for (let i: number = 0; i < base_AR.length; i++) {
-                compaseEqualBase_COUNTER = 0;
                 for (let j: number = 0; j < compare_AR.length; j++) {
                     for (let k: number = 0; k < compare_AR[j].length; k++) {
                         if (base_AR[i] === compare_AR[j][k]) {
-                            compaseEqualBase_COUNTER++;
-                            properFactor_VAL = compare_AR[j][k];
                             compare_AR[j].splice(k, 1);
                             break;
                         }
                     }
                 }
-                if (compaseEqualBase_COUNTER === compaseEqualBase_TARGET) {
-                    properFactor_AR.push(properFactor_VAL);
-                }
-            }
-            for (let i: number = 0; i < properFactor_AR.length; i++) {
-                this.result *= properFactor_AR[i];
             }
             // Obliczanie NWW:
-            let NWW_result: number = 0;
-            let numerator: number = 1;
-            let denominator: number = this.result;
-            for (let i: number = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
-                numerator *= this.Both_FAC_InitialValues_STR[i];
+            this.result = 1;
+            for (let i: number = 0; i < base_AR.length; i++) {
+                this.result *= base_AR[i];
             }
-            NWW_result = numerator / denominator;
-            this.screen_VALUE.textContent = String(NWW_result);
+            for (let i: number = 0; i < compare_AR.length; i++) {
+                for (let j: number = 0; j < compare_AR[i].length; j++) {
+                    this.result *= compare_AR[i][j];
+                }
+            }
+            this.screen_VALUE.textContent = this.result;
             this.value = this.screen_VALUE.textContent;
             // Wyświeetlanie informacji:
             this.screen_INFO.textContent = "NWD | ";
@@ -487,6 +503,9 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
             this.screen_INFO.textContent = "FAC | " + this.value + " | Wynik:";
             this.result = this.result.slice(0, this.result.length - 2);
             this.FAC_isNotComma = true;
+
+
+
             // Wyznaczanie liczby pierwszej:
             for (let i: number = 0; i < this.result.length; i++) {
                 if (this.result[i] === ",") {
@@ -530,9 +549,14 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
         this.screen_INFO.textContent = "Skasowano wartość";
     },
     operation_Comma(): void {
-        this.value += ", ";
+        if (this.value === "Liczba pierwsza") {
+            this.value = "0";
+            this.screen_INFO.textContent = "Wartość została skasowana";
+        } else {
+            this.value += ", ";
+            this.screen_INFO.textContent = "Utworzono pole na nową liczbę";
+        }
         this.screen_VALUE.textContent = this.value;
-        this.screen_INFO.textContent = "Utworzono pole na nową liczbę";
     },
     operation_Number(numKey: string): void {
         // Jeżeli długośc wyrazu wynosi 1 i ma on wartośc 0, skasuj 0, a wstaw cyfrę, w przeciwnym razie dodaj cyfrę do wyrażenia:
