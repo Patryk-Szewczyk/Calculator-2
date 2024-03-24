@@ -64,7 +64,9 @@ body {
             flex-direction: column;
             justify-content: flex-start;
             align-items: center;
+            /*background-image: linear-gradient(to right, rgb(62, 62, 62) 20%, rgb(83, 83, 83) 80%);*/
             background-image: linear-gradient(to right, rgb(47, 93, 177) 20%, rgb(70, 116, 200) 80%);
+            box-shadow: 0px 0px 5px 1px black;
             z-index: 2;
         }
             .dsk-menu-button-box {
@@ -79,6 +81,7 @@ body {
                 align-items: center;
                 background-color: rgb(70, 116, 200);
                 border-radius: 0px 12px 12px 0px;
+                box-shadow: 0px 0px 5px 1px black;
                 border: 0px solid red;  /*TEST*/
             }
             .dsk-menu-button-box::before {
@@ -103,6 +106,15 @@ body {
                 border-radius: 12px 0px 0px 0px;
                 box-shadow: -6px -6px 0px 0px hsl(219, 54%, 53%);
             }
+                .dsk-menu-button-box > .dsk-mbb-shadowhidder {
+                    position: absolute;
+                    top: auto;
+                    left: -7px;
+                    width: 10px;
+                    height: 100%;
+                    background-color: inherit;
+                    z-index: 1;
+                }
                 .dsk-menu-arrow {
                     width: 35px;
                     height: 35px;
@@ -251,7 +263,11 @@ body {
                 height: 100%;
                 background-color: hsl(219, 48%, 34%);
             }
-            .ct-refactoring > .screen {
+            /*- - - - - - - - - - - - - - - - - - -*/
+            /*KALKULATOR: NDW | NWW | Faktoryzacja*/
+            /*- - - - - - - - - - - - - - - - - - -*/
+            .ct-refactoring > .screen,
+            .ct-euklides > .screen {
                 width: 100%;
                 height: 25%;
                 padding: 0px 20px;
@@ -265,7 +281,8 @@ body {
                 border-width: 6px 6px 3px 6px;
                 border-color: hsl(219, 48%, 34%);
             }
-                .ct-refactoring > .screen > .screen-position {
+                .ct-refactoring > .screen > .screen-position,
+                .ct-euklides > .screen > .screen-position {
                     width: 100%;
                     display: flex;
                     flex-direction: column;
@@ -277,10 +294,12 @@ body {
                         display: flex;
                         justify-content: flex-end;
                     }
-                    .ct-refactoring > .screen > .screen-position > .screen-hanger:nth-child(1) {
+                    .ct-refactoring > .screen > .screen-position > .screen-hanger:nth-child(1),
+                    .ct-euklides > .screen > .screen-position > .screen-hanger:nth-child(1) {
                         margin-top: 13px;
                     }
-                        .ct-refactoring > .screen > .screen-position > .screen-hanger > .info {
+                        .ct-refactoring > .screen > .screen-position > .screen-hanger > .info,
+                        .ct-euklides > .screen > .screen-position > .screen-hanger > .info {
                             width: auto;
                             display: flex;
                             align-items: flex-end;
@@ -291,7 +310,8 @@ body {
                             text-wrap: nowrap;
                             overflow-x: auto;
                         }
-                        .ct-refactoring > .screen > .screen-position > .screen-hanger > .value {
+                        .ct-refactoring > .screen > .screen-position > .screen-hanger > .value,
+                        .ct-euklides > .screen > .screen-position > .screen-hanger > .value {
                             width: auto;
                             display: flex;
                             align-items: center;
@@ -302,11 +322,14 @@ body {
                             text-wrap: nowrap;
                             overflow-x: auto;
                         }
-                        .ct-refactoring > .screen > .screen-position > .screen-hanger > .info::-webkit-scrollbar, .ct-refactoring > .screen > .screen-position > .screen-hanger > .value::-webkit-scrollbar {
+                        .ct-refactoring > .screen > .screen-position > .screen-hanger > .info::-webkit-scrollbar, .ct-refactoring > .screen > .screen-position > .screen-hanger > .value::-webkit-scrollbar,
+                        .ct-euklides > .screen > .screen-position > .screen-hanger > .info::-webkit-scrollbar, .ct-euklides > .screen > .screen-position > .screen-hanger > .value::-webkit-scrollbar
+                         {
                             width: 100%;
                             height: 0px;
                         }
-            .ct-refactoring > .buttons-group {
+            .ct-refactoring > .buttons-group,
+            .ct-euklides > .buttons-group {
                 width: 100%;
                 height: 75%;
                 display: grid;
@@ -316,7 +339,8 @@ body {
                 border-width: 0px 6px 6px 6px;
                 border-color: hsl(219, 48%, 34%);
             }
-            .ct-refactoring > .buttons-group > div {
+            .ct-refactoring > .buttons-group > div,
+            .ct-euklides > .buttons-group > div {
                 position: relative;
                 display: flex;
                 justify-content: center;
@@ -326,7 +350,8 @@ body {
                 font-size: 30px;
                 font-weight: 500;
             }
-            .ct-refactoring > .buttons-group > div::selection {
+            .ct-refactoring > .buttons-group > div::selection
+            .ct-euklides > .buttons-group > div::selection {
                 background-color: transparent;
                 color: white;
             }
@@ -348,21 +373,62 @@ body {
             .ct-refactoring > .buttons-group > div:not(:nth-child(-n+14)) {
                 background-color: hsl(219, 54%, 47%);
             }
-                .ct-refactoring > .buttons-group > div > div {
+                .ct-refactoring > .buttons-group > div > div,
+                .ct-euklides > .buttons-group > div > div {
                     width: 100%;
                     height: 100%;
                     position: absolute;
                     background-color: rgba(255,255,255,0.0);
                     transition-duration: 0.1s;
                 }
-                .ct-refactoring > .buttons-group > div > div:hover {
+                .ct-refactoring > .buttons-group > div > div:hover,
+                .ct-euklides > .buttons-group > div > div:hover {
                     cursor: pointer;
                     background-color: rgba(255,255,255,0.1);
                     transition-duration: 0.1s;
                 }
-                .ct-refactoring > .buttons-group > div > div:active {
+                .ct-refactoring > .buttons-group > div > div:active,
+                .ct-euklides > .buttons-group > div > div:active {
                     cursor: pointer;
                     background-color: rgba(255,255,255,0.2);
                     transition-duration: 0.0s;
                 }
-}
+            /*- - - - - - - - - - - - - - - - - - -*/
+            /*KALKULATOR: Algorytm Euklidesa*/
+            /*- - - - - - - - - - - - - - - - - - -*/
+            .ct-euklides > .buttons-group > div:nth-child(-n+8) {
+                border-bottom-style: solid;
+                border-bottom-width: 3px;
+                border-bottom-color: hsl(219, 48%, 34%);
+            }
+            .ct-euklides > .buttons-group > div:nth-child(4n) {
+                background-color: hsl(219, 54%, 47%);
+            }
+            .ct-euklides > .buttons-group > div:nth-child(12) {
+                grid-column: 4;
+                grid-row-start: 3;
+                grid-row-end: 5;
+            }
+            .ct-euklides > .buttons-group > div:nth-child(13) {
+                grid-column: 1 / span 2;
+                grid-row: 4;
+            }
+            .ct-euklides > .buttons-group > div:not(:nth-child(14)):not(:nth-child(13)):not(:nth-child(12)):not(:nth-child(11)):not(:nth-child(8)):not(:nth-child(4)) {
+                border-bottom-style: solid;
+                border-bottom-width: 3px;
+                border-bottom-color: hsl(219, 48%, 34%);
+                border-right-style: solid;
+                border-right-width: 3px;
+                border-right-color: hsl(219, 48%, 34%);
+            }
+            .ct-euklides > .buttons-group > div:nth-child(11) {
+                border-bottom-style: solid;
+                border-bottom-width: 3px;
+                border-bottom-color: hsl(219, 48%, 34%);
+            }
+            .ct-euklides > .buttons-group > div:nth-child(13), .ct-euklides > .buttons-group > div:nth-child(14), .ct-euklides > .buttons-group > div:nth-child(11) {
+                border-right-style: solid;
+                border-right-width: 3px;
+                border-right-color: hsl(219, 48%, 34%);
+            }
+    }
