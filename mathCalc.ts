@@ -310,6 +310,7 @@ const Calculator_Euklides_FUNCTIONS: {
             }
         }
         // Algorytm euklidesa:
+        const fixed_A: number = baseNum_AR[0], fixed_B: number = baseNum_AR[1];
         let a_LEFT: number = baseNum_AR[0], b_RIGHT: number = baseNum_AR[1];
         while(a_LEFT !== b_RIGHT) {
             if (a_LEFT > b_RIGHT) {
@@ -321,11 +322,13 @@ const Calculator_Euklides_FUNCTIONS: {
             if (a_LEFT === b_RIGHT) {
                 this.value = String(a_LEFT);
                 this.screen_VALUE.textContent = this.value;
+                this.screen_INFO.textContent = "EUK | " + fixed_A + ", " + fixed_B + " | Wynik:";
             }
             // Dodatkowy przypadek: Kiedy liczby "a" i "b" mają ujemne wartości: (zapobiegnięcie nieskończonej teracji, kiedy liczby nigdy nie będą sobie równe)
             if (a_LEFT < 0 && b_RIGHT < 0) {
                 this.value = "1";
                 this.screen_VALUE.textContent = this.value;
+                this.screen_INFO.textContent = "EUK | " + fixed_A + ", " + fixed_B + " | Wynik:";
                 return;
             }
         }
@@ -585,7 +588,7 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
             this.screen_VALUE.textContent = this.result;
             this.value = this.screen_VALUE.textContent;
             // Wyświeetlanie informacji:
-            this.screen_INFO.textContent = "NWD | ";
+            this.screen_INFO.textContent = "NWW | ";
             for (let i: number = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
                 this.screen_INFO.textContent += this.Both_FAC_InitialValues_STR[i] + ", ";
             }
