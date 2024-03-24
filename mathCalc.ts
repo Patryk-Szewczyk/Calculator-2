@@ -63,18 +63,14 @@ const LocalStorage_ALL: {
     clcBt_DIV: HTMLDivElement,
     clcBt_ID: number,
     clcType_EL: HTMLDivElement,
-    getLocalStorage: Function,
-    //localStorage_AR: [{ calculator: string, history: string }][]
+    getLocalStorage: Function
 } = {
-    //localStorage_AR: [],
     clcBt_EVT: undefined,
     clcBt_DIV: null,
     clcBt_ID: 0,
     clcType_EL: null,
     setPageOpenCalc_AEL(): void {
-        //this.localStorage_AR.push([{ calculator: "00", history: "none" }]);
         const calcButton_COLL: HTMLCollection = document.querySelector('div.nav-button-box').children;
-        //const titleArea_EL: HTMLDivElement = document.querySelector('div.cb-title');
         const calcType_EL: NodeList = document.querySelectorAll('div[class^="ct-"]');
         for (let i: number = 0; i < calcButton_COLL.length; i++){
             calcButton_COLL[i].addEventListener('click', (e) => {
@@ -83,7 +79,6 @@ const LocalStorage_ALL: {
                 this.clcBt_ID = Number(this.clcBt_DIV.id.slice(4, 6));
                 switch (this.clcBt_ID) {
                     case 0:
-                        //titleArea_EL.textContent = 'Kalkulator podstawowy';
                         for (let i: number = 0; i < calcType_EL.length; i++) {
                             if (i === this.clcBt_ID) {
                                 this.clcType_EL = calcType_EL[i] as HTMLDivElement;
@@ -93,11 +88,9 @@ const LocalStorage_ALL: {
                                 this.clcType_EL.style.display = 'none';
                             }
                         }
-                        localStorage.setItem('calculator', '0');
+                        localStorage.setItem('calculator', String(this.clcBt_ID));
                         break;
                     case 1:
-                        //titleArea_EL.textContent = 'Logika matematyczna';
-                        //this.clcType_EL.style.display = "none";
                         for (let i: number = 0; i < calcType_EL.length; i++) {
                             if (i === this.clcBt_ID) {
                                 this.clcType_EL = calcType_EL[i] as HTMLDivElement;
@@ -107,11 +100,9 @@ const LocalStorage_ALL: {
                                 this.clcType_EL.style.display = 'none';
                             }
                         }
-                        localStorage.setItem('calculator', '1');
+                        localStorage.setItem('calculator', String(this.clcBt_ID))
                         break;
                     case 2:
-                        //titleArea_EL.textContent = 'Algorytm euklidesa';
-                        //this.clcType_EL.style.display = "none";
                         for (let i: number = 0; i < calcType_EL.length; i++) {
                             if (i === this.clcBt_ID) {
                                 this.clcType_EL = calcType_EL[i] as HTMLDivElement;
@@ -121,35 +112,19 @@ const LocalStorage_ALL: {
                                 this.clcType_EL.style.display = 'none';
                             }
                         }
-                        localStorage.setItem('calculator', '2')
-                        break;
-                    case 3:
-                        //titleArea_EL.textContent = 'NWD NWW Faktoryzacja';
-                        //this.clcType_EL.style.display = "none";
-                        for (let i: number = 0; i < calcType_EL.length; i++) {
-                            if (i === this.clcBt_ID) {
-                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
-                                this.clcType_EL.style.display = 'block';
-                            } else {
-                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
-                                this.clcType_EL.style.display = 'none';
-                            }
-                        }
-                        localStorage.setItem('calculator', '3');
+                        localStorage.setItem('calculator', String(this.clcBt_ID));
                         break;
                 }
             }, false);
         }
     },
     getLocalStorage(): void {
-        //const titleArea_EL: HTMLDivElement = document.querySelector('div.cb-title');
         const calcType_EL: NodeList = document.querySelectorAll('div[class^="ct-"]');
         let calcType = localStorage.getItem('calculator');
         (calcType === undefined || calcType === null) ? calcType = '0' : calcType;
         if (calcType) {
             switch (Number(calcType)) {
                 case 0:
-                    //titleArea_EL.textContent = 'Kalkulator podstawowy';
                     for (let i: number = 0; i < calcType_EL.length; i++) {
                         if (i === Number(calcType)) {
                             this.clcType_EL = calcType_EL[i] as HTMLDivElement;
@@ -161,7 +136,6 @@ const LocalStorage_ALL: {
                     }
                     break;
                 case 1:
-                    //titleArea_EL.textContent = 'Logika matematyczna';
                     for (let i: number = 0; i < calcType_EL.length; i++) {
                         if (i === Number(calcType)) {
                             this.clcType_EL = calcType_EL[i] as HTMLDivElement;
@@ -173,19 +147,6 @@ const LocalStorage_ALL: {
                     }
                     break;
                 case 2:
-                    //titleArea_EL.textContent = 'Algorytm Euklidesa';
-                    for (let i: number = 0; i < calcType_EL.length; i++) {
-                        if (i === Number(calcType)) {
-                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
-                            this.clcType_EL.style.display = 'block';
-                        } else {
-                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
-                            this.clcType_EL.style.display = 'none';
-                        }
-                    }
-                    break;
-                case 3:
-                    //titleArea_EL.textContent = 'NWD NWW Faktoryzacja';
                     for (let i: number = 0; i < calcType_EL.length; i++) {
                         if (i === Number(calcType)) {
                             this.clcType_EL = calcType_EL[i] as HTMLDivElement;
@@ -205,19 +166,83 @@ LocalStorage_ALL.setPageOpenCalc_AEL();
 
 
 
-const Calculator_Basic_FUNCTIONS: {
-    //
-} = {
-    //
-}
-
-
-
 const Calculator_MathLogic_FUNCTIONS: {
-    //
+    setButtons_AEL: Function,
+    bt_EVT: EventTarget,
+    bt_DIV: HTMLDivElement,
+    bt_ID: string,
+    value: string,
+    screen_INFO: HTMLDivElement,
+    screen_VALUE: HTMLDivElement,
+    operation_EVA: Function,
+    operation_TAU: Function,
+    operation_DEL: Function,
+    operation_AC: Function,
+    operation_SignValue: Function,
+    operation_Sign: Function,
 } = {
-    //
+    bt_EVT: undefined,
+    bt_DIV: null,
+    bt_ID: "",
+    value: "0",
+    screen_INFO:  document.querySelector('.ct-logic > .screen > .screen-position > .screen-hanger > .info'),
+    screen_VALUE: document.querySelector('.ct-logic > .screen > .screen-position > .screen-hanger > .value'),
+    setButtons_AEL(): void {
+        const button_COLL: HTMLCollection = document.querySelector('.ct-logic > .buttons-group').children;
+        for (let i: number = 0; i < button_COLL.length; i++) {
+            button_COLL[i].addEventListener("click", (e) => {
+                this.bt_EVT = e.currentTarget;
+                this.bt_DIV = this.bt_EVT as HTMLDivElement;
+                this.bt_ID = this.bt_DIV.id;
+                switch(this.bt_ID) {
+                    case "EVA":
+                        this.operation_EVA(this.bt_ID);  // OK
+                        break;
+                    case "TAU":
+                        this.operation_TAU(this.bt_ID);  // OK
+                        break;
+                    case "DEL":
+                        this.operation_DEL(this.bt_ID);  // OK
+                        break;
+                    case "AC":
+                        this.operation_AC(this.bt_ID);  // OK
+                        break;
+                    case "p01":
+                        this.operation_SignValue(this.bt_ID);  // OK
+                        break;
+                    case "q01":
+                        this.operation_SignValue(this.bt_ID);  // OK
+                        break;
+                    case "r01":
+                        this.operation_SignValue(this.bt_ID);  // OK
+                        break;
+                    default:  // p, q, r, ~, /\, \/, =>, <=>, |, (, )
+                        this.operation_Sign(this.bt_ID);  // OK
+                        break;
+                }
+            }, false);
+        }
+    },
+    operation_EVA(id: number): void {
+        console.log(id);
+    },
+    operation_TAU(id: number): void {
+        console.log(id);
+    },
+    operation_DEL(id: number): void {
+        console.log(id);
+    },
+    operation_AC(id: number): void {
+        console.log(id);
+    },
+    operation_SignValue(id: number): void {
+        console.log(id);
+    },
+    operation_Sign(id: number): void {
+        console.log(id);
+    },
 }
+Calculator_MathLogic_FUNCTIONS.setButtons_AEL();
 
 
 
@@ -227,7 +252,6 @@ const Calculator_Euklides_FUNCTIONS: {
     bt_DIV: HTMLDivElement,
     bt_ID: string,
     value: string,
-    result: string,
     screen_INFO: HTMLDivElement,
     screen_VALUE: HTMLDivElement,
     operation_EUK: Function,
@@ -240,7 +264,6 @@ const Calculator_Euklides_FUNCTIONS: {
     bt_DIV: null,
     bt_ID: "",
     value: "0",
-    result: "",
     screen_INFO:  document.querySelector('.ct-euklides > .screen > .screen-position > .screen-hanger > .info'),
     screen_VALUE: document.querySelector('.ct-euklides > .screen > .screen-position > .screen-hanger > .value'),
     setButtons_AEL(): void {
@@ -306,7 +329,6 @@ const Calculator_Euklides_FUNCTIONS: {
                 return;
             }
         }
-        //alert("Wynik: " + this.result);
     },
     operation_DEL(id: string): void {
         if (this.value[this.value.length - 1] === " ") {
