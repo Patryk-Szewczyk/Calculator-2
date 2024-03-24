@@ -202,7 +202,6 @@ const LocalStorage_ALL: {
 }
 LocalStorage_ALL.getLocalStorage();
 LocalStorage_ALL.setPageOpenCalc_AEL();
-//console.log(LocalStorage_ALL.localStorage_AR);
 
 
 
@@ -223,10 +222,133 @@ const Calculator_MathLogic_FUNCTIONS: {
 
 
 const Calculator_Euklides_FUNCTIONS: {
-    //
+    setButtons_AEL: Function,
+    bt_EVT: EventTarget,
+    bt_DIV: HTMLDivElement,
+    bt_ID: string,
+    value: string,
+    result: string,
+    screen_INFO: HTMLDivElement,
+    screen_VALUE: HTMLDivElement,
+    operation_EUK: Function,
+    operation_DEL: Function,
+    operation_AC: Function,
+    operation_Comma: Function,
+    operation_Number: Function
 } = {
-    //
+    bt_EVT: undefined,
+    bt_DIV: null,
+    bt_ID: "",
+    value: "0",
+    result: "",
+    screen_INFO:  document.querySelector('.ct-euklides > .screen > .screen-position > .screen-hanger > .info'),
+    screen_VALUE: document.querySelector('.ct-euklides > .screen > .screen-position > .screen-hanger > .value'),
+    setButtons_AEL(): void {
+        const button_COLL: HTMLCollection = document.querySelector('.ct-euklides > .buttons-group').children;
+        for (let i: number = 0; i < button_COLL.length; i++) {
+            button_COLL[i].addEventListener("click", (e) => {
+                this.bt_EVT = e.currentTarget;
+                this.bt_DIV = this.bt_EVT as HTMLDivElement;
+                this.bt_ID = this.bt_DIV.id;
+                switch(this.bt_ID) {
+                    case "=":
+                        this.operation_EUK(this.bt_ID);  // OK
+                        break;
+                    case "DEL":
+                        this.operation_DEL(this.bt_ID);  // OK
+                        break;
+                    case "AC":
+                        this.operation_AC(this.bt_ID);  // OK
+                        break;
+                    case ",":
+                        this.operation_Comma(this.bt_ID);  // OK
+                        break;
+                    default:
+                        this.operation_Number(this.bt_ID);  // OK
+                        break;
+                }
+            }, false);
+        }
+    },
+    operation_EUK(id: string): void {
+        // Walidacja poprawności wpisanych danych:
+        let baseNum_AR: number[] = this.value.split(", ");
+        if (baseNum_AR.length !== 2) {
+            if (this.value[this.value.length - 1] === " ") {
+                this.screen_INFO.textContent = "Błąd! Nie wolno zostawić pustego pola";
+            } else {
+                this.screen_INFO.textContent = "Błąd! Wymagana ilość liczb wynosi: 2";
+            }
+            return;
+        } else {
+            if (this.value[this.value.length - 1] === " ") {
+                this.screen_INFO.textContent = "Błąd! Nie wolno zostawić pustego pola";
+                return;
+            }
+        }
+        // Algorytm euklidesa:
+        let a_LEFT: number = baseNum_AR[0], b_RIGHT: number = baseNum_AR[1];
+        while(a_LEFT !== b_RIGHT) {
+            if (a_LEFT > b_RIGHT) {
+                a_LEFT = a_LEFT - b_RIGHT;
+            } else if (a_LEFT < b_RIGHT) {
+                b_RIGHT = b_RIGHT - a_LEFT;
+            }
+            // Dodatkowy przypadek: Kiedy liczby są równe - jest potrebny w kontekście poniższego dodatkowego przypadku:
+            if (a_LEFT === b_RIGHT) {
+                this.value = String(a_LEFT);
+                this.screen_VALUE.textContent = this.value;
+            }
+            // Dodatkowy przypadek: Kiedy liczby "a" i "b" mają ujemne wartości: (zapobiegnięcie nieskończonej teracji, kiedy liczby nigdy nie będą sobie równe)
+            if (a_LEFT < 0 && b_RIGHT < 0) {
+                this.value = "1";
+                this.screen_VALUE.textContent = this.value;
+                return;
+            }
+        }
+        //alert("Wynik: " + this.result);
+    },
+    operation_DEL(id: string): void {
+        if (this.value[this.value.length - 1] === " ") {
+            this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 2));
+        } else {
+            this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 1));
+        }
+        if (this.value.length === 0) {
+            this.value = "0";
+        }
+        this.screen_VALUE.textContent = this.value;
+        this.screen_INFO.textContent = "Skrócono wartość";
+    },
+    operation_AC(id: string): void {
+        this.value = "0";
+        this.screen_VALUE.textContent = this.value;
+        this.screen_INFO.textContent = "Skasowano wartość";
+    },
+    operation_Comma(id: string): void {
+        if (this.value[this.value.length - 1] !== " ") {
+            this.value += ", ";
+            this.screen_INFO.textContent = "Utworzono pole na nową liczbę";
+            this.screen_VALUE.textContent = this.value;
+        } else {
+            this.screen_INFO.textContent = "Błąd! Nie wolno zostawić pustego pola";
+            return;
+        }
+    },
+    operation_Number(numKey: string): void {
+        // Jeżeli długośc wyrazu wynosi 1 i ma on wartośc 0, skasuj 0, a wstaw cyfrę, w przeciwnym razie dodaj cyfrę do wyrażenia:
+        if (this.screen_INFO.textContent[this.screen_INFO.textContent.length - 1] !== ":") {
+            if (this.value.length === 1 && this.value === "0") {
+                this.value = numKey;
+            } else if (this.value.length > 1 || this.value !== "0") {
+                this.value += numKey;
+            }
+            this.screen_VALUE.textContent = this.value;
+            this.screen_INFO.textContent = "Wpisano cyfrę";
+        }
+    }
 }
+Calculator_Euklides_FUNCTIONS.setButtons_AEL();
 
 
 
@@ -274,7 +396,6 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
                 this.bt_EVT = e.currentTarget;
                 this.bt_DIV = this.bt_EVT as HTMLDivElement;
                 this.bt_ID = this.bt_DIV.id;
-                //console.log(this.bt_ID);
                 switch(this.bt_ID) {
                     case "NWD":
                         this.operation_NWD();  // OK
@@ -553,8 +674,13 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
             this.value = "0";
             this.screen_INFO.textContent = "Wartość została skasowana";
         } else {
-            this.value += ", ";
-            this.screen_INFO.textContent = "Utworzono pole na nową liczbę";
+            if (this.value[this.value.length - 1] !== " ") {
+                this.value += ", ";
+                this.screen_INFO.textContent = "Utworzono pole na nową liczbę";
+            } else {
+                this.screen_INFO.textContent = "Błąd! Nie wolno zostawić pustego pola";
+                return;
+            }
         }
         this.screen_VALUE.textContent = this.value;
     },
