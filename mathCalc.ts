@@ -255,7 +255,7 @@ const Calculator_MathLogic_FUNCTIONS: {
     },
     operation_DEL(): void {
         // Przywracanie wartości zmiennych "available..." do poprzedniego stanu:
-        let erasedVal = this.value[this.value.length - 1];
+        let erasedVal: number = this.value.charCodeAt(this.value.length - 1);
         console.log(erasedVal);
         // Skracanie wyrażenia:
         if (this.value[this.value.length - 1] === " ") {
@@ -283,15 +283,14 @@ const Calculator_MathLogic_FUNCTIONS: {
     },
     operation_Sign(signKey: string): void {
         // Walidacja wyprwadzanych danych: (aby porwstało poprawne wyrażenie do EVA i TAU)
-        console.log(this.availableNUM_BRACKET);
+        //console.log(signKey.charCodeAt(0) === 172);
         if (this.value === " ") {
             if (signKey === "p" || signKey === "q" || signKey === "r") {
                 if (this.availableNUM_PQR === 1) {
                     this.value = signKey;
                     this.availableNUM_PQR--;
                     this.availableNUM_CONJ = 1;
-                    //console.log(signKey);
-                    // ONLY FIRST:
+                    // ONLY EMPTY VAL:
                     this.availableNUM_NOT = 0;
                     this.availableNUM_BRACKET = 0;
                 }
@@ -300,24 +299,13 @@ const Calculator_MathLogic_FUNCTIONS: {
                     this.value = signKey;
                     this.availableNUM_NOT--;
                     this.availableNUM_PQR = 1;
-                    //console.log(signKey);
-                    // ONLY FIRST:
-                    //is.availableNUM_PQR--;
-                    //this.availableNUM_BRACKET_LEFT = 0;
                 }
             }
             else if (signKey === "(") {
-                //if (this.availableNUM_BRACKET > 0) {
                     this.value = signKey;
                     this.availableNUM_BRACKET++;
                     this.availableNUM_PQR = 1;
                     this.availableNUM_CONJ = 1;
-                    console.log(this.availableNUM_BRACKET);
-                    //console.log(signKey);
-                    // ONLY FIRST:
-                    //this.availableNUM_BRACKET_NOT = 1;
-                    //this.availableNUM_BRACKET_LEFT = 0;
-                //}
             }
         } else {
             if (signKey === "p" || signKey === "q" || signKey === "r") {
@@ -326,60 +314,51 @@ const Calculator_MathLogic_FUNCTIONS: {
                     this.availableNUM_PQR--;
                     this.availableNUM_CONJ = 1;
                     this.availableNUM_NOT = 0;
-                    /*if (this.availableNUM_BRACKET_LEFT > 0) {
-                        this.availableNUM_BRACKET_RIGHT = 1;
-                    }
-                    if (this.availableNUM_BRACKET_RIGHT > 0) {
-                        this.availableNUM_BRACKET_LEFT = 1;
-                    }*/
-                    //console.log(signKey);
                 }
             } else if (signKey.charCodeAt(0) === 172) {
                 if (this.availableNUM_NOT === 1) {
                     this.value += signKey;
                     this.availableNUM_NOT--;
                     this.availableNUM_PQR = 1;
-                    //console.log(signKey);
                 }
             } else if (signKey.charCodeAt(0) === 8896 || signKey.charCodeAt(0) === 8897 || signKey.charCodeAt(0) === 8658 || signKey.charCodeAt(0) === 8660 || signKey === "|") {
                 if (this.availableNUM_CONJ === 1) {
-                    this.value += " " + signKey + " ";
-                    this.availableNUM_CONJ--;
-                    this.availableNUM_PQR = 1;
-                    this.availableNUM_BRACKET_LEFT = 1;
-                    //console.log(signKey);
+                    if (this.value.length === 1) {
+                            this.value += " " + signKey + " ";
+                            this.availableNUM_CONJ--;
+                            this.availableNUM_PQR = 1;
+                            this.availableNUM_BRACKET_LEFT = 1;
+                    } else if (this.value.length > 1) {
+                        if (this.value[this.value.length - 2] === "(" || this.value.charCodeAt(this.value.length - 2) === 172) {
+                            this.value += " " + signKey + " ";
+                            this.availableNUM_CONJ--;
+                            this.availableNUM_PQR = 1;
+                            this.availableNUM_BRACKET_LEFT = 1;
+                        }
+                    }
                 }
             } else if (signKey === "(") {
                 if ((this.value[this.value.length - 1] !== ")" && this.value[this.value.length - 1] !== "p") || (this.value[this.value.length - 1] !== ")" && this.value[this.value.length - 1] !== "q") || (this.value[this.value.length - 1] !== ")" && this.value[this.value.length - 1] !== "r")) {
-                    //if (this.availableNUM_BRACKET > 0) {
                     if (this.value[this.value.length - 1] !== "p" && this.value[this.value.length - 1] !== "q" && this.value[this.value.length - 1] !== "r") {
                         this.value += signKey;
                         this.availableNUM_BRACKET++;
                         this.availableNUM_PQR = 1;
                         this.availableNUM_CONJ = 1;
                         this.availableNUM_NOT = 1;
-                        //console.log(signKey);
-                        //console.log(this.availableNUM_BRACKET);
                     }
-                    //}
                 }
             } else if (signKey === ")") {
-                /*if ((this.value[this.value.length - 1] !== "(" && this.value[this.value.length - 1]  === "p") || (this.value[this.value.length - 1] !== "(" && this.value[this.value.length - 1]  === "q") || (this.value[this.value.length - 1] !== "(" && this.value[this.value.length - 1]  === "r") || (this.value[this.value.length - 1] !== "(" && this.value[this.value.length - 1]  === ")")) {
-                    */if ((this.value[this.value.length - 2] !== "(" && this.value[this.value.length - 1] !== "p") || (this.value[this.value.length - 2] !== "(" && this.value[this.value.length - 1] !== "q") || (this.value[this.value.length - 2] !== "(" && this.value[this.value.length - 1] !== "r")) {
-                        if (this.availableNUM_BRACKET > 0) {
-                            this.value += signKey;
-                            this.availableNUM_BRACKET--;
-                            this.availableNUM_CONJ = 1;
-                            this.availableNUM_NOT = 0;
-                            //console.log(signKey);
-                            //console.log(this.availableNUM_BRACKET);
-                        }
+                if ((this.value[this.value.length - 2] !== "(" && this.value[this.value.length - 1] !== "p") || (this.value[this.value.length - 2] !== "(" && this.value[this.value.length - 1] !== "q") || (this.value[this.value.length - 2] !== "(" && this.value[this.value.length - 1] !== "r")) {
+                    if (this.availableNUM_BRACKET > 0) {
+                        this.value += signKey;
+                        this.availableNUM_BRACKET--;
+                        this.availableNUM_CONJ = 1;
+                        this.availableNUM_NOT = 0;
                     }
-                //}*/
+                }
             }
         }
         this.screen_VALUE.textContent = this.value;
-        console.log(this.availableNUM_BRACKET);
     },
 }
 Calculator_MathLogic_FUNCTIONS.setButtons_AEL();
@@ -863,13 +842,3 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
     },
 }
 Calculator_NWD_NWW_Faction_FUNCTIONS.setButtons_AEL();
-
-
-
-// Błąd! Przy NWW nie można używać [,]
-// Błąd! Przy FAC nie można używać [,]
-// Błąd! Muszisz podać minimum 2 liczby   // NWD i NWW
-// [liczba] | NWD | Wynik:   // [liczba]
-// [liczba] | NWW | Wynik:   // [liczba]
-// [liczba] | FAC | Wynik:   // [liczby], ["liczba pierwsza"]
-// Błąd! Wprowadź poprawne dane
