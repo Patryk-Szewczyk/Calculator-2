@@ -42,42 +42,46 @@
                     <!--<div class="ctb-title">Kalkulator klasyczny</div>-->
                     <!--<div class="ct-classic"></div>-->
                     <div class="ct-logic">
-                        <div class="screen">
+                        <div class="screen screen_EVA" id="screen_TRANSFORM">
                             <div class="screen-position">
                                 <div class="screen-hanger">
                                     <div class="info">Logika matematyczna</div>
                                 </div>
                             </div>
-                            <div class="screen-position">
+                            <div class="screen-position screen-position_EVA" id="screen-position-1_TRANSFORM">
                                 <div class="screen-hanger">
                                     <div class="value">0</div>
                                 </div>
                             </div>
-                            <div class="screen-position">
-                                <div class="screen-hanger">
-                                    <div class="info-tau">
-                                        0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
-                                        0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
-                                        0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
-                                        0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
-                                        0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
-                                        0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
-                                        0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
-                                        0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
-                                        0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
-                                        0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
-                                        0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
-                                        0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
-                                        0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
-                                        0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
-                                        0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
-                                        0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
-                                        0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
-                                    </div>
+                            <div class="screen-position screen-position_EVA" id="screen-position-2_TRANSFORM">
+                                <div class="info-tau">
+                                    <!--0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>
+                                    0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe0e e e eeqeq eqeqe qeqeq eqeqeqe qeqeqe qeqeqe qeqeq eqe<br>-->
                                 </div>
                             </div>
                         </div>
-                        <div class="buttons-group">
+                        <div class="buttons-group buttons-group_EVA" id="buttons-group_TRANSFORM">
                             <div class="item" id="("><div></div>(</div>
                             <div class="item" id=")"><div></div>)</div>
                             <div class="item" id="p01"><div></div>p <sub>0/1</sub></div>
@@ -88,12 +92,12 @@
                             <div class="item" id="q"><div></div>q</div>
                             <div class="item" id="r"><div></div>r</div>
                             <div class="item" id="TAU"><div></div>TAU</div>
-                            <div class="item" id="~"><div></div>&#172;</div>
-                            <div class="item" id="/\"><div></div>&#8896;</div>
-                            <div class="item" id="\/"><div></div>&#8897;</div>
+                            <div class="item" id="&#172;"><div></div>&#172;</div>
+                            <div class="item" id="&#8896;"><div></div>&#8896;</div>
+                            <div class="item" id="&#8897;"><div></div>&#8897;</div>
                             <div class="item" id="BACK"><div></div>BACK</div>
-                            <div class="item" id="=>"><div></div>&#8658;</div>
-                            <div class="item" id="="><div></div>&#8660;</div>
+                            <div class="item" id="&#8658;"><div></div>&#8658;</div>
+                            <div class="item" id="&#8660;"><div></div>&#8660;</div>
                             <div class="item" id="|"><div></div>|</div>
                             <div class="item" id="AC"><div></div>AC</div>
                         </div>
