@@ -172,6 +172,10 @@ const Calculator_MathLogic_FUNCTIONS: {
     bt_DIV: HTMLDivElement,
     bt_ID: string,
     value: string,
+    screen_EL: HTMLElement,
+    screen_POS_2: HTMLElement,
+    screen_POS_3: HTMLElement,
+    butonGroup_EL: HTMLElement,
     screen_INFO: HTMLDivElement,
     screen_VALUE: HTMLDivElement,
     operation_EVA: Function,
@@ -185,6 +189,10 @@ const Calculator_MathLogic_FUNCTIONS: {
     bt_DIV: null,
     bt_ID: "",
     value: "0",
+    screen_EL: document.getElementById('screen_TRANSFORM'),
+    screen_POS_2: document.getElementById('screen-position-1_TRANSFORM'),
+    screen_POS_3: document.getElementById('screen-position-2_TRANSFORM'),
+    butonGroup_EL: document.getElementById('buttons-group_TRANSFORM'),
     screen_INFO:  document.querySelector('.ct-logic > .screen > .screen-position > .screen-hanger > .info'),
     screen_VALUE: document.querySelector('.ct-logic > .screen > .screen-position > .screen-hanger > .value'),
     setButtons_AEL(): void {
@@ -224,10 +232,18 @@ const Calculator_MathLogic_FUNCTIONS: {
         }
     },
     operation_EVA(id: number): void {
-        console.log(id);
+        this.screen_EL.classList.replace('screen_TAU', 'screen_EVA');
+        this.screen_POS_2.classList.replace('screen-position_TAU', 'screen-position_EVA');
+        this.screen_POS_3.classList.replace('screen-position_TAU', 'screen-position_EVA');
+        this.butonGroup_EL.classList.replace('buttons-group_TAU', 'buttons-group_EVA');
+        this.screen_INFO.textContent = "EVA | [wyrażenie] | Wynik:";
     },
     operation_TAU(id: number): void {
-        console.log(id);
+        this.screen_EL.classList.replace('screen_EVA', 'screen_TAU');
+        this.screen_POS_2.classList.replace('screen-position_EVA', 'screen-position_TAU');
+        this.screen_POS_3.classList.replace('screen-position_EVA', 'screen-position_TAU');
+        this.butonGroup_EL.classList.replace('buttons-group_EVA', 'buttons-group_TAU');
+        this.screen_INFO.textContent = "TAU | [wyrażenie] | Wynik:";
     },
     operation_DEL(id: number): void {
         console.log(id);
