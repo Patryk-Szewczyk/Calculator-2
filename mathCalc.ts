@@ -1,877 +1,555 @@
-const Layout_ALL: {
-    setAppBody_Height_AEL: Function,
-} = {
-    setAppBody_Height_AEL(): void {
-        const appBody_EL: HTMLDivElement = document.querySelector('div.app-body');
-        ['load', 'resize'].forEach((ev) => {
-            addEventListener(ev, () => {
-                appBody_EL.style.height = window.innerHeight + 'px';
-            }, false);
-        });
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+:root {
+    --bg-veryLightBlue: hsl(219, 54%, 92%);   /*OLD: hsl(219, 54%, 90%)*/
+    --bg-lightBlue: hsl(222, 69%, 87%);
+    --bg-dark: rgb(77,77,77);
+    --bg-lightDark: rgb(50,50,50);
+    --dark-font: hsl(0, 0%, 12%);
+}
+
+.app-body {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: var(--bg-lightBlue);
+}
+
+.app-mobile, .app-desktop {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+@media only screen and (min-width: 0px) {  /* MOBILE */
+    .app-mobile {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .app-desktop {
+        display: none;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
     }
 }
-Layout_ALL.setAppBody_Height_AEL();
 
-
-
-const Layout_DESKTOP: {
-    setMenuButton_AEL: Function,
-    setScrollBarPosition: Function  // Ustawienie pozycji scrollbaru na właściwym miejscu (ekran kalkulatora)
-} = {
-    setMenuButton_AEL(): void {
-        const menuButton_EL: HTMLDivElement = document.querySelector('svg.dsk-menu-arrow');
-        let isShow: boolean = false;
-        menuButton_EL.addEventListener('click', () => {
-            const sidebar: HTMLElement = document.querySelector('nav.dsk-nav-menu');
-            switch (isShow){
-                case false: {
-                    isShow = true;
-                    setTimeout(() => {
-                        sidebar.style.left = '0px';
-                        menuButton_EL.style.transform = 'rotateZ(0deg)';
-                        sidebar.style.transitionDuration = '0.35s';
-                    }, 1);
-                } break;
-                case true: {
-                    isShow = false;
-                    setTimeout(() => {
-                        sidebar.style.left = '-300px';
-                        menuButton_EL.style.transform = 'rotateZ(180deg)';
-                        sidebar.style.transitionDuration = '0.35s';
-                    }, 1);
-                } break;
-            }
-        }, false);
-    },
-    setScrollBarPosition() {
-        window.addEventListener("DOMContentLoaded", () => {
-            const container: NodeListOf<Element> = document.querySelectorAll('.ct-refactoring > .screen > .screen-position > .screen-hanger > .info, .ct-refactoring > .screen > .screen-position > .screen-hanger > .value');
-            for (let i: number = 0; i < container.length; i++) {
-                container[i].scrollLeft = container[i].scrollWidth;
-            }
-        }, false);
+@media only screen and (min-width: 900px) {  /* DESKTOP */  /*OLD: 1120*/
+    .app-mobile {
+        display: none;
     }
-}
-Layout_DESKTOP.setMenuButton_AEL();
-Layout_DESKTOP.setScrollBarPosition();
-
-
-
-const LocalStorage_ALL: {
-    setPageOpenCalc_AEL: Function,
-    clcBt_EVT: EventTarget,
-    clcBt_DIV: HTMLDivElement,
-    clcBt_ID: number,
-    clcType_EL: HTMLDivElement,
-    getLocalStorage: Function
-} = {
-    clcBt_EVT: undefined,
-    clcBt_DIV: null,
-    clcBt_ID: 0,
-    clcType_EL: null,
-    setPageOpenCalc_AEL(): void {
-        const calcButton_COLL: HTMLCollection = document.querySelector('div.nav-button-box').children;
-        const calcType_EL: NodeList = document.querySelectorAll('div[class^="ct-"]');
-        for (let i: number = 0; i < calcButton_COLL.length; i++){
-            calcButton_COLL[i].addEventListener('click', (e) => {
-                this.clcBt_EVT = e.currentTarget;
-                this.clcBt_DIV = this.clcBt_EVT as HTMLDivElement;
-                this.clcBt_ID = Number(this.clcBt_DIV.id.slice(4, 6));
-                switch (this.clcBt_ID) {
-                    case 0:
-                        for (let i: number = 0; i < calcType_EL.length; i++) {
-                            if (i === this.clcBt_ID) {
-                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
-                                this.clcType_EL.style.display = 'block';
-                            } else {
-                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
-                                this.clcType_EL.style.display = 'none';
-                            }
-                        }
-                        localStorage.setItem('calculator', String(this.clcBt_ID));
-                        break;
-                    case 1:
-                        for (let i: number = 0; i < calcType_EL.length; i++) {
-                            if (i === this.clcBt_ID) {
-                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
-                                this.clcType_EL.style.display = 'block';
-                            } else {
-                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
-                                this.clcType_EL.style.display = 'none';
-                            }
-                        }
-                        localStorage.setItem('calculator', String(this.clcBt_ID))
-                        break;
-                    case 2:
-                        for (let i: number = 0; i < calcType_EL.length; i++) {
-                            if (i === this.clcBt_ID) {
-                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
-                                this.clcType_EL.style.display = 'block';
-                            } else {
-                                this.clcType_EL = calcType_EL[i] as HTMLDivElement;
-                                this.clcType_EL.style.display = 'none';
-                            }
-                        }
-                        localStorage.setItem('calculator', String(this.clcBt_ID));
-                        break;
-                }
-            }, false);
-        }
-    },
-    getLocalStorage(): void {
-        const calcType_EL: NodeList = document.querySelectorAll('div[class^="ct-"]');
-        let calcType = localStorage.getItem('calculator');
-        (calcType === undefined || calcType === null) ? calcType = '0' : calcType;
-        if (calcType) {
-            switch (Number(calcType)) {
-                case 0:
-                    for (let i: number = 0; i < calcType_EL.length; i++) {
-                        if (i === Number(calcType)) {
-                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
-                            this.clcType_EL.style.display = 'block';
-                        } else {
-                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
-                            this.clcType_EL.style.display = 'none';
-                        }
-                    }
-                    break;
-                case 1:
-                    for (let i: number = 0; i < calcType_EL.length; i++) {
-                        if (i === Number(calcType)) {
-                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
-                            this.clcType_EL.style.display = 'block';
-                        } else {
-                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
-                            this.clcType_EL.style.display = 'none';
-                        }
-                    }
-                    break;
-                case 2:
-                    for (let i: number = 0; i < calcType_EL.length; i++) {
-                        if (i === Number(calcType)) {
-                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
-                            this.clcType_EL.style.display = 'block';
-                        } else {
-                            this.clcType_EL = calcType_EL[i] as HTMLDivElement;
-                            this.clcType_EL.style.display = 'none';
-                        }
-                    }
-                    break;
-            }
-        }
+    .app-desktop {
+        display: flex;
     }
-}
-LocalStorage_ALL.getLocalStorage();
-LocalStorage_ALL.setPageOpenCalc_AEL();
-
-
-
-const Calculator_MathLogic_FUNCTIONS: {
-    setButtons_AEL: Function,
-    bt_EVT: EventTarget,
-    bt_DIV: HTMLDivElement,
-    bt_ID: string,
-    value: string,
-    availableNUM_PQR: number,
-    availableNUM_BRACKET: number,
-    availableNUM_NOT: number,
-    availableNUM_CONJ: number,
-    availableNUM_CONJ_COUNT: number,
-    screen_EL: HTMLElement,
-    screen_POS_2: HTMLElement,
-    screen_POS_3: HTMLElement,
-    butonGroup_EL: HTMLElement,
-    screen_INFO: HTMLDivElement,
-    screen_VALUE: HTMLDivElement,
-    operation_EVA: Function,
-    operation_TAU: Function,
-    operation_DEL: Function,
-    operation_AC: Function,
-    operation_SignValue: Function,
-    operation_Sign: Function,
-} = {
-    bt_EVT: undefined,
-    bt_DIV: null,
-    bt_ID: "",
-    value: " ",
-    availableNUM_PQR: 1,
-    availableNUM_BRACKET: 0,
-    availableNUM_NOT: 1,
-    availableNUM_CONJ: 0,
-    availableNUM_CONJ_COUNT: 1,
-    screen_EL: document.getElementById('screen_TRANSFORM'),
-    screen_POS_2: document.getElementById('screen-position-1_TRANSFORM'),
-    screen_POS_3: document.getElementById('screen-position-2_TRANSFORM'),
-    butonGroup_EL: document.getElementById('buttons-group_TRANSFORM'),
-    screen_INFO:  document.querySelector('.ct-logic > .screen > .screen-position > .screen-hanger > .info'),
-    screen_VALUE: document.querySelector('.ct-logic > .screen > .screen-position > .screen-hanger > .value'),
-    setButtons_AEL(): void {
-        const button_COLL: HTMLCollection = document.querySelector('.ct-logic > .buttons-group').children;
-        for (let i: number = 0; i < button_COLL.length; i++) {
-            button_COLL[i].addEventListener("click", (e) => {
-                this.bt_EVT = e.currentTarget;
-                this.bt_DIV = this.bt_EVT as HTMLDivElement;
-                this.bt_ID = this.bt_DIV.id;
-                switch(this.bt_ID) {
-                    case "EVA":
-                        this.operation_EVA(this.bt_ID);  // OK
-                        break;
-                    case "TAU":
-                        this.operation_TAU(this.bt_ID);  // OK
-                        break;
-                    case "BACK":
-                        this.operation_DEL(this.bt_ID);  // OK
-                        break;
-                    case "AC":
-                        this.operation_AC(this.bt_ID);  // OK
-                        break;
-                    case "p01":
-                        this.operation_SignValue(this.bt_ID);  // OK
-                        break;
-                    case "q01":
-                        this.operation_SignValue(this.bt_ID);  // OK
-                        break;
-                    case "r01":
-                        this.operation_SignValue(this.bt_ID);  // OK
-                        break;
-                    default:  // p, q, r, ~, /\, \/, =>, <=>, |, (, )
-                        this.operation_Sign(this.bt_ID);  // OK
-                        break;
-                }
-            }, false);
+        nav {
+            width: 300px;
+            height: 100%;
+            position: absolute;
+            top: 0px;
+            left: -300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            /*background-image: linear-gradient(to right, rgb(62, 62, 62) 20%, rgb(83, 83, 83) 80%);*/
+            background-image: linear-gradient(to right, rgb(47, 93, 177) 20%, rgb(70, 116, 200) 80%);
+            box-shadow: 0px 0px 5px 1px black;
+            z-index: 2;
         }
-    },
-    operation_EVA(): void {
-        this.screen_EL.classList.replace('screen_TAU', 'screen_EVA');
-        this.screen_POS_2.classList.replace('screen-position_TAU', 'screen-position_EVA');
-        this.screen_POS_3.classList.replace('screen-position_TAU', 'screen-position_EVA');
-        this.butonGroup_EL.classList.replace('buttons-group_TAU', 'buttons-group_EVA');
-        this.screen_INFO.textContent = "EVA | [wyrażenie] | Wynik:";
-    },
-    operation_TAU(): void {
-        this.screen_EL.classList.replace('screen_EVA', 'screen_TAU');
-        this.screen_POS_2.classList.replace('screen-position_EVA', 'screen-position_TAU');
-        this.screen_POS_3.classList.replace('screen-position_EVA', 'screen-position_TAU');
-        this.butonGroup_EL.classList.replace('buttons-group_EVA', 'buttons-group_TAU');
-        this.screen_INFO.textContent = "TAU | [wyrażenie] | Wynik:";
-    },
-    operation_DEL(): void {
-        // Skracanie wyrażenia:
-        let erasedVal: number = undefined;
-        if (this.value[this.value.length - 1] === " ") {
-            erasedVal = this.value.charCodeAt(this.value.length - 2);
-            this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 3));
-        } else {
-            erasedVal = this.value.charCodeAt(this.value.length - 1);
-            this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 1));
-        }
-        console.log(erasedVal);
-        // Przywracanie wartości zmiennych "available..." do poprzedniego stanu: (odwrotność modyfikacji właściwości z metody "operation_Sign")
-        if (erasedVal === 112 || erasedVal === 113 || erasedVal === 114) {  // zmienne
-            console.log("zmienna");
-        } else if (erasedVal === 172) {  // negacja
-            console.log("negacja");
-        } else if (erasedVal === 124 || erasedVal === 8897 || erasedVal === 8896 || erasedVal === 8658 || erasedVal === 8660) {  // spójniki
-            console.log("spójnik");
-        } else if (erasedVal === 40 || erasedVal === 41) {  // nawiasy
-            console.log("nawias");
-        }
-
-
-        if (this.value.length === 0) {
-            this.value = " ";
-            this.screen_VALUE.textContent = this.value;
-            this.availableNUM_PQR = 1;
-            this.availableNUM_NOT = 1;
-            this.availableNUM_CONJ = 0;
-            this.availableNUM_BRACKET = 0;
-            this.availableNUM_CONJ_COUNT = 1;
-        }
-        this.screen_VALUE.textContent = this.value;
-        this.screen_INFO.textContent = "Skrócono wartość";
-    },
-    operation_AC(): void {
-        console.clear();
-        this.value = " ";
-        this.screen_VALUE.textContent = this.value;
-        this.screen_INFO.textContent = "Skasowano wartość";
-        this.availableNUM_PQR = 1;
-        this.availableNUM_NOT = 1;
-        this.availableNUM_CONJ = 0;
-        this.availableNUM_BRACKET = 0;
-        this.availableNUM_CONJ_COUNT = 1;
-    },
-    operation_SignValue(): void {
-        //
-    },
-    operation_Sign(signKey: string): void {
-        // Walidacja wyprwadzanych danych: (aby porwstało poprawne wyrażenie do EVA i TAU)
-        //console.log(signKey.charCodeAt(0) === 172);
-        if (this.value === " ") {
-            if (signKey === "p" || signKey === "q" || signKey === "r") {
-                if (this.availableNUM_PQR === 1) {
-                    this.value = signKey;
-                    this.availableNUM_PQR = 0;
-                    this.availableNUM_CONJ = 1;
-                    // ONLY EMPTY VAL:
-                    this.availableNUM_NOT = 0;
-                    this.availableNUM_BRACKET = 0;
-                }
-            } else if (signKey.charCodeAt(0) === 172) {   // NOT
-                if (this.availableNUM_NOT === 1) {
-                    this.value = signKey;
-                    this.availableNUM_NOT = 0;
-                    this.availableNUM_PQR = 1;
-                }
+            .dsk-menu-button-box {
+                width: 60px;
+                height: 60px;
+                position: absolute;
+                top: 30px;
+                right: -60px;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                background-color: rgb(70, 116, 200);
+                border-radius: 0px 12px 12px 0px;
+                box-shadow: 0px 0px 5px 1px black;
+                border: 0px solid red;  /*TEST*/
             }
-            else if (signKey === "(") {
-                    this.value = signKey;
-                    this.availableNUM_BRACKET++;
-                    this.availableNUM_CONJ_COUNT++;
-                    this.availableNUM_PQR = 1;
-                    this.availableNUM_CONJ = 1;
+            .dsk-menu-button-box::before {
+                content: '';
+                width: 30px;
+                height: 30px;
+                position: absolute;
+                top: -30px;
+                left: 0px;
+                background-color: transparent;
+                border-radius: 0px 0px 0px 12px;
+                box-shadow: -6px 6px 0px 0px rgb(70, 116, 200);
             }
-        } else {
-            if (signKey === "p" || signKey === "q" || signKey === "r") {
-                if (this.availableNUM_PQR === 1) {
-                    this.value += signKey;
-                    this.availableNUM_PQR = 0;
-                    this.availableNUM_CONJ = 1;
-                    this.availableNUM_NOT = 0;
-                    this.availableNUM_CONJ_COUNT--;
+            .dsk-menu-button-box::after {
+                content: '';
+                width: 30px;
+                height: 30px;
+                position: absolute;
+                bottom: -30px;
+                left: 0px;
+                background-color: transparent;
+                border-radius: 12px 0px 0px 0px;
+                box-shadow: -6px -6px 0px 0px hsl(219, 54%, 53%);
+            }
+                .dsk-menu-button-box > .dsk-mbb-shadowhidder {
+                    position: absolute;
+                    top: auto;
+                    left: -7px;
+                    width: 10px;
+                    height: 100%;
+                    background-color: inherit;
+                    z-index: 1;
                 }
-            } else if (signKey.charCodeAt(0) === 172) {
-                if (this.availableNUM_NOT === 1) {
-                    this.value += signKey;
-                    this.availableNUM_NOT = 0;
-                    this.availableNUM_PQR = 1;
+                .dsk-menu-arrow {
+                    width: 35px;
+                    height: 35px;
+                    color: white;
+                    transform: rotateZ(180deg);
                 }
-            } else if (signKey.charCodeAt(0) === 8896 || signKey.charCodeAt(0) === 8897 || signKey.charCodeAt(0) === 8658 || signKey.charCodeAt(0) === 8660 || signKey === "|") {
-                if (this.availableNUM_CONJ === 1) {
-                    /*if (this.value.length === 1) {
-                            this.value += " " + signKey + " ";
-                            this.availableNUM_CONJ--;
-                            this.availableNUM_PQR = 1;
-                            this.availableNUM_BRACKET_LEFT = 1;
-                    } else if (this.value.length > 1) {*/  // NAPRAW TO: (id: (p => q) <=>)
-                        /*if ((this.value[this.value.length - 2] === "(" || this.value.charCodeAt(this.value.length - 2) === 172) || ( (this.value.charCodeAt(this.value.length - 3) !== 124 && this.value[0] == ")") || (this.value.charCodeAt(this.value.length - 3) !== 8897 && this.value[0] == ")") || (this.value.charCodeAt(this.value.length - 3) !== 8896 && this.value[0] == ")") || (this.value.charCodeAt(this.value.length - 3) !== 8658 && this.value[0] == ")") || (this.value.charCodeAt(this.value.length - 3) !== 8660 && this.value[0] == ")") )) {
-                            */
-                        if (this.availableNUM_CONJ_COUNT > 0) {
-                            if (this.value[this.value.length - 1] === ")" || this.value[this.value.length - 1] === "p" || this.value[this.value.length - 1] === "q"  || this.value[this.value.length - 1] === "r") {
-                                this.value += " " + signKey + " ";
-                                this.availableNUM_CONJ = 0;
-                                this.availableNUM_PQR = 1;
-                                //this.availableNUM_BRACKET_LEFT = 1;   // OSTATNIA ZMIANA - WZIĄŁEM TO W KOMENTARZ!!!
-                            }
-                        }
-                    //}
+                .dsk-menu-arrow:hover {
+                    cursor: pointer;
+                    background-color: hsl(219, 54%, 59%);
                 }
-            } else if (signKey === "(") {
-                if ((this.value[this.value.length - 1] !== ")" && this.value[this.value.length - 1] !== "p") || (this.value[this.value.length - 1] !== ")" && this.value[this.value.length - 1] !== "q") || (this.value[this.value.length - 1] !== ")" && this.value[this.value.length - 1] !== "r")) {
-                    if (this.value[this.value.length - 1] !== "p" && this.value[this.value.length - 1] !== "q" && this.value[this.value.length - 1] !== "r") {
-                        this.value += signKey;
-                        this.availableNUM_BRACKET++;
-                        this.availableNUM_CONJ_COUNT++;
-                        this.availableNUM_PQR = 1;
-                        this.availableNUM_CONJ = 1;
-                        this.availableNUM_NOT = 1;
+                .dsk-menu-arrow:active {
+                    background-color: hsl(219, 54%, 66%);
+                }
+            .title-box {
+                width: auto;
+                height: 120px;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                border: 0px solid greenyellow;  /*TEST*/
+            }
+                .title-prp {
+                    width: auto;
+                    height: auto;
+                    position: relative;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    align-items: center;
+                    background-color: inherit;
+                    color: white;
+                    font-family: 'Outfit', sans-serif;
+                    font-size: 45px;
+                    font-weight: 400;
+                    letter-spacing: 1px;
+                    border: 0px solid red;  /*TEST*/
+                }
+                    .t-value {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
                     }
-                }
-            } else if (signKey === ")") {
-                if ((this.value[this.value.length - 2] !== "(" && this.value[this.value.length - 1] !== "p") || (this.value[this.value.length - 2] !== "(" && this.value[this.value.length - 1] !== "q") || (this.value[this.value.length - 2] !== "(" && this.value[this.value.length - 1] !== "r")) {
-                    if (this.value.charCodeAt(this.value.length - 2) !== 124 && this.value.charCodeAt(this.value.length - 2) !== 8897 && this.value.charCodeAt(this.value.length - 2) !== 8896 && this.value.charCodeAt(this.value.length - 2) !== 8658 && this.value.charCodeAt(this.value.length - 2) !== 8660) {
-                        if (this.availableNUM_BRACKET > 0) {
-                            this.value += signKey;
-                            this.availableNUM_BRACKET--;
-                            this.availableNUM_CONJ_COUNT++;
-                            this.availableNUM_CONJ = 1;
-                            this.availableNUM_NOT = 0;
-                        }
+                    .t-value::selection {
+                        background-color: transparent;
                     }
+                    .t-value:hover {
+                        cursor: default;
+                    }
+            .nav-button-box {
+                width: 100%;
+                height: 400px;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                border: 0px solid red;  /*TEST*/
+            }
+                .nav-button-box div {
+                    width: 100%;
+                    position: relative;
+                    top: -12px;
+                    left: 0px;
+                    padding: 15px 30px 15px 30px;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: flex-start;
+                    align-items: center;
+                    background-color: inherit;
+                    color: white;
+                    /*font-family: 'Roboto', sans-serif;*/
+                    font-family: 'Outfit', sans-serif;
+                    font-size: 130%;
+                    font-weight: 400;
                 }
-            }
-        }
-        this.screen_VALUE.textContent = this.value;
-    },
-}
-Calculator_MathLogic_FUNCTIONS.setButtons_AEL();
-
-
-
-const Calculator_Euklides_FUNCTIONS: {
-    setButtons_AEL: Function,
-    bt_EVT: EventTarget,
-    bt_DIV: HTMLDivElement,
-    bt_ID: string,
-    value: string,
-    screen_INFO: HTMLDivElement,
-    screen_VALUE: HTMLDivElement,
-    operation_EUK: Function,
-    operation_DEL: Function,
-    operation_AC: Function,
-    operation_Comma: Function,
-    operation_Number: Function
-} = {
-    bt_EVT: undefined,
-    bt_DIV: null,
-    bt_ID: "",
-    value: "0",
-    screen_INFO:  document.querySelector('.ct-euklides > .screen > .screen-position > .screen-hanger > .info'),
-    screen_VALUE: document.querySelector('.ct-euklides > .screen > .screen-position > .screen-hanger > .value'),
-    setButtons_AEL(): void {
-        const button_COLL: HTMLCollection = document.querySelector('.ct-euklides > .buttons-group').children;
-        for (let i: number = 0; i < button_COLL.length; i++) {
-            button_COLL[i].addEventListener("click", (e) => {
-                this.bt_EVT = e.currentTarget;
-                this.bt_DIV = this.bt_EVT as HTMLDivElement;
-                this.bt_ID = this.bt_DIV.id;
-                switch(this.bt_ID) {
-                    case "=":
-                        this.operation_EUK(this.bt_ID);  // OK
-                        break;
-                    case "DEL":
-                        this.operation_DEL(this.bt_ID);  // OK
-                        break;
-                    case "AC":
-                        this.operation_AC(this.bt_ID);  // OK
-                        break;
-                    case ",":
-                        this.operation_Comma(this.bt_ID);  // OK
-                        break;
-                    default:
-                        this.operation_Number(this.bt_ID);  // OK
-                        break;
+                .nav-button-box div:hover {
+                    cursor: pointer;
+                    background-color: hsl(219, 54%, 59%);
                 }
-            }, false);
+                .nav-button-box div:active {
+                    background-color: hsl(219, 54%, 66%);
+                }
+                .nav-button-box div::selection {
+                    background-color: transparent;
+                    color: white;
+                }
+        .calc-space {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background-color: var(--bg-lightBlue);
+            border: 0px solid crimson;  /*TEST*/
         }
-    },
-    operation_EUK(id: string): void {
-        // Walidacja poprawności wpisanych danych:
-        let baseNum_AR: number[] = this.value.split(", ");
-        if (baseNum_AR.length !== 2) {
-            if (this.value[this.value.length - 1] === " ") {
-                this.screen_INFO.textContent = "Błąd! Nie wolno zostawić pustego pola";
-            } else {
-                this.screen_INFO.textContent = "Błąd! Wymagana ilość liczb wynosi: 2";
+            .calc-box {
+                width: 100%;
+                height: 100%;
+                padding: 0px 50px 50px;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: flex-start;
+                border: 0px solid red;  /*TEST*/
             }
-            return;
-        } else {
-            if (this.value[this.value.length - 1] === " ") {
-                this.screen_INFO.textContent = "Błąd! Nie wolno zostawić pustego pola";
-                return;
+                .cb-header {
+                    width: 100%;
+                    height: 120px;
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    border: 0px solid green;  /*TEST*/
+                }
+                    .cb-title {
+                        width: 100%;
+                        position: relative;
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: center;
+                        align-items: flex-start;
+                        color: var(--dark-font);  /*OLD hsl(219, 54%, 50%)*/
+                        font-family: 'Outfit', sans-serif;
+                        font-size: 45px;  /*OLD: 45px*/
+                        font-weight: 600;
+                        border: 0px solid green;  /*TEST*/
+                    }
+                    .cb-title::selection {
+                        background-color: transparent;
+                        color: var(--dark-font);
+                    }
+                    .cb-title:hover {
+                        cursor: default;
+                    }
+        .calcType-box {
+            width: 500px;
+            height: 100%;
+            position: relative;
+            background-image: linear-gradient(to right, rgb(70, 116, 200) 20%, rgb(47, 93, 177) 80%);
+        }
+            div[class^="ct-"] {
+                width: 100%;
+                height: 100%;
+                background-color: hsl(219, 48%, 34%);
             }
-        }
-        // Algorytm euklidesa:
-        const fixed_A: number = baseNum_AR[0], fixed_B: number = baseNum_AR[1];
-        let a_LEFT: number = baseNum_AR[0], b_RIGHT: number = baseNum_AR[1];
-        while(a_LEFT !== b_RIGHT) {
-            if (a_LEFT > b_RIGHT) {
-                a_LEFT = a_LEFT - b_RIGHT;
-            } else if (a_LEFT < b_RIGHT) {
-                b_RIGHT = b_RIGHT - a_LEFT;
+            /*- - - - - - - - - - - - - - - - - - -*/
+            /*KALKULATOR: NDW | NWW | Faktoryzacja*/
+            /*- - - - - - - - - - - - - - - - - - -*/
+            .ct-refactoring > .screen,
+            .ct-euklides > .screen,
+            .ct-logic > .screen {
+                width: 100%;
+                height: 25%;
+                padding: 0px 20px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: flex-end;
+                gap: 5px;
+                background-color: hsl(219, 48%, 68%);
+                border-style: solid;
+                border-width: 6px 6px 3px 6px;
+                border-color: hsl(219, 48%, 34%);
             }
-            // Dodatkowy przypadek: Kiedy liczby są równe - jest potrebny w kontekście poniższego dodatkowego przypadku:
-            if (a_LEFT === b_RIGHT) {
-                this.value = String(a_LEFT);
-                this.screen_VALUE.textContent = this.value;
-                this.screen_INFO.textContent = "EUK | " + fixed_A + ", " + fixed_B + " | Wynik:";
+                .ct-refactoring > .screen > .screen-position,
+                .ct-euklides > .screen > .screen-position,
+                .ct-logic > .screen > .screen-position {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    overflow: hidden;
+                }
+                    .screen-hanger {
+                        width: 100%;
+                        display: flex;
+                        justify-content: flex-end;
+                    }
+                    .ct-refactoring > .screen > .screen-position > .screen-hanger:nth-child(1),
+                    .ct-euklides > .screen > .screen-position > .screen-hanger:nth-child(1),
+                    .ct-logic > .screen > .screen-position > .screen-hanger:nth-child(1) {
+                        margin-top: 13px;
+                    }
+                        .ct-refactoring > .screen > .screen-position > .screen-hanger > .info,
+                        .ct-euklides > .screen > .screen-position > .screen-hanger > .info,
+                        .ct-logic > .screen > .screen-position > .screen-hanger > .info {
+                            width: auto;
+                            display: flex;
+                            align-items: flex-end;
+                            color: rgba(255,255,255,0.8);
+                            font-family: 'Outfit', sans-serif;
+                            font-size: 1.5em;
+                            font-weight: 200;
+                            text-wrap: nowrap;
+                            overflow-x: auto;
+                        }
+                        .ct-refactoring > .screen > .screen-position > .screen-hanger > .value,
+                        .ct-euklides > .screen > .screen-position > .screen-hanger > .value,
+                        .ct-logic > .screen > .screen-position > .screen-hanger > .value {
+                            width: auto;
+                            display: flex;
+                            align-items: center;
+                            color: white;
+                            font-family: 'Outfit', sans-serif;
+                            font-size: 4em;
+                            font-weight: 200;
+                            text-wrap: nowrap;
+                            overflow-x: auto;
+                        }
+                        .ct-refactoring > .screen > .screen-position > .screen-hanger > .info::-webkit-scrollbar, .ct-refactoring > .screen > .screen-position > .screen-hanger > .value::-webkit-scrollbar,
+                        .ct-euklides > .screen > .screen-position > .screen-hanger > .info::-webkit-scrollbar, .ct-euklides > .screen > .screen-position > .screen-hanger > .value::-webkit-scrollbar,
+                        .ct-logic > .screen > .screen-position > .screen-hanger > .info::-webkit-scrollbar, .ct-logic > .screen > .screen-position > .screen-hanger > .value::-webkit-scrollbar
+                         {
+                            width: 100%;
+                            height: 0px;
+                        }
+            .ct-refactoring > .buttons-group,
+            .ct-euklides > .buttons-group,
+            .ct-logic > .buttons-group {
+                width: 100%;
+                height: 75%;
+                display: grid;
+                grid-template-columns: repeat(4, 25%);
+                background-color: hsl(219, 54%, 53%);
+                border-style: solid;
+                border-width: 0px 6px 6px 6px;
+                border-color: hsl(219, 48%, 34%);
             }
-            // Dodatkowy przypadek: Kiedy liczby "a" i "b" mają ujemne wartości: (zapobiegnięcie nieskończonej teracji, kiedy liczby nigdy nie będą sobie równe)
-            if (a_LEFT < 0 && b_RIGHT < 0) {
-                this.value = "1";
-                this.screen_VALUE.textContent = this.value;
-                this.screen_INFO.textContent = "EUK | " + fixed_A + ", " + fixed_B + " | Wynik:";
-                return;
+            .ct-refactoring > .buttons-group > div,
+            .ct-euklides > .buttons-group > div,
+            .ct-logic > .buttons-group > div {
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: white;
+                font-family: 'Outfit', sans-serif;
+                font-size: 2em;
+                font-weight: 400;
             }
-        }
-    },
-    operation_DEL(id: string): void {
-        if (this.value[this.value.length - 1] === " ") {
-            this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 2));
-        } else {
-            this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 1));
-        }
-        if (this.value.length === 0) {
-            this.value = "0";
-        }
-        this.screen_VALUE.textContent = this.value;
-        this.screen_INFO.textContent = "Skrócono wartość";
-    },
-    operation_AC(id: string): void {
-        this.value = "0";
-        this.screen_VALUE.textContent = this.value;
-        this.screen_INFO.textContent = "Skasowano wartość";
-    },
-    operation_Comma(id: string): void {
-        if (this.value[this.value.length - 1] !== " ") {
-            this.value += ", ";
-            this.screen_INFO.textContent = "Utworzono pole na nową liczbę";
-            this.screen_VALUE.textContent = this.value;
-        } else {
-            this.screen_INFO.textContent = "Błąd! Nie wolno zostawić pustego pola";
-            return;
-        }
-    },
-    operation_Number(numKey: string): void {
-        // Jeżeli długośc wyrazu wynosi 1 i ma on wartośc 0, skasuj 0, a wstaw cyfrę, w przeciwnym razie dodaj cyfrę do wyrażenia:
-        if (this.screen_INFO.textContent[this.screen_INFO.textContent.length - 1] !== ":") {
-            if (this.value.length === 1 && this.value === "0") {
-                this.value = numKey;
-            } else if (this.value.length > 1 || this.value !== "0") {
-                this.value += numKey;
+            .ct-refactoring > .buttons-group > div::selection,
+            .ct-euklides > .buttons-group > div::selection,
+            .ct-logic > .buttons-group > div::selection {
+                background-color: transparent;
+                color: white;
             }
-            this.screen_VALUE.textContent = this.value;
-            this.screen_INFO.textContent = "Wpisano cyfrę";
-        }
+            .ct-refactoring > .buttons-group > div:not(:nth-child(4n)) {
+                border-right-style: solid;
+                border-right-width: 3px;
+                border-right-color: hsl(219, 48%, 34%);
+                /*background-color: rgba(255,0,0,0.5);*/
+            }
+            .ct-refactoring > .buttons-group > div:not(:nth-child(-n+4)) {
+                border-top-style: solid;
+                border-top-width: 3px;
+                border-top-color: hsl(219, 48%, 34%);
+                /*background-color: rgba(0,255,0,0.5);*/
+            }
+            .ct-refactoring > .buttons-group > div:nth-child(4n) {
+                background-color: hsl(219, 54%, 47%);
+            }
+            .ct-refactoring > .buttons-group > div:not(:nth-child(-n+14)) {
+                background-color: hsl(219, 54%, 47%);
+            }
+                .ct-refactoring > .buttons-group > div > div,
+                .ct-euklides > .buttons-group > div > div,
+                .ct-logic > .buttons-group > div > div {
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    background-color: rgba(255,255,255,0.0);
+                    transition-duration: 0.1s;
+                }
+                .ct-refactoring > .buttons-group > div > div:hover,
+                .ct-euklides > .buttons-group > div > div:hover,
+                .ct-logic > .buttons-group > div > div:hover {
+                    cursor: pointer;
+                    background-color: rgba(255,255,255,0.1);
+                    transition-duration: 0.1s;
+                }
+                .ct-refactoring > .buttons-group > div > div:active,
+                .ct-euklides > .buttons-group > div > div:active,
+                .ct-logic > .buttons-group > div > div:active {
+                    cursor: pointer;
+                    background-color: rgba(255,255,255,0.2);
+                    transition-duration: 0.0s;
+                }
+            /*- - - - - - - - - - - - - - - - - - -*/
+            /*KALKULATOR: Algorytm Euklidesa*/
+            /*- - - - - - - - - - - - - - - - - - -*/
+            .ct-euklides > .buttons-group > div:nth-child(-n+8) {
+                border-bottom-style: solid;
+                border-bottom-width: 3px;
+                border-bottom-color: hsl(219, 48%, 34%);
+            }
+            .ct-euklides > .buttons-group > div:nth-child(4n) {
+                background-color: hsl(219, 54%, 47%);
+            }
+            .ct-euklides > .buttons-group > div:nth-child(12) {
+                grid-column: 4;
+                grid-row-start: 3;
+                grid-row-end: 5;
+            }
+            .ct-euklides > .buttons-group > div:nth-child(13) {
+                grid-column: 1 / span 2;
+                grid-row: 4;
+            }
+            .ct-euklides > .buttons-group > div:not(:nth-child(14)):not(:nth-child(13)):not(:nth-child(12)):not(:nth-child(11)):not(:nth-child(8)):not(:nth-child(4)) {
+                border-bottom-style: solid;
+                border-bottom-width: 3px;
+                border-bottom-color: hsl(219, 48%, 34%);
+                border-right-style: solid;
+                border-right-width: 3px;
+                border-right-color: hsl(219, 48%, 34%);
+            }
+            .ct-euklides > .buttons-group > div:nth-child(11) {
+                border-bottom-style: solid;
+                border-bottom-width: 3px;
+                border-bottom-color: hsl(219, 48%, 34%);
+            }
+            .ct-euklides > .buttons-group > div:nth-child(13),
+            .ct-euklides > .buttons-group > div:nth-child(14),
+            .ct-euklides > .buttons-group > div:nth-child(11) {
+                border-right-style: solid;
+                border-right-width: 3px;
+                border-right-color: hsl(219, 48%, 34%);
+            }
+            /*- - - - - - - - - - - - - - - - - - -*/
+            /*KALKULATOR: Logika Matematyczna*/
+            /*- - - - - - - - - - - - - - - - - - -*/
+            sub {
+                margin-left: 4px;
+                font-size: 0.6em !important;
+            }
+            .ct-logic > .buttons-group > div:nth-child(1) {
+                grid-column: 1 / span 2;
+                grid-row: 0;
+            }
+            .ct-logic > .buttons-group > div:nth-child(2) {
+                grid-column: 3 / span 2;
+                grid-row: 0;
+            }
+            .ct-logic > .buttons-group > div:nth-child(1),
+            .ct-logic > .buttons-group > div:nth-child(2),
+            .ct-logic > .buttons-group > div:nth-child(6),
+            .ct-logic > .buttons-group > div:nth-child(10),
+            .ct-logic > .buttons-group > div:nth-child(14),
+            .ct-logic > .buttons-group > div:nth-child(18) {
+                
+                background-color: hsl(219, 54%, 47%);
+            }
+            .ct-logic > .buttons-group > div:nth-child(1) {
+                border-right-style: solid;
+                border-right-width: 3px;
+                border-right-color: hsl(219, 48%, 34%);
+            }
+            .ct-logic > .buttons-group > div:nth-child(n+3) {
+                border-top-style: solid;
+                border-top-width: 3px;
+                border-top-color: hsl(219, 48%, 34%);
+            }
+            .ct-logic > .buttons-group > div:not(:nth-child(4n+2)):not(:nth-child(-n+2)) {
+                border-right-style: solid;
+                border-right-width: 3px;
+                border-right-color: hsl(219, 48%, 34%);
+            }
+            .ct-logic > .screen > .screen-position:nth-child(1) {
+                height: 50px;
+            }
+            .ct-logic > .screen > .screen-position:nth-child(2) {
+                height: 70px;
+            }
+            /**/
+            /* screen_VALUE "font-size" */
+            .ct-logic > .screen > .screen-position > .screen-hanger > .value {
+                font-size: 3em;  /*PREV: 4em*/
+            }
+            /* Scroll: */
+            .ct-logic > .screen > .screen-position:nth-child(3) > .info-tau {
+                color: white;
+                font-family: 'Outfit', sans-serif;
+                font-size: 1.3em;
+                font-weight: 200;
+                text-wrap: nowrap;
+                overflow: scroll;
+            }
+            .ct-logic > .screen > .screen-position:nth-child(3) > .info-tau::-webkit-scrollbar {
+                width: 0px;
+                height: 0px;
+            }
+            /*Ruchome: EVA - - - - - - - - - - - - - - - - - - - - */
+            .ct-logic > .screen_EVA {
+                padding: 10px 20px 20px;
+                height: 25%;
+                gap: 15px;
+                justify-content: flex-start;
+            }
+            .ct-logic > .buttons-group_EVA {
+                height: 75%;
+                grid-template-rows: 14% 21.5% 21.5% 21.5% 21.5%;
+            }
+            .ct-logic > .screen > .screen-position_EVA:nth-child(2) {
+                display: flex;
+            }
+            .ct-logic > .screen > .screen-position_EVA:nth-child(3) {
+                display: none;
+            }
+            .ct-logic > .screen > .screen-position_EVA:nth-child(3) {
+                height: calc(100% - 40px);
+            }
+            /*Ruchome: TAU - - - - - - - - - - - - - - - - - - - - */
+            .ct-logic > .screen_TAU {
+                height: 45%;
+                padding: 10px 20px 20px;
+                gap: 10px;
+                justify-content: flex-start;
+            }
+            .ct-logic > .buttons-group_TAU {
+                height: 55%;
+                grid-template-rows: 14% 21.5% 21.5% 21.5% 21.5%;
+            }
+            .ct-logic > .screen > .screen-position_TAU:nth-child(2) {
+                display: none;
+            }
+            .ct-logic > .screen > .screen-position_TAU:nth-child(3) {
+                display: flex;
+            }
+            .ct-logic > .screen > .screen-position_TAU:nth-child(3) {
+                height: calc(100% - 40px);
+            }
+            /*- - - - - - - - - - - - - - - - - - - - - - - - - -*/
+            /*.ct-logic > .screen > .screen-position:nth-child(3){
+                outline: 2px solid red;
+            }*/
     }
-}
-Calculator_Euklides_FUNCTIONS.setButtons_AEL();
-
-
-
-const Calculator_NWD_NWW_Faction_FUNCTIONS: {
-    setButtons_AEL: Function
-    bt_EVT: EventTarget,
-    bt_DIV: HTMLDivElement,
-    bt_ID: string,
-    value: string,
-    result: string,
-    screen_INFO: HTMLDivElement,
-    screen_VALUE: HTMLDivElement,
-    operation_NWD: Function,
-    operation_NWW: Function,
-    operation_More_FAC: Function,
-    Both_FAC_FractedNum: number[][],
-    Both_FAC_InitialValues_STR: string[],
-    operation_FAC: Function,
-    FAC_isNotComma: boolean,
-    FAC_isDivided: boolean,
-    FAC_dividedNumber: number,
-    FAC_factor: number,
-    operation_DEL: Function,
-    operation_AC: Function,
-    operation_Comma: Function,
-    operation_Number: Function
-} = {
-    bt_EVT: undefined,
-    bt_DIV: null,
-    bt_ID: "",
-    value: "0",
-    result: "",
-    FAC_isNotComma: true,
-    FAC_isDivided: false,
-    FAC_dividedNumber: 0,
-    FAC_factor: 2,
-    Both_FAC_FractedNum: [][0],
-    Both_FAC_InitialValues_STR: [],
-    screen_INFO:  document.querySelector('.ct-refactoring > .screen > .screen-position > .screen-hanger > .info'),
-    screen_VALUE: document.querySelector('.ct-refactoring > .screen > .screen-position > .screen-hanger > .value'),
-    setButtons_AEL(): void {
-        const button_COLL: HTMLCollection = document.querySelector('.ct-refactoring > .buttons-group').children;
-        for (let i: number = 0; i < button_COLL.length; i++) {
-            button_COLL[i].addEventListener("click", (e) => {
-                this.bt_EVT = e.currentTarget;
-                this.bt_DIV = this.bt_EVT as HTMLDivElement;
-                this.bt_ID = this.bt_DIV.id;
-                switch(this.bt_ID) {
-                    case "NWD":
-                        this.operation_NWD();  // OK
-                        break;
-                    case "NWW":
-                        this.operation_NWW();  // OK
-                        break;
-                    case "FAC":
-                        this.operation_FAC();  // OK
-                        break;
-                    case "DEL":
-                        this.operation_DEL();  // OK
-                        break;
-                    case "AC":
-                        this.operation_AC();  // OK
-                        break;
-                    case ",":
-                        this.operation_Comma();  // OK
-                        break;
-                    default:
-                        this.operation_Number(this.bt_ID);  // OK
-                        break;
-                }
-            }, false);
-        }
-    },
-    operation_NWD(): void {
-        // Jeżeli w wyrazie występuje znak [,], wyświetl błąd i zablokuj dalszą część operacji:
-        this.FAC_isNotComma = true;
-        for (let i: number = 0; i < this.value.length; i++) {
-            if (this.value[i] === ",") {
-                this.FAC_isNotComma = false;
-            }
-        }
-        // Przygotowywanie liczba na faktoryzację:
-        if (this.FAC_isNotComma === false) {
-            if (this.value[this.value.length - 1] === " ") {
-                this.screen_INFO.textContent = "Błąd! Nie możesz zostawić pustego pola";
-                return;
-            } else {
-                this.Both_FAC_InitialValues_STR = this.value.split(", ");
-            }
-            if (this.Both_FAC_InitialValues_STR.length < 2) {
-                this.screen_INFO.textContent = "Błąd! Potrzebujesz min 2 liczby";
-                return;
-            }
-            // Sprawdzanie czy wszystkie liczby (na faktoryzację) są większe niż 1:
-            for (let i: number = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
-                if (this.Both_FAC_InitialValues_STR[i] === "0" || this.Both_FAC_InitialValues_STR[i] === "1") {
-                    this.screen_INFO.textContent = "Błąd! Liczby muszą być większe niż 1";
-                    return;
-                }
-            }
-            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-            // PATRYKOWY algorytm na obliczanie NWD: (Algorytm EUKLIDESA działa tylko w przypadku dwóch liczba, a ja chciałem zrobić dla dowolnej ilości liczb!)
-            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-            // Rozkład liczby na czynniki pierwsze (inna metoda, argument = 1 liczba):
-            this.Both_FAC_FractedNum = [[], []];
-            for (let i: number = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
-                this.Both_FAC_FractedNum[i] = this.operation_More_FAC(Number(this.Both_FAC_InitialValues_STR[i]));
-            }
-            // Obliczanie NWD:
-            this.result = 1;
-            let base_AR: number[] = this.Both_FAC_FractedNum[0];
-            let compare_AR: number[][] = [[]];
-            for (let i: number = 1; i < this.Both_FAC_FractedNum.length; i++) {
-                compare_AR[i - 1] = this.Both_FAC_FractedNum[i];
-            }
-            let compaseEqualBase_TARGET: number = compare_AR.length;
-            let compaseEqualBase_COUNTER: number = 0;
-            let properFactor_AR: number[] = [];
-            let properFactor_VAL: number = 0;
-            for (let i: number = 0; i < base_AR.length; i++) {
-                compaseEqualBase_COUNTER = 0;
-                for (let j: number = 0; j < compare_AR.length; j++) {
-                    for (let k: number = 0; k < compare_AR[j].length; k++) {
-                        if (base_AR[i] === compare_AR[j][k]) {
-                            compaseEqualBase_COUNTER++;
-                            properFactor_VAL = compare_AR[j][k];
-                            compare_AR[j].splice(k, 1);
-                            break;
-                        }
-                    }
-                }
-                if (compaseEqualBase_COUNTER === compaseEqualBase_TARGET) {
-                    properFactor_AR.push(properFactor_VAL);
-                }
-            }
-            for (let i: number = 0; i < properFactor_AR.length; i++) {
-                this.result *= properFactor_AR[i];
-            }
-            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-            this.screen_VALUE.textContent = String(this.result);
-            this.value = this.screen_VALUE.textContent;
-            // Wyświeetlanie informacji:
-            this.screen_INFO.textContent = "NWD | ";
-            for (let i: number = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
-                this.screen_INFO.textContent += this.Both_FAC_InitialValues_STR[i] + ", ";
-            }
-            this.screen_INFO.textContent = this.screen_INFO.textContent.slice(0, (this.screen_INFO.textContent.length - 2));
-            this.screen_INFO.textContent += " | Wynik:";
-        }
-        else if (this.FAC_isNotComma === true) {
-            this.screen_INFO.textContent = "Błąd! Przy NWD potrzeba min 2 liczb";
-        }
-    },
-    operation_NWW(): void {
-        // Jeżeli w wyrazie występuje znak [,], wyświetl błąd i zablokuj dalszą część operacji:
-        this.FAC_isNotComma = true;
-        for (let i: number = 0; i < this.value.length; i++) {
-            if (this.value[i] === ",") {
-                this.FAC_isNotComma = false;
-            }
-        }
-        // Przygotowywanie liczba na faktoryzację:
-        if (this.FAC_isNotComma === false) {
-            if (this.value[this.value.length - 1] === " ") {
-                this.screen_INFO.textContent = "Błąd! Nie możesz zostawić pustego pola";
-                return;
-            } else {
-                this.Both_FAC_InitialValues_STR = this.value.split(", ");
-            }
-            if (this.Both_FAC_InitialValues_STR.length < 2) {
-                this.screen_INFO.textContent = "Błąd! Potrzebujesz min 2 liczby";
-                return;
-            }
-            // Sprawdzanie czy wszystkie liczby (na faktoryzację) są większe niż 1:
-            for (let i: number = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
-                if (this.Both_FAC_InitialValues_STR[i] === "0" || this.Both_FAC_InitialValues_STR[i] === "1") {
-                    this.screen_INFO.textContent = "Błąd! Liczby muszą być większe niż 1";
-                    return;
-                }
-            }
-            // Rozkład liczby na czynniki pierwsze (inna metoda, argument = 1 liczba):
-            this.Both_FAC_FractedNum = [[], []];
-            for (let i: number = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
-                this.Both_FAC_FractedNum[i] = this.operation_More_FAC(Number(this.Both_FAC_InitialValues_STR[i]));
-            }
-            // Kasownie liczb powtarzających się w "compare_AR" (tablicy dwuwymiarowej porównawczej):
-            let base_AR: number[] = this.Both_FAC_FractedNum[0];
-            let compare_AR: number[][] = [[]];
-            for (let i: number = 1; i < this.Both_FAC_FractedNum.length; i++) {
-                compare_AR[i - 1] = this.Both_FAC_FractedNum[i];
-            }
-            for (let i: number = 0; i < base_AR.length; i++) {
-                for (let j: number = 0; j < compare_AR.length; j++) {
-                    for (let k: number = 0; k < compare_AR[j].length; k++) {
-                        if (base_AR[i] === compare_AR[j][k]) {
-                            compare_AR[j].splice(k, 1);
-                            break;
-                        }
-                    }
-                }
-            }
-            // Obliczanie NWW:
-            this.result = 1;
-            for (let i: number = 0; i < base_AR.length; i++) {
-                this.result *= base_AR[i];
-            }
-            for (let i: number = 0; i < compare_AR.length; i++) {
-                for (let j: number = 0; j < compare_AR[i].length; j++) {
-                    this.result *= compare_AR[i][j];
-                }
-            }
-            this.screen_VALUE.textContent = this.result;
-            this.value = this.screen_VALUE.textContent;
-            // Wyświeetlanie informacji:
-            this.screen_INFO.textContent = "NWW | ";
-            for (let i: number = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
-                this.screen_INFO.textContent += this.Both_FAC_InitialValues_STR[i] + ", ";
-            }
-            this.screen_INFO.textContent = this.screen_INFO.textContent.slice(0, (this.screen_INFO.textContent.length - 2));
-            this.screen_INFO.textContent += " | Wynik:";
-        }
-        else if (this.FAC_isNotComma === true) {
-            this.screen_INFO.textContent = "Błąd! Przy NWD potrzeba min 2 liczb";
-        }
-    },
-    operation_More_FAC(toFacNum: number): number[] {
-        // Rozkład liczby całkowitej na czynniki pierwsze: (metoda samodzielna zwracająca wynik)
-        console.clear();
-        let result_AR: number[] = [];
-        this.FAC_dividedNumber = toFacNum;
-        while (this.FAC_dividedNumber > 1) {
-            this.FAC_factor = 2;
-            this.FAC_isDivided = false;
-            while (this.FAC_isDivided === false) {
-                if (this.FAC_dividedNumber % this.FAC_factor === 0) {
-                    this.FAC_isDivided = true;
-                    result_AR.push(this.FAC_factor);
-                    this.FAC_dividedNumber = this.FAC_dividedNumber / this.FAC_factor;
-                } else if (this.FAC_dividedNumber % this.FAC_factor !== 0) {
-                    this.FAC_factor++;
-                }
-            }
-        }
-        // Zwrót wyniku:
-        return result_AR;
-    },
-    operation_FAC(): void {
-        // Jeżeli w wyrazie występuje znak [,], wyświetl błąd i zablokuj dalszą część operacji:
-        this.FAC_isNotComma = true;
-        for (let i: number = 0; i < this.value.length; i++) {
-            if (this.value[i] === ",") {
-                this.FAC_isNotComma = false;
-            }
-        }
-        // Rozkład liczby całkowitej na czynniki pierwsze
-        if (this.FAC_isNotComma === true) {
-            this.result = "";
-            this.FAC_dividedNumber = Number(this.value);
-            while (this.FAC_dividedNumber > 1) {
-                this.FAC_factor = 2;
-                this.FAC_isDivided = false;
-                while (this.FAC_isDivided === false) {
-                    if (this.FAC_dividedNumber % this.FAC_factor === 0) {
-                        this.FAC_isDivided = true;
-                        this.result += String(this.FAC_factor) + ", ";
-                        this.FAC_dividedNumber = this.FAC_dividedNumber / this.FAC_factor;
-                        //alert("Czynniki: " + this.result + " | Pozostałość: " + this.FAC_dividedNumber + "| i: " + this.FAC_factor);
-                    } else if (this.FAC_dividedNumber % this.FAC_factor !== 0) {
-                        this.FAC_factor++;
-                    }
-                }
-            }
-            this.screen_INFO.textContent = "FAC | " + this.value + " | Wynik:";
-            this.result = this.result.slice(0, this.result.length - 2);
-            this.FAC_isNotComma = true;
-
-
-
-            // Wyznaczanie liczby pierwszej:
-            for (let i: number = 0; i < this.result.length; i++) {
-                if (this.result[i] === ",") {
-                    this.FAC_isNotComma = false;
-                }
-            }
-            // Przypadek z liczbą 0:
-            if (this.FAC_isNotComma === false) {
-            } else if (this.FAC_isNotComma === true) {
-                (this.value === "0") ? this.result = "0" : this.result = "Liczba pierwsza";
-                this.value = "0";
-            }
-            this.screen_VALUE.textContent = this.result;
-            this.value = this.result;   // OSTATNIA WAŻNA ZMIANA!
-        }
-        else if (this.FAC_isNotComma === false) {
-            this.screen_INFO.textContent = "Błąd! Przy FAC nie można używać znaku (,)";
-        }
-    },
-    operation_DEL(): void {
-        if (this.screen_VALUE.textContent === "Liczba pierwsza") {
-            this.value = "0";
-            this.screen_INFO.textContent = "Wartość została skasowana";
-        } else {
-            // Jeżeli ostatni indeks ma wartość " " (" " za znakiem [,]), skasuj dwa miejsca, w przeciwnym razie 1:
-            if (this.value[this.value.length - 1] === " ") {
-                this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 2));
-            } else {
-                this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 1));
-            }
-            if (this.value.length === 0) {
-                this.value = "0";
-            }
-            this.screen_INFO.textContent = "Skrócono wartość";
-        }
-        this.screen_VALUE.textContent = this.value;
-    },
-    operation_AC(): void {
-        this.value = "0";
-        this.screen_VALUE.textContent = this.value;
-        this.screen_INFO.textContent = "Skasowano wartość";
-    },
-    operation_Comma(): void {
-        if (this.value === "Liczba pierwsza") {
-            this.value = "0";
-            this.screen_INFO.textContent = "Wartość została skasowana";
-        } else {
-            if (this.value[this.value.length - 1] !== " ") {
-                this.value += ", ";
-                this.screen_INFO.textContent = "Utworzono pole na nową liczbę";
-            } else {
-                this.screen_INFO.textContent = "Błąd! Nie wolno zostawić pustego pola";
-                return;
-            }
-        }
-        this.screen_VALUE.textContent = this.value;
-    },
-    operation_Number(numKey: string): void {
-        // Jeżeli długośc wyrazu wynosi 1 i ma on wartośc 0, skasuj 0, a wstaw cyfrę, w przeciwnym razie dodaj cyfrę do wyrażenia:
-        if (this.screen_INFO.textContent[this.screen_INFO.textContent.length - 1] !== ":") {
-            if (this.value.length === 1 && this.value === "0") {
-                this.value = numKey;
-            } else if (this.value.length > 1 || this.value !== "0") {
-                this.value += numKey;
-            }
-            this.screen_VALUE.textContent = this.value;
-            this.screen_INFO.textContent = "Wpisano cyfrę";
-        }
-    },
-}
-Calculator_NWD_NWW_Faction_FUNCTIONS.setButtons_AEL();
