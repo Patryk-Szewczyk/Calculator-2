@@ -490,9 +490,10 @@ body {
             .ct-logic > .screen > .screen-position:nth-child(2) {
                 height: 70px;
             }
+            /**/
             /* screen_VALUE "font-size" */
             .ct-logic > .screen > .screen-position > .screen-hanger > .value {
-                font-size: 3.5em;  /*PREV: 4em*/
+                font-size: 3em;  /*PREV: 4em*/
             }
             /* Scroll: */
             .ct-logic > .screen > .screen-position:nth-child(3) > .info-tau {
