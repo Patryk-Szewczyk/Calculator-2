@@ -161,19 +161,33 @@ var Calculator_MathLogic_FUNCTIONS = {
     bt_DIV: null,
     bt_ID: "",
     value: " ",
-    availableNUM_PQR: 1,
+    /*availableNUM_PQR: 1,
     availableNUM_BRACKET: 0,
-    availableNUM_NOT: 1,
+    availableNUM_NOT: 0,
     availableNUM_CONJ: 0,
     availableNUM_CONJ_COUNT: 1,
+    isEqual: false,*/
+    p01_VAL: "0",
+    q01_VAL: "0",
+    r01_VAL: "0",
+    calc_MODE: "EVA",
+    isResultTAU: false,
+    screen_INFO_EVA: "Mode: EVA | p = 0, q = 0, r = 0",
+    screen_INFO_TAU: "Mode: TAU",
     screen_EL: document.getElementById('screen_TRANSFORM'),
     screen_POS_2: document.getElementById('screen-position-1_TRANSFORM'),
     screen_POS_3: document.getElementById('screen-position-2_TRANSFORM'),
     butonGroup_EL: document.getElementById('buttons-group_TRANSFORM'),
+    mode_EL: document.getElementById("MODE"),
     screen_INFO: document.querySelector('.ct-logic > .screen > .screen-position > .screen-hanger > .info'),
     screen_VALUE: document.querySelector('.ct-logic > .screen > .screen-position > .screen-hanger > .value'),
     setButtons_AEL: function () {
         var _this = this;
+        /*console.log("availableNUM_PQR:         " + this.availableNUM_PQR);
+        console.log("availableNUM_NOT:         " + this.availableNUM_NOT);
+        console.log("availableNUM_CONJ:        " + this.availableNUM_CONJ);
+        console.log("availableNUM_CONJ_COUNT:  " + this.availableNUM_CONJ_COUNT);
+        console.log("availableNUM_BRACKET:     " + this.availableNUM_BRACKET);*/
         var button_COLL = document.querySelector('.ct-logic > .buttons-group').children;
         for (var i = 0; i < button_COLL.length; i++) {
             button_COLL[i].addEventListener("click", function (e) {
@@ -181,11 +195,11 @@ var Calculator_MathLogic_FUNCTIONS = {
                 _this.bt_DIV = _this.bt_EVT;
                 _this.bt_ID = _this.bt_DIV.id;
                 switch (_this.bt_ID) {
-                    case "EVA":
-                        _this.operation_EVA(_this.bt_ID); // OK
+                    case "MODE":
+                        _this.operation_MODE(_this.bt_ID); // OK
                         break;
-                    case "TAU":
-                        _this.operation_TAU(_this.bt_ID); // OK
+                    case "=":
+                        _this.operation_CALC(_this.bt_ID);
                         break;
                     case "BACK":
                         _this.operation_DEL(_this.bt_ID); // OK
@@ -206,78 +220,229 @@ var Calculator_MathLogic_FUNCTIONS = {
                         _this.operation_Sign(_this.bt_ID); // OK
                         break;
                 }
+                // Po wywołaniu funkji operacji TAU, przywróć układ EVA:
+                if (_this.bt_ID !== "=" && _this.isResultTAU === true) {
+                    _this.isResultTAU = false;
+                    _this.screen_EL.classList.replace('screen_TAU', 'screen_EVA');
+                    _this.screen_POS_2.classList.replace('screen-position_TAU', 'screen-position_EVA');
+                    _this.screen_POS_3.classList.replace('screen-position_TAU', 'screen-position_EVA');
+                    _this.butonGroup_EL.classList.replace('buttons-group_TAU', 'buttons-group_EVA');
+                }
             }, false);
         }
+        //this.operation_EVA();  // Wytołanie: EVA
     },
-    operation_EVA: function () {
-        this.screen_EL.classList.replace('screen_TAU', 'screen_EVA');
-        this.screen_POS_2.classList.replace('screen-position_TAU', 'screen-position_EVA');
-        this.screen_POS_3.classList.replace('screen-position_TAU', 'screen-position_EVA');
-        this.butonGroup_EL.classList.replace('buttons-group_TAU', 'buttons-group_EVA');
-        this.screen_INFO.textContent = "EVA | [wyrażenie] | Wynik:";
+    operation_MODE: function () {
+        if (this.calc_MODE === "EVA") {
+            this.calc_MODE = "TAU";
+            this.mode_EL.textContent = "EVA";
+            this.screen_INFO.textContent = this.screen_INFO_TAU;
+        }
+        else if (this.calc_MODE === "TAU") {
+            this.calc_MODE = "EVA";
+            this.mode_EL.textContent = "TAU";
+            this.screen_INFO.textContent = this.screen_INFO_EVA;
+        }
     },
-    operation_TAU: function () {
-        this.screen_EL.classList.replace('screen_EVA', 'screen_TAU');
-        this.screen_POS_2.classList.replace('screen-position_EVA', 'screen-position_TAU');
-        this.screen_POS_3.classList.replace('screen-position_EVA', 'screen-position_TAU');
-        this.butonGroup_EL.classList.replace('buttons-group_EVA', 'buttons-group_TAU');
-        this.screen_INFO.textContent = "TAU | [wyrażenie] | Wynik:";
+    operation_CALC: function () {
+        // Walidacja danych:
+        //let throwData: string[] = this.value.split(" ");
+        var spaghetti = this.value.split(" ").join("");
+        if (spaghetti[0] !== "(" || spaghetti[spaghetti.length - 1] !== ")") {
+            console.log("Wyrażenie jest poprawne!");
+            spaghetti = "(" + spaghetti + ")";
+        }
+        console.log("Wyrażenie: " + spaghetti);
+        // Poprawna liczba nawiasów:
+        var bracketLeft_AMOUNT = 0;
+        var bracketRight_AMOUNT = 0;
+        for (var i = 0; i < spaghetti.length; i++) {
+            (spaghetti[i] === "(") ? bracketLeft_AMOUNT++ : bracketLeft_AMOUNT = bracketLeft_AMOUNT;
+            (spaghetti[i] === ")") ? bracketRight_AMOUNT++ : bracketRight_AMOUNT = bracketRight_AMOUNT;
+        }
+        if (bracketLeft_AMOUNT !== bracketRight_AMOUNT) {
+            console.log("Niepoprawna liczba nawiasów!");
+            return;
+        }
+        console.log("Poprawna liczba nawiasów!");
+        // Poprawna ilość globalnych spójników: (1)
+        var bracketTo_SLICE_COUNTER = 0;
+        var bracket_LEFT_LOC = 0;
+        var bracket_RIGHT_LOC = 0;
+        for (var i = 0; i < spaghetti.length; i++) {
+            if (spaghetti[i] === "(") {
+                bracket_LEFT_LOC = i;
+                bracketTo_SLICE_COUNTER++;
+            }
+        }
+        for (var i = bracket_LEFT_LOC + 1; i < spaghetti.length; i++) {
+            if (spaghetti[i] === "(") {
+                bracketTo_SLICE_COUNTER++;
+            }
+            else if (spaghetti[i] === ")") {
+                bracketLeft_AMOUNT--;
+            }
+            if (bracketLeft_AMOUNT === 0) {
+                bracket_RIGHT_LOC = i;
+            }
+        }
+        console.log("Lewy nawias: " + bracket_LEFT_LOC + " | Prawy nawias: " + bracket_RIGHT_LOC);
+        // Punkt 4 zeralizowany w 30%, jesteś na "wyciętym stringu"
+        // Wykonywanie operacji:
+        if (this.calc_MODE === "EVA") {
+            console.log("Operacja: ewaluacja");
+            this.screen_EL.classList.replace('screen_TAU', 'screen_EVA');
+            this.screen_POS_2.classList.replace('screen-position_TAU', 'screen-position_EVA');
+            this.screen_POS_3.classList.replace('screen-position_TAU', 'screen-position_EVA');
+            this.butonGroup_EL.classList.replace('buttons-group_TAU', 'buttons-group_EVA');
+        }
+        else if (this.calc_MODE === "TAU") {
+            this.isResultTAU = true;
+            console.log("Operacja: tautologia");
+            this.screen_EL.classList.replace('screen_EVA', 'screen_TAU');
+            this.screen_POS_2.classList.replace('screen-position_EVA', 'screen-position_TAU');
+            this.screen_POS_3.classList.replace('screen-position_EVA', 'screen-position_TAU');
+            this.butonGroup_EL.classList.replace('buttons-group_EVA', 'buttons-group_TAU');
+        }
     },
+    //operation_EVA(): void {
+    //
+    //},
+    //operation_TAU(): void {
+    /*this.screen_EL.classList.replace('screen_EVA', 'screen_TAU');
+    this.screen_POS_2.classList.replace('screen-position_EVA', 'screen-position_TAU');
+    this.screen_POS_3.classList.replace('screen-position_EVA', 'screen-position_TAU');
+    this.butonGroup_EL.classList.replace('buttons-group_EVA', 'buttons-group_TAU');
+    this.screen_INFO.textContent = "TAU | " + this.value;*/
+    //},
     operation_DEL: function () {
         // Skracanie wyrażenia:
-        var erasedVal = undefined;
+        //let erasedVal: number = undefined;
         if (this.value[this.value.length - 1] === " ") {
-            erasedVal = this.value.charCodeAt(this.value.length - 2);
+            //erasedVal = this.value.charCodeAt(this.value.length - 2);
             this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 3));
         }
         else {
-            erasedVal = this.value.charCodeAt(this.value.length - 1);
+            //erasedVal = this.value.charCodeAt(this.value.length - 1);
             this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 1));
         }
-        console.log(erasedVal);
+        this.screen_VALUE.textContent = this.value;
+        //this.screen_INFO.textContent = "Skrócono wartość";
+        //console.log(erasedVal);
         // Przywracanie wartości zmiennych "available..." do poprzedniego stanu: (odwrotność modyfikacji właściwości z metody "operation_Sign")
-        if (erasedVal === 112 || erasedVal === 113 || erasedVal === 114) { // zmienne
-            console.log("zmienna");
-        }
-        else if (erasedVal === 172) { // negacja
-            console.log("negacja");
-        }
-        else if (erasedVal === 124 || erasedVal === 8897 || erasedVal === 8896 || erasedVal === 8658 || erasedVal === 8660) { // spójniki
-            console.log("spójnik");
-        }
-        else if (erasedVal === 40 || erasedVal === 41) { // nawiasy
-            console.log("nawias");
-        }
-        if (this.value.length === 0) {
+        /*if (this.value.length === 0) {
             this.value = " ";
             this.screen_VALUE.textContent = this.value;
             this.availableNUM_PQR = 1;
-            this.availableNUM_NOT = 1;
+            this.availableNUM_NOT = 0;
             this.availableNUM_CONJ = 0;
             this.availableNUM_BRACKET = 0;
             this.availableNUM_CONJ_COUNT = 1;
-        }
-        this.screen_VALUE.textContent = this.value;
-        this.screen_INFO.textContent = "Skrócono wartość";
+            this.isEqual = false;
+        } else if (this.value.length > 0) {
+            if (erasedVal === 112 || erasedVal === 113 || erasedVal === 114) {  // zmienne
+                this.availableNUM_PQR = 1;
+                this.availableNUM_CONJ = 0;
+                this.availableNUM_NOT = 1;
+                this.availableNUM_CONJ_COUNT++;
+            } else if (erasedVal === 172) {  // negacja
+                this.availableNUM_NOT = 1;
+                this.availableNUM_PQR = 0;
+            } else if (erasedVal === 124 || erasedVal === 8897 || erasedVal === 8896 || erasedVal === 8658 || erasedVal === 8660) {  // spójniki
+                this.availableNUM_CONJ = 1;
+                this.availableNUM_PQR = 0;
+            } else if (erasedVal === 40 ) {  // nawias lewy
+                this.availableNUM_BRACKET--;
+                this.availableNUM_CONJ_COUNT--;
+                //this.availableNUM_PQR = 0;
+                this.availableNUM_CONJ = 0;
+                this.availableNUM_NOT = 0;
+            } else if (erasedVal === 41 ) {  // nawias prawy
+                this.availableNUM_BRACKET++;
+                this.availableNUM_CONJ_COUNT--;
+                this.availableNUM_CONJ = 0;
+                this.availableNUM_NOT = 1;
+            }
+        }*/
+        /*this.screen_VALUE.textContent = this.value;
+        this.screen_INFO.textContent = "Skrócono wartość";*/
+        /*console.clear();
+        console.log("availableNUM_PQR:         " + this.availableNUM_PQR);
+        console.log("availableNUM_NOT:         " + this.availableNUM_NOT);
+        console.log("availableNUM_CONJ:        " + this.availableNUM_CONJ);
+        console.log("availableNUM_CONJ_COUNT:  " + this.availableNUM_CONJ_COUNT);
+        console.log("availableNUM_BRACKET:     " + this.availableNUM_BRACKET);*/
     },
     operation_AC: function () {
-        console.clear();
+        //console.clear();
         this.value = " ";
         this.screen_VALUE.textContent = this.value;
-        this.screen_INFO.textContent = "Skasowano wartość";
-        this.availableNUM_PQR = 1;
-        this.availableNUM_NOT = 1;
+        //this.screen_INFO.textContent = "Skasowano wartość";
+        /*this.availableNUM_PQR = 1;
+        this.availableNUM_NOT = 0;
         this.availableNUM_CONJ = 0;
         this.availableNUM_BRACKET = 0;
         this.availableNUM_CONJ_COUNT = 1;
+        this.isEqual = false;
+        console.clear();
+        console.log("availableNUM_PQR:         " + this.availableNUM_PQR);
+        console.log("availableNUM_NOT:         " + this.availableNUM_NOT);
+        console.log("availableNUM_CONJ:        " + this.availableNUM_CONJ);
+        console.log("availableNUM_CONJ_COUNT:  " + this.availableNUM_CONJ_COUNT);
+        console.log("availableNUM_BRACKET:     " + this.availableNUM_BRACKET);*/
     },
-    operation_SignValue: function () {
-        //
+    operation_SignValue: function (signValue) {
+        if (signValue === "p01") {
+            if (this.p01_VAL === "0") {
+                this.p01_VAL = "1";
+                this.screen_INFO_EVA = "EVA | p = " + this.p01_VAL + ", q = " + this.q01_VAL + ", r = " + this.r01_VAL;
+            }
+            else if (this.p01_VAL === "1") {
+                this.p01_VAL = "0";
+                this.screen_INFO_EVA = "EVA | p = " + this.p01_VAL + ", q = " + this.q01_VAL + ", r = " + this.r01_VAL;
+            }
+        }
+        else if (signValue === "q01") {
+            if (this.q01_VAL === "0") {
+                this.q01_VAL = "1";
+                this.screen_INFO_EVA = "EVA | p = " + this.p01_VAL + ", q = " + this.q01_VAL + ", r = " + this.r01_VAL;
+            }
+            else if (this.q01_VAL === "1") {
+                this.q01_VAL = "0";
+                this.screen_INFO_EVA = "EVA | p = " + this.p01_VAL + ", q = " + this.q01_VAL + ", r = " + this.r01_VAL;
+            }
+        }
+        else if (signValue === "r01") {
+            if (this.r01_VAL === "0") {
+                this.r01_VAL = "1";
+                this.screen_INFO_EVA = "EVA | p = " + this.p01_VAL + ", q = " + this.q01_VAL + ", r = " + this.r01_VAL;
+            }
+            else if (this.r01_VAL === "1") {
+                this.r01_VAL = "0";
+                this.screen_INFO_EVA = "EVA | p = " + this.p01_VAL + ", q = " + this.q01_VAL + ", r = " + this.r01_VAL;
+            }
+        }
+        this.screen_INFO.textContent = "Mode: " + this.screen_INFO_EVA;
     },
     operation_Sign: function (signKey) {
+        if (signKey.charCodeAt(0) === 8896 || signKey.charCodeAt(0) === 8897 || signKey.charCodeAt(0) === 8658 || signKey.charCodeAt(0) === 8660 || signKey === "|") {
+            this.value += " " + signKey + " ";
+        }
+        else {
+            this.value += signKey;
+        }
+        this.screen_VALUE.textContent = this.value;
         // Walidacja wyprwadzanych danych: (aby porwstało poprawne wyrażenie do EVA i TAU)
         //console.log(signKey.charCodeAt(0) === 172);
-        if (this.value === " ") {
+        /*console.clear();
+        if (this.isEqual === true) {
+            console.log("isEqual: " + this.isEqual);
+            return;
+        }*/
+        // 1) Zrób IF'a gloalnego (i wcześcniej odpowiednie mechanizmy lgorytmu), jeżeli warunek zostanie spełniony, nie można nic dalej pisać!
+        // 2) Następnie weź wszystkie zmienne jako STATIC i przetestuj poprawność działania.
+        // 3) Weź powyższy algorytm sprawdzania poprawności wartości i określania spełniania warunku do funkcji "operation_DEL".
+        /*if (this.value === " ") {
             if (signKey === "p" || signKey === "q" || signKey === "r") {
                 if (this.availableNUM_PQR === 1) {
                     this.value = signKey;
@@ -287,87 +452,121 @@ var Calculator_MathLogic_FUNCTIONS = {
                     this.availableNUM_NOT = 0;
                     this.availableNUM_BRACKET = 0;
                 }
-            }
-            else if (signKey.charCodeAt(0) === 172) { // NOT
+            } /*else if (signKey.charCodeAt(0) === 172) {   // NOT
                 if (this.availableNUM_NOT === 1) {
                     this.value = signKey;
                     this.availableNUM_NOT = 0;
                     this.availableNUM_PQR = 1;
                 }
-            }
-            else if (signKey === "(") {
+            }*/ /*
+        else if (signKey === "(") {
                 this.value = signKey;
                 this.availableNUM_BRACKET++;
                 this.availableNUM_CONJ_COUNT++;
                 this.availableNUM_PQR = 1;
                 this.availableNUM_CONJ = 1;
-            }
+                this.availableNUM_NOT = 1;
         }
-        else {
-            if (signKey === "p" || signKey === "q" || signKey === "r") {
-                if (this.availableNUM_PQR === 1) {
-                    this.value += signKey;
-                    this.availableNUM_PQR = 0;
-                    this.availableNUM_CONJ = 1;
-                    this.availableNUM_NOT = 0;
-                    this.availableNUM_CONJ_COUNT--;
-                }
-            }
-            else if (signKey.charCodeAt(0) === 172) {
-                if (this.availableNUM_NOT === 1) {
-                    this.value += signKey;
-                    this.availableNUM_NOT = 0;
+    } else {
+        if (signKey === "p" || signKey === "q" || signKey === "r") {
+            if (this.availableNUM_PQR === 1) {
+                this.value += signKey;
+                this.availableNUM_PQR = 0;
+                this.availableNUM_CONJ = 1;
+                this.availableNUM_NOT = 0;
+                this.availableNUM_CONJ_COUNT--;
+                // Zatrzymywania pisania wyrażenia:   WEŹ TO W ODZIELNĄ METODĘ!!!!!!!!!!!!
+                /*let bracket_RIGHT_AMOUNT: number = 0;
+                let conjuction_AMOUNT: number = 0;
+                if (this.value.length > 2) {
+                    //alert('hej');
+                    for (let i: number = 0; i < this.value.length; i++) {
+                        if (this.value[i] === ")") {
+                            bracket_RIGHT_AMOUNT++;
+                        } else if (this.value.charCodeAt(i) === 172) {
+                            bracket_RIGHT_AMOUNT--;
+                        }
+                        else if (this.value.charCodeAt(i) === 8896 || this.value.charCodeAt(i) === 8897 || this.value.charCodeAt(i) === 8658 || this.value.charCodeAt(i) === 8660 || this.value.charCodeAt(i) === "|") {
+                            conjuction_AMOUNT++;
+                        }
+                    }
+                    // isEqual:
+                    if (bracket_RIGHT_AMOUNT === conjuction_AMOUNT) {
+                        this.isEqual = true;
+                    }
+                }*/
+        // - - - - - - - - - -- - - -- - - - -  - -- - 
+        /*}
+    } else if (signKey.charCodeAt(0) === 172) {
+        if (this.availableNUM_NOT === 1) {
+            this.value += signKey;
+            this.availableNUM_NOT = 0;
+            this.availableNUM_PQR = 1;
+        }
+    } else if (signKey.charCodeAt(0) === 8896 || signKey.charCodeAt(0) === 8897 || signKey.charCodeAt(0) === 8658 || signKey.charCodeAt(0) === 8660 || signKey === "|") {
+        if (this.availableNUM_CONJ === 1) {
+            if (this.availableNUM_CONJ_COUNT > 0) {
+                if (this.value[this.value.length - 1] === ")" || this.value[this.value.length - 1] === "p" || this.value[this.value.length - 1] === "q"  || this.value[this.value.length - 1] === "r") {
+                    this.value += " " + signKey + " ";
+                    this.availableNUM_CONJ = 0;
                     this.availableNUM_PQR = 1;
                 }
             }
-            else if (signKey.charCodeAt(0) === 8896 || signKey.charCodeAt(0) === 8897 || signKey.charCodeAt(0) === 8658 || signKey.charCodeAt(0) === 8660 || signKey === "|") {
-                if (this.availableNUM_CONJ === 1) {
-                    /*if (this.value.length === 1) {
-                            this.value += " " + signKey + " ";
-                            this.availableNUM_CONJ--;
-                            this.availableNUM_PQR = 1;
-                            this.availableNUM_BRACKET_LEFT = 1;
-                    } else if (this.value.length > 1) {*/ // NAPRAW TO: (id: (p => q) <=>)
-                    /*if ((this.value[this.value.length - 2] === "(" || this.value.charCodeAt(this.value.length - 2) === 172) || ( (this.value.charCodeAt(this.value.length - 3) !== 124 && this.value[0] == ")") || (this.value.charCodeAt(this.value.length - 3) !== 8897 && this.value[0] == ")") || (this.value.charCodeAt(this.value.length - 3) !== 8896 && this.value[0] == ")") || (this.value.charCodeAt(this.value.length - 3) !== 8658 && this.value[0] == ")") || (this.value.charCodeAt(this.value.length - 3) !== 8660 && this.value[0] == ")") )) {
-                        */
-                    if (this.availableNUM_CONJ_COUNT > 0) {
-                        if (this.value[this.value.length - 1] === ")" || this.value[this.value.length - 1] === "p" || this.value[this.value.length - 1] === "q" || this.value[this.value.length - 1] === "r") {
-                            this.value += " " + signKey + " ";
-                            this.availableNUM_CONJ = 0;
-                            this.availableNUM_PQR = 1;
-                            //this.availableNUM_BRACKET_LEFT = 1;   // OSTATNIA ZMIANA - WZIĄŁEM TO W KOMENTARZ!!!
-                        }
-                    }
-                    //}
-                }
-            }
-            else if (signKey === "(") {
-                if ((this.value[this.value.length - 1] !== ")" && this.value[this.value.length - 1] !== "p") || (this.value[this.value.length - 1] !== ")" && this.value[this.value.length - 1] !== "q") || (this.value[this.value.length - 1] !== ")" && this.value[this.value.length - 1] !== "r")) {
-                    if (this.value[this.value.length - 1] !== "p" && this.value[this.value.length - 1] !== "q" && this.value[this.value.length - 1] !== "r") {
-                        this.value += signKey;
-                        this.availableNUM_BRACKET++;
-                        this.availableNUM_CONJ_COUNT++;
-                        this.availableNUM_PQR = 1;
-                        this.availableNUM_CONJ = 1;
-                        this.availableNUM_NOT = 1;
-                    }
-                }
-            }
-            else if (signKey === ")") {
-                if ((this.value[this.value.length - 2] !== "(" && this.value[this.value.length - 1] !== "p") || (this.value[this.value.length - 2] !== "(" && this.value[this.value.length - 1] !== "q") || (this.value[this.value.length - 2] !== "(" && this.value[this.value.length - 1] !== "r")) {
-                    if (this.value.charCodeAt(this.value.length - 2) !== 124 && this.value.charCodeAt(this.value.length - 2) !== 8897 && this.value.charCodeAt(this.value.length - 2) !== 8896 && this.value.charCodeAt(this.value.length - 2) !== 8658 && this.value.charCodeAt(this.value.length - 2) !== 8660) {
-                        if (this.availableNUM_BRACKET > 0) {
-                            this.value += signKey;
-                            this.availableNUM_BRACKET--;
-                            this.availableNUM_CONJ_COUNT++;
-                            this.availableNUM_CONJ = 1;
-                            this.availableNUM_NOT = 0;
-                        }
-                    }
-                }
+        }
+    } else if (signKey === "(") {
+        if ((this.value[this.value.length - 1] !== ")" && this.value[this.value.length - 1] !== "p") || (this.value[this.value.length - 1] !== ")" && this.value[this.value.length - 1] !== "q") || (this.value[this.value.length - 1] !== ")" && this.value[this.value.length - 1] !== "r")) {
+            if (this.value[this.value.length - 1] !== "p" && this.value[this.value.length - 1] !== "q" && this.value[this.value.length - 1] !== "r") {
+                this.value += signKey;
+                this.availableNUM_BRACKET++;
+                this.availableNUM_CONJ_COUNT++;
+                this.availableNUM_PQR = 1;
+                this.availableNUM_CONJ = 1;
+                this.availableNUM_NOT = 1;
             }
         }
+    } else if (signKey === ")") {
+        if ((this.value[this.value.length - 2] !== "(" && this.value[this.value.length - 1] !== "p") || (this.value[this.value.length - 2] !== "(" && this.value[this.value.length - 1] !== "q") || (this.value[this.value.length - 2] !== "(" && this.value[this.value.length - 1] !== "r")) {
+            if (this.value.charCodeAt(this.value.length - 2) !== 124 && this.value.charCodeAt(this.value.length - 2) !== 8897 && this.value.charCodeAt(this.value.length - 2) !== 8896 && this.value.charCodeAt(this.value.length - 2) !== 8658 && this.value.charCodeAt(this.value.length - 2) !== 8660) {
+                if (this.availableNUM_BRACKET > 0) {
+                    this.value += signKey;
+                    this.availableNUM_BRACKET--;
+                    this.availableNUM_CONJ_COUNT++;
+                    this.availableNUM_CONJ = 1;
+                    this.availableNUM_NOT = 0;
+                    // Zatrzymywania pisania wyrażenia:
+                    /*let bracket_RIGHT_AMOUNT: number = 0;
+                    let conjuction_AMOUNT: number = 0;
+                    if (this.value.length > 2) {
+                        //alert('hej');
+                        for (let i: number = 0; i < this.value.length; i++) {
+                            if (this.value[i] === ")") {
+                                bracket_RIGHT_AMOUNT++;
+                            } else if (this.value.charCodeAt(i) === 172) {
+                                bracket_RIGHT_AMOUNT--;
+                            }
+                            else if (this.value.charCodeAt(i) === 8896 || this.value.charCodeAt(i) === 8897 || this.value.charCodeAt(i) === 8658 || this.value.charCodeAt(i) === 8660 || this.value.charCodeAt(i) === "|") {
+                                conjuction_AMOUNT++;
+                            }
+                        }
+                        // isEqual:
+                        if (bracket_RIGHT_AMOUNT === conjuction_AMOUNT) {
+                            this.isEqual = true;
+                        }
+                    }*/
+        // - - - - - - - - - -- - - -- - - - -  - -- - 
+        /*}
+    }
+}
+}
+}*/
+        //}
+        /*this.value += signKey;
         this.screen_VALUE.textContent = this.value;
+        console.log("availableNUM_PQR:         " + this.availableNUM_PQR);
+        console.log("availableNUM_NOT:         " + this.availableNUM_NOT);
+        console.log("availableNUM_CONJ:        " + this.availableNUM_CONJ);
+        console.log("availableNUM_CONJ_COUNT:  " + this.availableNUM_CONJ_COUNT);
+        console.log("availableNUM_BRACKET:     " + this.availableNUM_BRACKET);*/
     },
 };
 Calculator_MathLogic_FUNCTIONS.setButtons_AEL();
