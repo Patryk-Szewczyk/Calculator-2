@@ -246,6 +246,8 @@ var Calculator_MathLogic_FUNCTIONS = {
     },
     operation_VALID: function () {
         // Walidacja danych:
+        var badColor = "crimson";
+        var goodColor = "rgba(255,255,255,0.8)";
         var spaghetti = this.value.split(" ").join("");
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Zerowy Etap Walidacji - do II Etapu Walidacji - Sprawdzenia czy długość wyrazenia jest równa 2: 
@@ -255,7 +257,8 @@ var Calculator_MathLogic_FUNCTIONS = {
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         if (spaghetti.length <= 2) {
             console.log("Niepoprawna długość wyrażenia.");
-            this.screen_INFO.textContent = "Niepoprawna długość wyrażenia!";
+            //this.screen_INFO.textContent = "Niepoprawna długość wyrażenia!";
+            this.screen_VALUE.style.color = badColor;
             return;
         }
         // - - - - - - - - - - - - - - - - - - - - - - -
@@ -269,7 +272,8 @@ var Calculator_MathLogic_FUNCTIONS = {
         }
         if (bracketLeft_AMOUNT !== bracketRight_AMOUNT) {
             console.log("Niepoprawna liczba nawiasów!");
-            this.screen_INFO.textContent = "Niepoprawna liczba nawiasów!";
+            //this.screen_INFO.textContent = "Niepoprawna liczba nawiasów!";
+            this.screen_VALUE.style.color = badColor;
             return;
         }
         console.log("Poprawna liczba nawiasów!");
@@ -282,7 +286,8 @@ var Calculator_MathLogic_FUNCTIONS = {
         }
         else {
             console.log("Niepoprawne wyrażenie!");
-            this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+            //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+            this.screen_VALUE.style.color = badColor;
             return;
         }
         console.log(spaghetti);
@@ -356,7 +361,8 @@ var Calculator_MathLogic_FUNCTIONS = {
             }
             if (not_AMOUNT > 1 || conj_AMOUNT > 1 || word_AMOUNT > 2) {
                 console.log("Niepoprawne wyrażenie!");
-                this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                this.screen_VALUE.style.color = badColor;
                 return;
             }
         }
@@ -400,7 +406,8 @@ var Calculator_MathLogic_FUNCTIONS = {
                     if (is_Bad_1_COUNTER === 2 || isBad_2 === true) {
                         console.log("PRAWY SPÓJNIK: " + result[i][keyNum_LOC]);
                         console.log("Wyrażenie NIE jest poprawne!");
-                        this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
                         return;
                     }
                 }
@@ -409,14 +416,16 @@ var Calculator_MathLogic_FUNCTIONS = {
                     keyNum_LOC = j - 1;
                     if (result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== "(" && result[i][keyNum_LOC] !== undefined) {
                         console.log("Wyrażenie NIE jest poprawne!");
-                        this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
                         return;
                     }
                     // PRAWA:
                     keyNum_LOC = j + 1;
                     if (result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== ")" && result[i][keyNum_LOC] !== undefined) {
                         console.log("Wyrażenie NIE jest poprawne!");
-                        this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
                         return;
                     }
                 }
@@ -425,14 +434,16 @@ var Calculator_MathLogic_FUNCTIONS = {
                     keyNum_LOC = j - 1;
                     if (result[i][keyNum_LOC] !== "(") {
                         console.log("Wyrażenie NIE jest poprawne!");
-                        this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
                         return;
                     }
                     // PRAWA:
                     keyNum_LOC = j + 1;
                     if (result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r") {
                         console.log("Wyrażenie NIE jest poprawne!");
-                        this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
                         return;
                     }
                 }
@@ -441,14 +452,16 @@ var Calculator_MathLogic_FUNCTIONS = {
                     keyNum_LOC = j - 1;
                     if (result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== undefined) {
                         console.log("Wyrażenie NIE jest poprawne!");
-                        this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
                         return;
                     }
                     // PRAWA:
                     keyNum_LOC = j + 1;
                     if (result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r" && result[i].charCodeAt(keyNum_LOC) !== 172) {
                         console.log("Wyrażenie NIE jest poprawne!");
-                        this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
                         return;
                     }
                 }
@@ -457,21 +470,24 @@ var Calculator_MathLogic_FUNCTIONS = {
                     keyNum_LOC = j - 1;
                     if (result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r") {
                         console.log("Wyrażenie NIE jest poprawne!");
-                        this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
                         return;
                     }
                     // PRAWA:
                     keyNum_LOC = j + 1;
                     if (result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== undefined) {
                         console.log("Wyrażenie NIE jest poprawne!");
-                        this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
                         return;
                     }
                 }
             }
         }
         console.log('Wyrażenie jest ostatecznie prawidłowe!');
-        this.screen_INFO.textContent = "Wyrażenie jest ostatecznie prawidłowe!";
+        //this.screen_INFO.textContent = "Wyrażenie jest ostatecznie prawidłowe!";
+        this.screen_VALUE.style.color = goodColor;
         // Wykonywanie operacji:
         if (this.calc_MODE === "EVA") {
             console.log("Operacja: ewaluacja");
@@ -508,13 +524,15 @@ var Calculator_MathLogic_FUNCTIONS = {
             this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 1));
         }
         this.screen_VALUE.textContent = this.value;
+        // TESTOWE: ===============================================================================TESTOWE
+        this.operation_VALID();
     },
     operation_AC: function () {
         console.clear();
         this.value = " ";
         this.screen_VALUE.textContent = this.value;
-        // TESTOWE:
-        this.screen_INFO.textContent = "";
+        // TESTOWE: ===============================================================================TESTOWE
+        //this.screen_INFO.textContent = "";
     },
     operation_SignValue: function (signValue) {
         if (this.calc_MODE === "EVA") {
@@ -559,6 +577,8 @@ var Calculator_MathLogic_FUNCTIONS = {
             this.value += signKey;
         }
         this.screen_VALUE.textContent = this.value;
+        // TESTOWE: ===============================================================================TESTOWE
+        this.operation_VALID();
     },
 };
 Calculator_MathLogic_FUNCTIONS.setButtons_AEL();
