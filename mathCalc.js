@@ -199,7 +199,7 @@ var Calculator_MathLogic_FUNCTIONS = {
                         _this.operation_MODE(_this.bt_ID); // OK
                         break;
                     case "=":
-                        _this.operation_CALC(_this.bt_ID);
+                        _this.operation_VALID(_this.bt_ID);
                         break;
                     case "BACK":
                         _this.operation_DEL(_this.bt_ID); // OK
@@ -244,10 +244,23 @@ var Calculator_MathLogic_FUNCTIONS = {
             this.screen_INFO.textContent = this.screen_INFO_EVA;
         }
     },
-    operation_CALC: function () {
+    operation_VALID: function () {
         // Walidacja danych:
         var spaghetti = this.value.split(" ").join("");
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // Zerowy Etap Walidacji - do II Etapu Walidacji - Sprawdzenia czy długość wyrazenia jest równa 2: 
+        // (Wynikiem "wyciannia globalnego wyrażenie nawiasowego" dla nawiasu głównego zawsze jest "",
+        // bo tak działa algorytm... nieważne to nie wina algorytmu... co tu dużo gadać.., jakby człowiek
+        // co kawałek coś opisywał to z 800 linijek zrobiłoby się 8000..., - po prostu mi jest to potrzebne!).
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        if (spaghetti.length <= 2) {
+            console.log("Niepoprawna długość wyrażenia.");
+            this.screen_INFO.textContent = "Niepoprawna długość wyrażenia!";
+            return;
+        }
+        // - - - - - - - - - - - - - - - - - - - - - - -
         // I Etap Walidacji - poprawna liczba nawiasów:
+        // - - - - - - - - - - - - - - - - - - - - - - -
         var bracketLeft_AMOUNT = 0;
         var bracketRight_AMOUNT = 0;
         for (var i = 0; i < spaghetti.length; i++) {
@@ -256,6 +269,7 @@ var Calculator_MathLogic_FUNCTIONS = {
         }
         if (bracketLeft_AMOUNT !== bracketRight_AMOUNT) {
             console.log("Niepoprawna liczba nawiasów!");
+            this.screen_INFO.textContent = "Niepoprawna liczba nawiasów!";
             return;
         }
         console.log("Poprawna liczba nawiasów!");
@@ -263,152 +277,201 @@ var Calculator_MathLogic_FUNCTIONS = {
         if ((spaghetti[0] !== "(" && spaghetti[spaghetti.length - 1] !== ")") || (spaghetti[0] === "(" && spaghetti[spaghetti.length - 1] !== ")") || (spaghetti[0] !== "(" && spaghetti[spaghetti.length - 1] === ")")) {
             spaghetti = "(" + spaghetti + ")";
         }
+        else if (spaghetti[0] === "(" && spaghetti[spaghetti.length - 1] === ")") {
+            spaghetti = "(" + spaghetti + ")";
+        }
         else {
             console.log("Niepoprawne wyrażenie!");
+            this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
             return;
         }
         console.log(spaghetti);
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // II Etap Walidacji - Poprawna liczba określonych znaków w kolejno wycinanych nawiasach nadrzędnych: (nadrzędne -> potomne)
-        var bracket_LEFT_LOC = 0;
-        var bracket_RIGHT_LOC = 0;
-        var toSearchRightBracket_COUNTER = 0;
-        var spaghetti_PART = "";
-        var isNOT_BRACKET = false;
-        while (isNOT_BRACKET === false) {
-            // Szukanie pierwszego najnadrzędniejszego nawiasu "(":
-            for (var i = 0; i < spaghetti.length; i++) {
-                if (spaghetti[i] === "(") {
-                    bracket_LEFT_LOC = i;
-                    toSearchRightBracket_COUNTER++;
-                    break;
-                }
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // Rozkład wyrażenia na stopniowe wyrażenia nadrzędne:
+        // Przypomnij sobie działanie tego algorytmu:
+        var expression = spaghetti;
+        var stack = [];
+        var bracketWord_AR = [];
+        for (var i = 0; i < expression.length; i++) {
+            if (expression[i] === '(') {
+                stack.push(i.toString());
             }
-            // Szukanie pierwszego najnadrzędniejszego nawiasu ")":
-            for (var i = bracket_LEFT_LOC + 1; i < spaghetti.length; i++) {
-                if (spaghetti[i] === "(") {
-                    toSearchRightBracket_COUNTER++;
-                }
-                else if (spaghetti[i] === ")") {
-                    toSearchRightBracket_COUNTER--;
-                }
-                if (toSearchRightBracket_COUNTER === 0) {
-                    bracket_RIGHT_LOC = i;
-                }
+            else if (expression[i] === ')') {
+                var startIndex = parseInt(stack.pop());
+                var subExpression = expression.substring(startIndex, i + 1);
+                bracketWord_AR.push(subExpression);
             }
-            //console.log(`Lewy nawias: ${bracket_LEFT_LOC} | Prawy nawias: ${bracket_RIGHT_LOC} `);
-            // Wycianie najnadrzędniejszego wyrażenia i wycinanie z niego nawiasów potomnych z ich zawartością:
-            spaghetti_PART = spaghetti.slice(bracket_LEFT_LOC + 1, bracket_RIGHT_LOC);
-            var toEraseBckCont_LEFT_AR = [];
-            var toEraseBckCont_RIGHT_AR = [];
-            var PROPER_eraseBckCont_LEFT_AR = [];
-            var PROPER_eraseBckCont_RIGHT_AR = [];
-            for (var i = 0; i < spaghetti_PART.length; i++) {
-                if (spaghetti_PART[i] === "(") {
-                    toEraseBckCont_LEFT_AR.push(String(i));
-                }
-                else if (spaghetti_PART[i] === ")") {
-                    toEraseBckCont_RIGHT_AR.push(String(i));
-                }
-            }
-            console.log('Współrzędne nawiasów kawałka spaghetti:');
-            console.log(toEraseBckCont_LEFT_AR);
-            console.log(toEraseBckCont_RIGHT_AR);
-            var oneTime = false;
-            var idx = 0;
-            for (var i = 1; i < toEraseBckCont_LEFT_AR.length; i++) {
-                if (oneTime === false) {
-                    oneTime = true;
-                    //PROPER_eraseBckCont_LEFT_AR.push("");
-                    idx++;
-                    PROPER_eraseBckCont_LEFT_AR[idx] = toEraseBckCont_LEFT_AR[i - 1];
-                }
-                if (toEraseBckCont_LEFT_AR[i] < toEraseBckCont_RIGHT_AR[i - 1]) { // Nawias B znajduje się w nawiasie A
-                    console.log(true);
-                    //PROPER_eraseBckCont_LEFT_AR[idx] = toEraseBckCont_LEFT_AR[i - 1];
-                    PROPER_eraseBckCont_RIGHT_AR[idx] = toEraseBckCont_RIGHT_AR[i];
-                }
-                else if (toEraseBckCont_LEFT_AR[i] > toEraseBckCont_RIGHT_AR[i - 1]) { // Nawias B NIE znajduje się w nawiasie A
-                    console.log(false);
-                    oneTime = false;
-                    //PROPER_eraseBckCont_LEFT_AR.push("");
-                    //idx++;
-                }
-            }
-            console.log("Wspólrzędne zestawów nawiasów spaghetti:");
-            console.log(PROPER_eraseBckCont_LEFT_AR);
-            console.log(PROPER_eraseBckCont_RIGHT_AR);
-            // Jeżeli w stringu nie ma żadnego nawiasu, zatrzymaj pętlę:
-            for (var i = 0; i < spaghetti.length; i++) {
-                if (spaghetti[i] !== "(") {
-                    isNOT_BRACKET = true;
-                }
-            }
-            // ONLY TEST: Tylko jedna iteracja:
-            isNOT_BRACKET = true;
         }
-        console.log("EKSPERYMENTY:\n");
-        var str = "To jest przykładowy tekst do modyfikacji.";
-        var startIndex = 8; // Indeks początkowy części do usunięcia
-        var deleteCount = 12; // Liczba znaków do usunięcia
-        var modifiedStr = str.substring(0, startIndex) + str.substring(startIndex + deleteCount);
-        console.log(modifiedStr);
-        /*spaghetti_PART_AR = spaghetti.slice(bracket_LEFT_LOC + 1, bracket_RIGHT_LOC).split("");
-            let CAN_erase: boolean = false;
-            for (let i: number = 0; i < spaghetti_PART_AR.length; i++) {
-                if (spaghetti_PART_AR[i] === "(") {
-                    CAN_erase = true;
-                    //console.log("Kasuj od: " + i);
+        console.log(bracketWord_AR);
+        var expressions = bracketWord_AR;
+        var result = [];
+        for (var i = 0; i < expressions.length; i++) {
+            // Usunięcie nawiasów z prawej i lewej strony
+            if (expressions[i][0] === "(" && expressions[i][expressions[i].length - 1] === ")") {
+                expressions[i] = expressions[i].substring(1, expressions[i].length - 1);
+            }
+            // Usunięcie wyrażeń nawiasowych potomnych
+            var startIndex = expressions[i].indexOf("(");
+            while (startIndex !== -1) {
+                var openCount = 1;
+                var endIndex = startIndex + 1;
+                while (openCount > 0 && endIndex < expressions[i].length) {
+                    if (expressions[i][endIndex] === "(") {
+                        openCount++;
+                    }
+                    else if (expressions[i][endIndex] === ")") {
+                        openCount--;
+                    }
+                    endIndex++;
                 }
-                if (CAN_erase === true) {
-                    spaghetti_PART_AR.splice(i, 1);
-                    console.log(spaghetti_PART_AR);
+                expressions[i] = expressions[i].substring(0, startIndex) + expressions[i].substring(endIndex);
+                startIndex = expressions[i].indexOf("(", startIndex);
+            }
+            result.push(expressions[i]);
+        }
+        // Sprawdzanie czy któryś z indeksów araja zawiera pusty string: (mankament wyrażenia wpisanego z globalnym nawiasem nadrzędny, tzn. wpisanie: np. (q|p)) )
+        if (result[result.length - 1] === "") {
+            result.pop();
+        }
+        // Sprawdzanie poprawności liczby znaków w nawiasach:
+        var not_AMOUNT = 0;
+        var conj_AMOUNT = 0;
+        var word_AMOUNT = 0;
+        for (var i = 0; i < result.length; i++) {
+            not_AMOUNT = 0;
+            conj_AMOUNT = 0;
+            word_AMOUNT = 0;
+            for (var j = 0; j < result[i].length; j++) {
+                if (result[i].charCodeAt(j) === 172) {
+                    not_AMOUNT++;
                 }
-                if (spaghetti_PART_AR[i] === ")") {
-                    CAN_erase === false;
-                    //console.log("Przestań kasować od: " + i);
+                else if (result[i].charCodeAt(j) === 124 || result[i].charCodeAt(j) === 8897 || result[i].charCodeAt(j) === 8896 || result[i].charCodeAt(j) === 8658 || result[i].charCodeAt(j) === 8660) {
+                    conj_AMOUNT++;
+                }
+                else if (result[i][j] === "p" || result[i][j] === "q" || result[i][j] === "r") {
+                    word_AMOUNT++;
                 }
             }
-            for (let i: number = 0; i < spaghetti_PART_AR.length; i++) {
-                if (spaghetti_PART_AR[i] === ")") {
-                    spaghetti_PART_AR.splice(i, 1);
+            if (not_AMOUNT > 1 || conj_AMOUNT > 1 || word_AMOUNT > 2) {
+                console.log("Niepoprawne wyrażenie!");
+                this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                return;
+            }
+        }
+        console.log("Poprawna dopuszczalna liczba znaków w nawiasach");
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // III Etap walidacji - Sąsiedztwo właściwych znaków:
+        // - - - - - - - - - - - - - - - - - - - - - - - - - -
+        var keyNum = 0;
+        var keyNum_LOC = 0;
+        var is_Bad_1_COUNTER = 0;
+        var isBad_2 = false;
+        console.log("\nIII Etap walidacji - Sąsiedztwo właściwych znaków:");
+        console.log(result);
+        for (var i = 0; i < result.length; i++) {
+            for (var j = 0; j < result[i].length; j++) {
+                keyNum = result[i].charCodeAt(j);
+                if (keyNum === 124 || keyNum === 8897 || keyNum === 8896 || keyNum === 8658 || keyNum === 8660) {
+                    // LEWA:
+                    keyNum_LOC = j - 1;
+                    is_Bad_1_COUNTER = 0; // Sytuacja kiedy z obu stron spójnika nie występuje żaden znak. Kiedy zaistnieje taka sytuacja, licznik wynosi 2.
+                    isBad_2 = false; // Sytuacja kiedy wystepuje samo wyrażenie nawiasowetypu: "|p" lub "p|" i przed nim lub po nim w zależności od wyrażenia nawiasowego nie następuje kolejne.
+                    if (result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r" && result[i][keyNum_LOC] !== ")") {
+                        if (result[i][keyNum_LOC] === undefined) {
+                            is_Bad_1_COUNTER++;
+                            if (result.length < 1) {
+                                isBad_2 = true;
+                            }
+                        }
+                    }
+                    // PRAWA:
+                    keyNum_LOC = j + 1;
+                    if (result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r" && result[i][keyNum_LOC] !== "(") {
+                        if (result[i][keyNum_LOC] === undefined) {
+                            is_Bad_1_COUNTER++;
+                            if (result.length < 1) {
+                                isBad_2 = true;
+                            }
+                        }
+                    }
+                    if (is_Bad_1_COUNTER === 2 || isBad_2 === true) {
+                        console.log("PRAWY SPÓJNIK: " + result[i][keyNum_LOC]);
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        return;
+                    }
+                }
+                else if (keyNum === 112 || keyNum === 113 || keyNum === 114) {
+                    // LEWA:
+                    keyNum_LOC = j - 1;
+                    if (result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== "(" && result[i][keyNum_LOC] !== undefined) {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        return;
+                    }
+                    // PRAWA:
+                    keyNum_LOC = j + 1;
+                    if (result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== ")" && result[i][keyNum_LOC] !== undefined) {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        return;
+                    }
+                }
+                else if (keyNum === 172) {
+                    // LEWA:
+                    keyNum_LOC = j - 1;
+                    if (result[i][keyNum_LOC] !== "(") {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        return;
+                    }
+                    // PRAWA:
+                    keyNum_LOC = j + 1;
+                    if (result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r") {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        return;
+                    }
+                }
+                else if (keyNum === 40) {
+                    // LEWA:
+                    keyNum_LOC = j - 1;
+                    if (result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== undefined) {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        return;
+                    }
+                    // PRAWA:
+                    keyNum_LOC = j + 1;
+                    if (result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r" && result[i].charCodeAt(keyNum_LOC) !== 172) {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        return;
+                    }
+                }
+                else if (keyNum === 41) {
+                    // LEWA:
+                    keyNum_LOC = j - 1;
+                    if (result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r") {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        return;
+                    }
+                    // PRAWA:
+                    keyNum_LOC = j + 1;
+                    if (result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== undefined) {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        return;
+                    }
                 }
             }
-            console.log(spaghetti_PART_AR);*/
-        // Określanie pozycji pierwszego naj-nadrzędniejszych nawiasu:
-        /*let bracketTo_SLICE_COUNTER: number = 0;
-        let bracket_LEFT_LOC: number = 0;
-        let bracket_RIGHT_LOC: number = 0;
-        let spaghetti_PART: string = "";
-        let spaghetti_PART_AR: string[] = [];
-        for (let i: number = 0; i < spaghetti.length; i++) {
-            if (spaghetti[i] === "(") {
-                bracket_LEFT_LOC = i;
-                bracketTo_SLICE_COUNTER++;
-                break;
-            }
-        }*/
-        // Określanie pozycji ostatniego naj-nadrzędniejszych nawiasu:
-        /*for (let i: number = bracket_LEFT_LOC + 1; i < spaghetti.length; i++) {
-            if (spaghetti[i] === "(") {
-                bracketTo_SLICE_COUNTER++;
-            } else if (spaghetti[i] === ")") {
-                bracketLeft_AMOUNT--;
-            }
-            if (bracketLeft_AMOUNT === 0) {
-                bracket_RIGHT_LOC = i;
-            }
-        }/*
-        //console.log("Lewy nawias: " + bracket_LEFT_LOC + " | Prawy nawias: " + bracket_RIGHT_LOC);
-        // Wycinanie pierwszego naj-nadrzędniejszych nawiasu i sprawdzanie poprawności danych - poprawna ilość globalnych spójników w każdym z nawiasów: (1)
-        //spaghetti_PART = spaghetti.slice((bracket_LEFT_LOC + 1), bracket_RIGHT_LOC);
-        //spaghetti_PART_AR = spaghetti_PART.split("");
-        //console.log("Wycięty pierwszy naj-nadrzędniejszy nawias: " + spaghetti_PART);
-        //console.log("Wycięty pierwszy naj-nadrzędniejszy nawias (ARRAY): " + spaghetti_PART_AR);
-        // Kasowanie potomnych nawiasów z ich zawartością z nadrzędnego:
-        /*let isEmpty_BRACKET: boolean = false;
-        while (isEmpty_BRACKET) {
-            spaghetti_PART
-        }*/
+        }
+        console.log('Wyrażenie jest ostatecznie prawidłowe!');
+        this.screen_INFO.textContent = "Wyrażenie jest ostatecznie prawidłowe!";
         // Wykonywanie operacji:
         if (this.calc_MODE === "EVA") {
             console.log("Operacja: ewaluacja");
@@ -438,79 +501,20 @@ var Calculator_MathLogic_FUNCTIONS = {
     //},
     operation_DEL: function () {
         // Skracanie wyrażenia:
-        //let erasedVal: number = undefined;
         if (this.value[this.value.length - 1] === " ") {
-            //erasedVal = this.value.charCodeAt(this.value.length - 2);
             this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 3));
         }
         else {
-            //erasedVal = this.value.charCodeAt(this.value.length - 1);
             this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 1));
         }
         this.screen_VALUE.textContent = this.value;
-        //this.screen_INFO.textContent = "Skrócono wartość";
-        //console.log(erasedVal);
-        // Przywracanie wartości zmiennych "available..." do poprzedniego stanu: (odwrotność modyfikacji właściwości z metody "operation_Sign")
-        /*if (this.value.length === 0) {
-            this.value = " ";
-            this.screen_VALUE.textContent = this.value;
-            this.availableNUM_PQR = 1;
-            this.availableNUM_NOT = 0;
-            this.availableNUM_CONJ = 0;
-            this.availableNUM_BRACKET = 0;
-            this.availableNUM_CONJ_COUNT = 1;
-            this.isEqual = false;
-        } else if (this.value.length > 0) {
-            if (erasedVal === 112 || erasedVal === 113 || erasedVal === 114) {  // zmienne
-                this.availableNUM_PQR = 1;
-                this.availableNUM_CONJ = 0;
-                this.availableNUM_NOT = 1;
-                this.availableNUM_CONJ_COUNT++;
-            } else if (erasedVal === 172) {  // negacja
-                this.availableNUM_NOT = 1;
-                this.availableNUM_PQR = 0;
-            } else if (erasedVal === 124 || erasedVal === 8897 || erasedVal === 8896 || erasedVal === 8658 || erasedVal === 8660) {  // spójniki
-                this.availableNUM_CONJ = 1;
-                this.availableNUM_PQR = 0;
-            } else if (erasedVal === 40 ) {  // nawias lewy
-                this.availableNUM_BRACKET--;
-                this.availableNUM_CONJ_COUNT--;
-                //this.availableNUM_PQR = 0;
-                this.availableNUM_CONJ = 0;
-                this.availableNUM_NOT = 0;
-            } else if (erasedVal === 41 ) {  // nawias prawy
-                this.availableNUM_BRACKET++;
-                this.availableNUM_CONJ_COUNT--;
-                this.availableNUM_CONJ = 0;
-                this.availableNUM_NOT = 1;
-            }
-        }*/
-        /*this.screen_VALUE.textContent = this.value;
-        this.screen_INFO.textContent = "Skrócono wartość";*/
-        /*console.clear();
-        console.log("availableNUM_PQR:         " + this.availableNUM_PQR);
-        console.log("availableNUM_NOT:         " + this.availableNUM_NOT);
-        console.log("availableNUM_CONJ:        " + this.availableNUM_CONJ);
-        console.log("availableNUM_CONJ_COUNT:  " + this.availableNUM_CONJ_COUNT);
-        console.log("availableNUM_BRACKET:     " + this.availableNUM_BRACKET);*/
     },
     operation_AC: function () {
-        //console.clear();
+        console.clear();
         this.value = " ";
         this.screen_VALUE.textContent = this.value;
-        //this.screen_INFO.textContent = "Skasowano wartość";
-        /*this.availableNUM_PQR = 1;
-        this.availableNUM_NOT = 0;
-        this.availableNUM_CONJ = 0;
-        this.availableNUM_BRACKET = 0;
-        this.availableNUM_CONJ_COUNT = 1;
-        this.isEqual = false;
-        console.clear();
-        console.log("availableNUM_PQR:         " + this.availableNUM_PQR);
-        console.log("availableNUM_NOT:         " + this.availableNUM_NOT);
-        console.log("availableNUM_CONJ:        " + this.availableNUM_CONJ);
-        console.log("availableNUM_CONJ_COUNT:  " + this.availableNUM_CONJ_COUNT);
-        console.log("availableNUM_BRACKET:     " + this.availableNUM_BRACKET);*/
+        // TESTOWE:
+        this.screen_INFO.textContent = "";
     },
     operation_SignValue: function (signValue) {
         if (this.calc_MODE === "EVA") {
@@ -555,141 +559,6 @@ var Calculator_MathLogic_FUNCTIONS = {
             this.value += signKey;
         }
         this.screen_VALUE.textContent = this.value;
-        // Walidacja wyprwadzanych danych: (aby porwstało poprawne wyrażenie do EVA i TAU)
-        //console.log(signKey.charCodeAt(0) === 172);
-        /*console.clear();
-        if (this.isEqual === true) {
-            console.log("isEqual: " + this.isEqual);
-            return;
-        }*/
-        // 1) Zrób IF'a gloalnego (i wcześcniej odpowiednie mechanizmy lgorytmu), jeżeli warunek zostanie spełniony, nie można nic dalej pisać!
-        // 2) Następnie weź wszystkie zmienne jako STATIC i przetestuj poprawność działania.
-        // 3) Weź powyższy algorytm sprawdzania poprawności wartości i określania spełniania warunku do funkcji "operation_DEL".
-        /*if (this.value === " ") {
-            if (signKey === "p" || signKey === "q" || signKey === "r") {
-                if (this.availableNUM_PQR === 1) {
-                    this.value = signKey;
-                    this.availableNUM_PQR = 0;
-                    this.availableNUM_CONJ = 1;
-                    // ONLY EMPTY VAL:
-                    this.availableNUM_NOT = 0;
-                    this.availableNUM_BRACKET = 0;
-                }
-            } /*else if (signKey.charCodeAt(0) === 172) {   // NOT
-                if (this.availableNUM_NOT === 1) {
-                    this.value = signKey;
-                    this.availableNUM_NOT = 0;
-                    this.availableNUM_PQR = 1;
-                }
-            }*/ /*
-        else if (signKey === "(") {
-                this.value = signKey;
-                this.availableNUM_BRACKET++;
-                this.availableNUM_CONJ_COUNT++;
-                this.availableNUM_PQR = 1;
-                this.availableNUM_CONJ = 1;
-                this.availableNUM_NOT = 1;
-        }
-    } else {
-        if (signKey === "p" || signKey === "q" || signKey === "r") {
-            if (this.availableNUM_PQR === 1) {
-                this.value += signKey;
-                this.availableNUM_PQR = 0;
-                this.availableNUM_CONJ = 1;
-                this.availableNUM_NOT = 0;
-                this.availableNUM_CONJ_COUNT--;
-                // Zatrzymywania pisania wyrażenia:   WEŹ TO W ODZIELNĄ METODĘ!!!!!!!!!!!!
-                /*let bracket_RIGHT_AMOUNT: number = 0;
-                let conjuction_AMOUNT: number = 0;
-                if (this.value.length > 2) {
-                    //alert('hej');
-                    for (let i: number = 0; i < this.value.length; i++) {
-                        if (this.value[i] === ")") {
-                            bracket_RIGHT_AMOUNT++;
-                        } else if (this.value.charCodeAt(i) === 172) {
-                            bracket_RIGHT_AMOUNT--;
-                        }
-                        else if (this.value.charCodeAt(i) === 8896 || this.value.charCodeAt(i) === 8897 || this.value.charCodeAt(i) === 8658 || this.value.charCodeAt(i) === 8660 || this.value.charCodeAt(i) === "|") {
-                            conjuction_AMOUNT++;
-                        }
-                    }
-                    // isEqual:
-                    if (bracket_RIGHT_AMOUNT === conjuction_AMOUNT) {
-                        this.isEqual = true;
-                    }
-                }*/
-        // - - - - - - - - - -- - - -- - - - -  - -- - 
-        /*}
-    } else if (signKey.charCodeAt(0) === 172) {
-        if (this.availableNUM_NOT === 1) {
-            this.value += signKey;
-            this.availableNUM_NOT = 0;
-            this.availableNUM_PQR = 1;
-        }
-    } else if (signKey.charCodeAt(0) === 8896 || signKey.charCodeAt(0) === 8897 || signKey.charCodeAt(0) === 8658 || signKey.charCodeAt(0) === 8660 || signKey === "|") {
-        if (this.availableNUM_CONJ === 1) {
-            if (this.availableNUM_CONJ_COUNT > 0) {
-                if (this.value[this.value.length - 1] === ")" || this.value[this.value.length - 1] === "p" || this.value[this.value.length - 1] === "q"  || this.value[this.value.length - 1] === "r") {
-                    this.value += " " + signKey + " ";
-                    this.availableNUM_CONJ = 0;
-                    this.availableNUM_PQR = 1;
-                }
-            }
-        }
-    } else if (signKey === "(") {
-        if ((this.value[this.value.length - 1] !== ")" && this.value[this.value.length - 1] !== "p") || (this.value[this.value.length - 1] !== ")" && this.value[this.value.length - 1] !== "q") || (this.value[this.value.length - 1] !== ")" && this.value[this.value.length - 1] !== "r")) {
-            if (this.value[this.value.length - 1] !== "p" && this.value[this.value.length - 1] !== "q" && this.value[this.value.length - 1] !== "r") {
-                this.value += signKey;
-                this.availableNUM_BRACKET++;
-                this.availableNUM_CONJ_COUNT++;
-                this.availableNUM_PQR = 1;
-                this.availableNUM_CONJ = 1;
-                this.availableNUM_NOT = 1;
-            }
-        }
-    } else if (signKey === ")") {
-        if ((this.value[this.value.length - 2] !== "(" && this.value[this.value.length - 1] !== "p") || (this.value[this.value.length - 2] !== "(" && this.value[this.value.length - 1] !== "q") || (this.value[this.value.length - 2] !== "(" && this.value[this.value.length - 1] !== "r")) {
-            if (this.value.charCodeAt(this.value.length - 2) !== 124 && this.value.charCodeAt(this.value.length - 2) !== 8897 && this.value.charCodeAt(this.value.length - 2) !== 8896 && this.value.charCodeAt(this.value.length - 2) !== 8658 && this.value.charCodeAt(this.value.length - 2) !== 8660) {
-                if (this.availableNUM_BRACKET > 0) {
-                    this.value += signKey;
-                    this.availableNUM_BRACKET--;
-                    this.availableNUM_CONJ_COUNT++;
-                    this.availableNUM_CONJ = 1;
-                    this.availableNUM_NOT = 0;
-                    // Zatrzymywania pisania wyrażenia:
-                    /*let bracket_RIGHT_AMOUNT: number = 0;
-                    let conjuction_AMOUNT: number = 0;
-                    if (this.value.length > 2) {
-                        //alert('hej');
-                        for (let i: number = 0; i < this.value.length; i++) {
-                            if (this.value[i] === ")") {
-                                bracket_RIGHT_AMOUNT++;
-                            } else if (this.value.charCodeAt(i) === 172) {
-                                bracket_RIGHT_AMOUNT--;
-                            }
-                            else if (this.value.charCodeAt(i) === 8896 || this.value.charCodeAt(i) === 8897 || this.value.charCodeAt(i) === 8658 || this.value.charCodeAt(i) === 8660 || this.value.charCodeAt(i) === "|") {
-                                conjuction_AMOUNT++;
-                            }
-                        }
-                        // isEqual:
-                        if (bracket_RIGHT_AMOUNT === conjuction_AMOUNT) {
-                            this.isEqual = true;
-                        }
-                    }*/
-        // - - - - - - - - - -- - - -- - - - -  - -- - 
-        /*}
-    }
-}
-}
-}*/
-        //}
-        /*this.value += signKey;
-        this.screen_VALUE.textContent = this.value;
-        console.log("availableNUM_PQR:         " + this.availableNUM_PQR);
-        console.log("availableNUM_NOT:         " + this.availableNUM_NOT);
-        console.log("availableNUM_CONJ:        " + this.availableNUM_CONJ);
-        console.log("availableNUM_CONJ_COUNT:  " + this.availableNUM_CONJ_COUNT);
-        console.log("availableNUM_BRACKET:     " + this.availableNUM_BRACKET);*/
     },
 };
 Calculator_MathLogic_FUNCTIONS.setButtons_AEL();
