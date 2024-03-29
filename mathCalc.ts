@@ -527,14 +527,34 @@ const Calculator_MathLogic_FUNCTIONS: {
         this.screen_VALUE.style.color = goodColor;
 
         // IV Etap Walidacji - niepoprawne sytuacje: "q|" i "|q" i poprawne: "q|r", "(q|r)|p" i "p|(q|r)", uwzględniając NOT ("~").
+        let isNOT: boolean = false;
         for (let i: number = 0; i < result.length; i++) {
-            if (result[i].length < 3 && result.length < 2) {
-                console.log("Wyrażenie NIE jest poprawne!");
-                //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
-                this.screen_VALUE.style.color = badColor;
-                return;
+            for (let j: number = 0; j < result[i].length; j++) {
+                if (result[i].charCodeAt(j) === 172) {
+                    isNOT = true;
+                }
+            }
+            if (isNOT == true) {
+                isNOT = false;
+                if (result[i].length < 2 && result.length < 2) {
+                    console.log("Wyrażenie NIE jest poprawne!");
+                    //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                    this.screen_VALUE.style.color = badColor;
+                    return;
+                }
+            } else {
+                if (result[i].length < 3 && result.length < 2) {
+                    console.log("Wyrażenie NIE jest poprawne!");
+                    //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                    this.screen_VALUE.style.color = badColor;
+                    return;
+                }
             }
         }
+
+        // Można się przyczepić do tego, że w IV Etapie Walidacji nie zrobiłem akceptowania wartości jednoznakowej - zmiennych "p", "q" i "r",
+        // ale po jakiego grzyba ktoś chciałby obliczyć na kalkulatorze coś tak prostego... przepraszam, to nawet nie jest obliczenie, a
+        // podłożenie za zmienną podanej wartości i tyle...
         
         // Wykonywanie operacji:
         if (this.calc_MODE === "EVA") {
