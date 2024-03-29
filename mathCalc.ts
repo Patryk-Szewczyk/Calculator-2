@@ -332,12 +332,14 @@ const Calculator_MathLogic_FUNCTIONS: {
         const expression = spaghetti;
         const stack: string[] = [];
         const bracketWord_AR: string[] = [];
+        let startIndex_1: number = 0;
+        let subExpression: string = "";
         for (let i = 0; i < expression.length; i++) {
             if (expression[i] === '(') {
                 stack.push(i.toString());
             } else if (expression[i] === ')') {
-                const startIndex = parseInt(stack.pop()!);
-                const subExpression = expression.substring(startIndex, i + 1);
+                startIndex_1 = parseInt(stack.pop()!);
+                subExpression = expression.substring(startIndex_1, i + 1);
                 bracketWord_AR.push(subExpression);
             }
         }
@@ -345,16 +347,19 @@ const Calculator_MathLogic_FUNCTIONS: {
 
         let expressions = bracketWord_AR;
         const result: string[] = [];
+        let startIndex_2: number = 0;
+        let openCount: number = 0;
+        let endIndex: number = 0;
         for (let i: number = 0; i < expressions.length; i++) {
             // Usunięcie nawiasów z prawej i lewej strony
             if (expressions[i][0] === "(" && expressions[i][expressions[i].length - 1] === ")") {
                 expressions[i] = expressions[i].substring(1, expressions[i].length - 1);
             }
             // Usunięcie wyrażeń nawiasowych potomnych
-            let startIndex = expressions[i].indexOf("(");
-            while (startIndex !== -1) {
-                let openCount = 1;
-                let endIndex = startIndex + 1;
+            startIndex_2 = expressions[i].indexOf("(");
+            while (startIndex_2 !== -1) {
+                openCount = 1;
+                endIndex = startIndex_2 + 1;
                 while (openCount > 0 && endIndex < expressions[i].length) {
                     if (expressions[i][endIndex] === "(") {
                         openCount++;
@@ -363,8 +368,8 @@ const Calculator_MathLogic_FUNCTIONS: {
                     }
                     endIndex++;
                 }
-                expressions[i] = expressions[i].substring(0, startIndex) + expressions[i].substring(endIndex);
-                startIndex = expressions[i].indexOf("(", startIndex);
+                expressions[i] = expressions[i].substring(0, startIndex_2) + expressions[i].substring(endIndex);
+                startIndex_2 = expressions[i].indexOf("(", startIndex_2);
             }
             result.push(expressions[i]);
         }
@@ -439,7 +444,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                             }
                         }
                     }
-                    if (is_Bad_1_COUNTER === 2  || isBad_2 === true) {
+                    if (is_Bad_1_COUNTER === 2  && isBad_2 === true) {
                         console.log("PRAWY SPÓJNIK: " + result[i][keyNum_LOC]);
                         console.log("Wyrażenie NIE jest poprawne!");
                         //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
@@ -520,6 +525,16 @@ const Calculator_MathLogic_FUNCTIONS: {
         }
         console.log('Wyrażenie jest ostatecznie prawidłowe!');
         this.screen_VALUE.style.color = goodColor;
+
+        // IV Etap Walidacji - niepoprawne sytuacje: "q|" i "|q" i poprawne: "q|r", "(q|r)|p" i "p|(q|r)", uwzględniając NOT ("~").
+        for (let i: number = 0; i < result.length; i++) {
+            if (result[i].length < 3 && result.length < 2) {
+                console.log("Wyrażenie NIE jest poprawne!");
+                //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                this.screen_VALUE.style.color = badColor;
+                return;
+            }
+        }
         
         // Wykonywanie operacji:
         if (this.calc_MODE === "EVA") {
