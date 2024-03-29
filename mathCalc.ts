@@ -555,6 +555,30 @@ const Calculator_MathLogic_FUNCTIONS: {
         // Można się przyczepić do tego, że w IV Etapie Walidacji nie zrobiłem akceptowania wartości jednoznakowej - zmiennych "p", "q" i "r",
         // ale po jakiego grzyba ktoś chciałby obliczyć na kalkulatorze coś tak prostego... przepraszam, to nawet nie jest obliczenie, a
         // podłożenie za zmienną podanej wartości i tyle...
+
+        // V Etap Walidacji - Sytuacje typu: "(qVp)|" (this.value)
+        let sraczka: string = this.value.split(" ").join("");
+        let kloc_LEWY: number = 0;
+        let kloc_PRAWY: number = 0;
+        console.log("V Etap Walidacji:");
+        console.log(sraczka);
+        console.log(sraczka.charCodeAt(sraczka.length-1));
+        for (let i: number = 0; i < sraczka.length; i++) {
+            if (sraczka.charCodeAt(i) === 124 || sraczka.charCodeAt(i) == 8897 || sraczka.charCodeAt(i) === 8896 || sraczka.charCodeAt(i) === 8658 || sraczka.charCodeAt(i) === 8660) {
+                kloc_LEWY = i - 1;
+                kloc_PRAWY = i + 1;
+                //console.log(sraczka[kloc_LEWY]);
+                //console.log(sraczka[kloc_PRAWY]);
+                if (sraczka[kloc_LEWY] === undefined || sraczka[kloc_PRAWY] === undefined) {
+                    console.log("Wyrażenie NIE jest poprawne!");
+                    //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                    this.screen_VALUE.style.color = badColor;
+                    return;
+                }
+            }
+        }
+
+        // Planowane były 3 Etapy Walidacji, ale w trakcie pracy jakoś tak się złożyło, że potrzebowałem dwóch kolejnych... łącznie z ZEROwym.
         
         // Wykonywanie operacji:
         if (this.calc_MODE === "EVA") {
