@@ -172,11 +172,6 @@ const Calculator_MathLogic_FUNCTIONS: {
     bt_DIV: HTMLDivElement,
     bt_ID: string,
     value: string,
-    /*availableNUM_PQR: number,
-    availableNUM_BRACKET: number,
-    availableNUM_NOT: number,
-    availableNUM_CONJ: number,
-    availableNUM_CONJ_COUNT: number,*/
     p01_VAL: string,
     q01_VAL: string,
     r01_VAL: string,
@@ -188,6 +183,8 @@ const Calculator_MathLogic_FUNCTIONS: {
     screen_VALUE: HTMLDivElement,
     operation_MODE: Function,
     operation_VALID: Function,
+    operation_EVA: Function,
+    operation_TAU: Function,
     operation_DEL: Function,
     operation_AC: Function,
     operation_SignValue: Function,
@@ -203,16 +200,10 @@ const Calculator_MathLogic_FUNCTIONS: {
     bt_DIV: null,
     bt_ID: "",
     value: " ",
-    /*availableNUM_PQR: 1,
-    availableNUM_BRACKET: 0,
-    availableNUM_NOT: 0,
-    availableNUM_CONJ: 0,
-    availableNUM_CONJ_COUNT: 1,
-    isEqual: false,*/
     p01_VAL: "0",
     q01_VAL: "0",
     r01_VAL: "0",
-    calc_MODE: "EVA",
+    calc_MODE: "TAU",
     isResultTAU: false,
     screen_INFO_EVA: "Mode: EVA | p = 0, q = 0, r = 0",
     screen_INFO_TAU: "Mode: TAU",
@@ -224,11 +215,6 @@ const Calculator_MathLogic_FUNCTIONS: {
     screen_INFO:  document.querySelector('.ct-logic > .screen > .screen-position > .screen-hanger > .info'),
     screen_VALUE: document.querySelector('.ct-logic > .screen > .screen-position > .screen-hanger > .value'),
     setButtons_AEL(): void {
-        /*console.log("availableNUM_PQR:         " + this.availableNUM_PQR);
-        console.log("availableNUM_NOT:         " + this.availableNUM_NOT);
-        console.log("availableNUM_CONJ:        " + this.availableNUM_CONJ);
-        console.log("availableNUM_CONJ_COUNT:  " + this.availableNUM_CONJ_COUNT);
-        console.log("availableNUM_BRACKET:     " + this.availableNUM_BRACKET);*/
         const button_COLL: HTMLCollection = document.querySelector('.ct-logic > .buttons-group').children;
         for (let i: number = 0; i < button_COLL.length; i++) {
             button_COLL[i].addEventListener("click", (e) => {
@@ -271,7 +257,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                 }
             }, false);
         }
-        //this.operation_EVA();  // Wytołanie: EVA
+        this.operation_MODE();
     },
     operation_MODE(): void {
         if (this.calc_MODE === "EVA") {
@@ -463,7 +449,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                 } else if (keyNum === 112 || keyNum === 113 || keyNum === 114) {
                     // LEWA:
                     keyNum_LOC = j - 1;
-                    if (result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== "(" && result[i][keyNum_LOC] !== undefined) {
+                    if (result[i].charCodeAt(keyNum_LOC) !== 172 && result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== "(" && result[i][keyNum_LOC] !== undefined) {
                         console.log("Wyrażenie NIE jest poprawne!");
                         //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                         this.screen_VALUE.style.color = badColor;
@@ -480,7 +466,8 @@ const Calculator_MathLogic_FUNCTIONS: {
                 } else if (keyNum === 172) {
                     // LEWA:
                     keyNum_LOC = j - 1;
-                    if (result[i][keyNum_LOC] !== "(") {
+                    //if (result[i][keyNum_LOC] !== "(") {  // Nigdy nie będzie takiej sytuacji, gdyż nawiasy są kasowane...
+                    if (result[i][keyNum_LOC] !== undefined) {  // Pozbywając się nawiasu z LEWEJ strony zostaje na samo "". "" doskonale zastępuje "(", więc wpisane wyrażenia z NOT bez nawiasów jest błędne!
                         console.log("Wyrażenie NIE jest poprawne!");
                         //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                         this.screen_VALUE.style.color = badColor;
@@ -532,36 +519,30 @@ const Calculator_MathLogic_FUNCTIONS: {
             }
         }
         console.log('Wyrażenie jest ostatecznie prawidłowe!');
-        //this.screen_INFO.textContent = "Wyrażenie jest ostatecznie prawidłowe!";
         this.screen_VALUE.style.color = goodColor;
         
-
         // Wykonywanie operacji:
         if (this.calc_MODE === "EVA") {
+            this.operation_EVA();
+        } else if (this.calc_MODE === "TAU") {
+            this.operation_TAU();
+        }
+    },
+    operation_EVA(): void {
             console.log("Operacja: ewaluacja");
             this.screen_EL.classList.replace('screen_TAU', 'screen_EVA');
             this.screen_POS_2.classList.replace('screen-position_TAU', 'screen-position_EVA');
             this.screen_POS_3.classList.replace('screen-position_TAU', 'screen-position_EVA');
             this.butonGroup_EL.classList.replace('buttons-group_TAU', 'buttons-group_EVA');
-        } else if (this.calc_MODE === "TAU") {
-            this.isResultTAU = true;
-            console.log("Operacja: tautologia");
-            this.screen_EL.classList.replace('screen_EVA', 'screen_TAU');
-            this.screen_POS_2.classList.replace('screen-position_EVA', 'screen-position_TAU');
-            this.screen_POS_3.classList.replace('screen-position_EVA', 'screen-position_TAU');
-            this.butonGroup_EL.classList.replace('buttons-group_EVA', 'buttons-group_TAU');
-        }
     },
-    //operation_EVA(): void {
-        //
-    //},
-    //operation_TAU(): void {
-        /*this.screen_EL.classList.replace('screen_EVA', 'screen_TAU');
+    operation_TAU(): void {
+        this.isResultTAU = true;
+        console.log("Operacja: tautologia");
+        this.screen_EL.classList.replace('screen_EVA', 'screen_TAU');
         this.screen_POS_2.classList.replace('screen-position_EVA', 'screen-position_TAU');
         this.screen_POS_3.classList.replace('screen-position_EVA', 'screen-position_TAU');
         this.butonGroup_EL.classList.replace('buttons-group_EVA', 'buttons-group_TAU');
-        this.screen_INFO.textContent = "TAU | " + this.value;*/
-    //},
+    },
     operation_DEL(): void {
         // Skracanie wyrażenia:
         if (this.value[this.value.length - 1] === " ") {
