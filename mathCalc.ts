@@ -320,8 +320,6 @@ const Calculator_MathLogic_FUNCTIONS: {
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // II Etap Walidacji - Poprawna liczba określonych znaków w kolejno wycinanych nawiasach nadrzędnych: (nadrzędne -> potomne)
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        // Rozkład wyrażenia na stopniowe wyrażenia nadrzędne:
-
 
 
 
@@ -329,22 +327,68 @@ const Calculator_MathLogic_FUNCTIONS: {
         // Przypomnij sobie działanie tego algorytmu:
 
 
+        // Rozkład całego wyrażenia nawiasowego na stopniowe nadrzędne wyrażenia nawiasowe:
         const expression = spaghetti;
         const stack: string[] = [];
         const bracketWord_AR: string[] = [];
         let startIndex_1: number = 0;
         let subExpression: string = "";
         for (let i = 0; i < expression.length; i++) {
-            if (expression[i] === '(') {
+            if (expression[i] === "(") {
                 stack.push(i.toString());
-            } else if (expression[i] === ')') {
-                startIndex_1 = parseInt(stack.pop()!);
+            } else if (expression[i] === ")") {
+                startIndex_1 = parseInt(stack.pop()!);  // Operatora asercji (!) mogłem zastąpić IFem walidującym czy w tablicy w ogóle coś mamy... ale tak jest po prostu czytelniej.
                 subExpression = expression.substring(startIndex_1, i + 1);
                 bracketWord_AR.push(subExpression);
             }
         }
         console.log(bracketWord_AR);
 
+        /*
+        Ten algorytm służy do rozkładania wyrażeń zawierających nawiasy na ich składowe wyrażenia nadrzędne. Oto szczegółowe wyjaśnienie krok po kroku:
+
+        1. Inicjalizacja zmiennych:
+        expression przechowuje wyrażenie, które ma zostać rozłożone na składowe.
+        stack jest stosu używanego do śledzenia otwierających nawiasów "(".
+        bracketWord_AR to tablica, która będzie przechowywać składowe wyrażenia nadrzędnego.
+        startIndex_1 to indeks początkowy aktualnie przetwarzanego podwyrażenia.
+        subExpression to zmienna, która przechowuje aktualnie przetwarzane podwyrażenie.
+        
+        2. Iteracja po wyrażeniu:
+        Pętla for iteruje po każdym znaku w expression.
+        
+        3.Sprawdzenie nawiasów:
+        Jeśli aktualny znak to "(", to oznacza to, że napotkano otwierający nawias. Indeks tego nawiasu zostaje dodany do stosu stack.
+        
+        4.Rozpoznanie zamykającego nawiasu:
+        Jeśli aktualny znak to ")", oznacza to, że napotkano zamykający nawias.
+        Indeks otwierającego nawiasu jest pobierany ze stosu poprzez stack.pop() i zapisywany w startIndex_1.
+        Następnie wyrażenie między otwierającym i zamykającym nawiasem jest wydzielane przy użyciu expression.substring(startIndex_1, i + 1) i zapisywane w subExpression.
+        subExpression jest następnie dodawane do tablicy bracketWord_AR, reprezentującej składowe wyrażenia nadrzędnego.
+        
+        5.Kontynuacja przetwarzania:
+        Pętla kontynuuje iterację po wyrażeniu, dopóki nie zostaną przeanalizowane wszystkie znaki.
+        Po zakończeniu działania tego algorytmu, tablica bracketWord_AR zawiera wszystkie składowe wyrażenia nadrzędnego, które były otoczone nawiasami. 
+        Te składowe są uporządkowane w kolejności, w jakiej zostały napotkane w pierwotnym wyrażeniu.
+
+        Operator ! w TypeScript to tzw. operator asercji typu, który informuje kompilator TypeScript, że pewna wartość nie jest typu null ani undefined, mimo że może tak wyglądać.
+        
+        Operator ! występuje po wywołaniu stack.pop(). Wywołanie stack.pop() zwraca ostatni element z tablicy stack i usuwa go z tej tablicy.
+        Jednakże istnieje możliwość, że tablica stack jest pusta, a wywołanie pop() zwróci wartość undefined, co jest typową sytuacją,
+        gdy tablica jest już pusta.
+        
+        Operator ! w tym kontekście mówi kompilatorowi, że wiemy, że wywołanie stack.pop() nie zwróci wartości
+        undefined, ponieważ jesteśmy pewni, że tablica stack nie jest pusta. W związku z tym nie musi on uwzględniać możliwości,
+        że wartość ta może być undefined, co pozwala uniknąć ostrzeżenia kompilatora o potencjalnie niebezpiecznej operacji. 
+        
+        Jednakże należy używać operatora ! z rozwagą, ponieważ może to prowadzić do błędów wykonania w przypadku, gdy wartość rzeczywiście
+        jest null lub undefined, a my mylnie zastosowaliśmy operator asercji typu. W przypadku pewności, że wartość nie będzie null ani undefined,
+        można go użyć, ale zawsze należy sprawdzać, czy taka pewność jest uzasadniona.
+        */
+
+
+
+        // Usuwanie potomnych wyrażeń nawiasowych z nawiasów nadrzędnych:
         let expressions = bracketWord_AR;
         const result: string[] = [];
         let startIndex_2: number = 0;
@@ -480,7 +524,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                     }
                     // PRAWA:
                     keyNum_LOC = j + 1;
-                    if (result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r") {
+                    if (result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r" && result[i][keyNum_LOC] !== undefined) {  // PAMIĘTAJ! Jak pozbywasz się nawiasów w Etapie II, to zamiast nawiasów "(" i ")" piszesz "undefined"!
                         console.log("Wyrażenie NIE jest poprawne!");
                         //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                         this.screen_VALUE.style.color = badColor;
@@ -489,7 +533,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                 } else if (keyNum === 40) {
                     // LEWA:
                     keyNum_LOC = j - 1;
-                    if (result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== undefined) {
+                    if (result[i].charCodeAt(keyNum_LOC) !== 172 && result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== undefined) {
                         console.log("Wyrażenie NIE jest poprawne!");
                         //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                         this.screen_VALUE.style.color = badColor;
@@ -497,7 +541,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                     }
                     // PRAWA:
                     keyNum_LOC = j + 1;
-                    if (result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r" && result[i].charCodeAt(keyNum_LOC) !== 172) {
+                    if (result[i].charCodeAt(keyNum_LOC) !== 172 && result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r") {
                         console.log("Wyrażenie NIE jest poprawne!");
                         //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                         this.screen_VALUE.style.color = badColor;
