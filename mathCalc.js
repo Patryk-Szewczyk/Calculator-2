@@ -288,29 +288,34 @@ var Calculator_MathLogic_FUNCTIONS = {
         var expression = spaghetti;
         var stack = [];
         var bracketWord_AR = [];
+        var startIndex_1 = 0;
+        var subExpression = "";
         for (var i = 0; i < expression.length; i++) {
             if (expression[i] === '(') {
                 stack.push(i.toString());
             }
             else if (expression[i] === ')') {
-                var startIndex = parseInt(stack.pop());
-                var subExpression = expression.substring(startIndex, i + 1);
+                startIndex_1 = parseInt(stack.pop());
+                subExpression = expression.substring(startIndex_1, i + 1);
                 bracketWord_AR.push(subExpression);
             }
         }
         console.log(bracketWord_AR);
         var expressions = bracketWord_AR;
         var result = [];
+        var startIndex_2 = 0;
+        var openCount = 0;
+        var endIndex = 0;
         for (var i = 0; i < expressions.length; i++) {
             // Usunięcie nawiasów z prawej i lewej strony
             if (expressions[i][0] === "(" && expressions[i][expressions[i].length - 1] === ")") {
                 expressions[i] = expressions[i].substring(1, expressions[i].length - 1);
             }
             // Usunięcie wyrażeń nawiasowych potomnych
-            var startIndex = expressions[i].indexOf("(");
-            while (startIndex !== -1) {
-                var openCount = 1;
-                var endIndex = startIndex + 1;
+            startIndex_2 = expressions[i].indexOf("(");
+            while (startIndex_2 !== -1) {
+                openCount = 1;
+                endIndex = startIndex_2 + 1;
                 while (openCount > 0 && endIndex < expressions[i].length) {
                     if (expressions[i][endIndex] === "(") {
                         openCount++;
@@ -320,8 +325,8 @@ var Calculator_MathLogic_FUNCTIONS = {
                     }
                     endIndex++;
                 }
-                expressions[i] = expressions[i].substring(0, startIndex) + expressions[i].substring(endIndex);
-                startIndex = expressions[i].indexOf("(", startIndex);
+                expressions[i] = expressions[i].substring(0, startIndex_2) + expressions[i].substring(endIndex);
+                startIndex_2 = expressions[i].indexOf("(", startIndex_2);
             }
             result.push(expressions[i]);
         }
@@ -392,7 +397,7 @@ var Calculator_MathLogic_FUNCTIONS = {
                             }
                         }
                     }
-                    if (is_Bad_1_COUNTER === 2 || isBad_2 === true) {
+                    if (is_Bad_1_COUNTER === 2 && isBad_2 === true) {
                         console.log("PRAWY SPÓJNIK: " + result[i][keyNum_LOC]);
                         console.log("Wyrażenie NIE jest poprawne!");
                         //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
@@ -477,6 +482,35 @@ var Calculator_MathLogic_FUNCTIONS = {
         }
         console.log('Wyrażenie jest ostatecznie prawidłowe!');
         this.screen_VALUE.style.color = goodColor;
+        // IV Etap Walidacji - niepoprawne sytuacje: "q|" i "|q" i poprawne: "q|r", "(q|r)|p" i "p|(q|r)", uwzględniając NOT ("~").
+        var isNOT = false;
+        for (var i = 0; i < result.length; i++) {
+            for (var j = 0; j < result[i].length; j++) {
+                if (result[i].charCodeAt(j) === 172) {
+                    isNOT = true;
+                }
+            }
+            if (isNOT == true) {
+                isNOT = false;
+                if (result[i].length < 2 && result.length < 2) {
+                    console.log("Wyrażenie NIE jest poprawne!");
+                    //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                    this.screen_VALUE.style.color = badColor;
+                    return;
+                }
+            }
+            else {
+                if (result[i].length < 3 && result.length < 2) {
+                    console.log("Wyrażenie NIE jest poprawne!");
+                    //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                    this.screen_VALUE.style.color = badColor;
+                    return;
+                }
+            }
+        }
+        // Można się przyczepić do tego, że w IV Etapie Walidacji nie zrobiłem akceptowania wartości jednoznakowej - zmiennych "p", "q" i "r",
+        // ale po jakiego grzyba ktoś chciałby obliczyć na kalkulatorze coś tak prostego... przepraszam, to nawet nie jest obliczenie, a
+        // podłożenie za zmienną podanej wartości i tyle...
         // Wykonywanie operacji:
         if (this.calc_MODE === "EVA") {
             this.operation_EVA();
