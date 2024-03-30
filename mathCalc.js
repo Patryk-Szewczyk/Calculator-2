@@ -161,6 +161,7 @@ var Calculator_MathLogic_FUNCTIONS = {
     bt_DIV: null,
     bt_ID: "",
     value: " ",
+    value_MEMORY: "",
     p01_VAL: "0",
     q01_VAL: "0",
     r01_VAL: "0",
@@ -188,7 +189,7 @@ var Calculator_MathLogic_FUNCTIONS = {
                         _this.operation_MODE(_this.bt_ID); // OK
                         break;
                     case "=":
-                        _this.operation_VALID(_this.bt_ID);
+                        _this.operation_CALCULATE(_this.bt_ID);
                         break;
                     case "BACK":
                         _this.operation_DEL(_this.bt_ID); // OK
@@ -574,29 +575,161 @@ var Calculator_MathLogic_FUNCTIONS = {
                 }
             }
         }
+        this.value_MEMORY = this.screen_VALUE.textContent;
         // Planowane były 3 Etapy Walidacji, ale w trakcie pracy jakoś tak się złożyło, że potrzebowałem dwóch kolejnych... łącznie z ZEROwym.
-        // Wykonywanie operacji:
+    },
+    operation_CALCULATE: function () {
         if (this.calc_MODE === "EVA") {
-            this.operation_EVA();
+            this.operation_EVA(this.p01_VAL, this.q01_VAL, this.r01_VAL);
         }
         else if (this.calc_MODE === "TAU") {
-            this.operation_TAU();
+            this.operation_TAU(this.p01_VAL, this.q01_VAL, this.r01_VAL);
         }
     },
-    operation_EVA: function () {
+    operation_EVA: function (p01, q01, r01) {
         console.log("Operacja: ewaluacja");
+        // Zmiana ukadu kalkulatora: robi się to kiedy po wywołaniu "operation_TAU" kliknie się na kalkulatorze dowolny przycisk odpócz przycisku"="
         this.screen_EL.classList.replace('screen_TAU', 'screen_EVA');
         this.screen_POS_2.classList.replace('screen-position_TAU', 'screen-position_EVA');
         this.screen_POS_3.classList.replace('screen-position_TAU', 'screen-position_EVA');
         this.butonGroup_EL.classList.replace('buttons-group_TAU', 'buttons-group_EVA');
+        var hieroglif = "(" + this.value.split(" ").join("") + ")";
+        var zagadka = "";
+        for (var i = 0; i < hieroglif.length; i++) {
+            if (hieroglif[i] !== "p" && hieroglif[i] !== "q" && hieroglif[i] !== "r") {
+                zagadka += hieroglif[i];
+            }
+            else if (hieroglif[i] === "p") {
+                zagadka += p01;
+            }
+            else if (hieroglif[i] === "q") {
+                zagadka += q01;
+            }
+            else if (hieroglif[i] === "r") {
+                zagadka += r01;
+            }
+        }
+        console.log("--------------------------");
+        console.log("Obliczanie wyrażenia: EVA");
+        console.log("Wyrażenie: " + zagadka);
+        // Rozkład wyrażenia nawiasowego na nadrzędne wyrażenia nawiasowe każdego poziomu, zaczynając od najbardziej zagnieżdżonych: ((5+(4-6))+5)
+        var leftBracket_AR = [];
+        var mostNestLeftBck = 0;
+        var curExp = "";
+        var isCalculate = false;
+        var result = "";
+        var cutExp_AR = [];
+        var zagadka_COPY = "";
+        var isADD = true;
+        while (isCalculate == false) {
+            // Szukanie najbardziej zagnieżdżonego nawiasu i obliczanie go: OK
+            for (var i = 0; i < zagadka.length; i++) {
+                if (zagadka[i] === "(") {
+                    leftBracket_AR.push(String(i));
+                }
+                else if (zagadka[i] === ")") {
+                    mostNestLeftBck = Number(leftBracket_AR.pop());
+                    curExp = zagadka.slice(mostNestLeftBck, i + 1); // Kiedy nie masz zwalidowanych danych, po metodzie "pop()" musi pojawić się operator asercji (!) - "pop()!".
+                    // Kiedy wpiszesz np. 4+(-5, to wczutując niestniejący indeks ze znakiem "(" otrzymamy undefined / null (w zależności od języka), a konwertując to na Number otrzymamy BŁĄD!
+                    curExp = curExp.slice(1, (curExp.length - 1));
+                    result = this.operation_CONJCALC(curExp);
+                    //alert("Wynik: " + result);
+                    // Indeksy potrzebne do zmodyfikowania aktualnego stringa-zagadki:
+                    cutExp_AR[0] = mostNestLeftBck;
+                    cutExp_AR[1] = i;
+                    //alert("Indeksy: " + cutExp_AR[0] + " | " + cutExp_AR[1]);
+                    break;
+                }
+            }
+            // Aktualozowanie stringa-zagadki:
+            zagadka_COPY = "";
+            isADD = true;
+            //alert("zagadka.length = " + zagadka.length);
+            for (var i = 0; i < zagadka.length; i++) {
+                if (i === cutExp_AR[0]) {
+                    isADD = false;
+                    zagadka_COPY += result;
+                }
+                if (isADD === true) {
+                    zagadka_COPY += zagadka[i];
+                }
+                if (i === cutExp_AR[1]) {
+                    isADD = true;
+                }
+                //alert("zagadka_COPY = " + zagadka_COPY);
+            }
+            zagadka = zagadka_COPY;
+            //alert("zagadka_COPY = " + zagadka_COPY);
+            // Sprawdzanie czy string-zagadka jest obliczony:
+            if (zagadka.length === 1) {
+                isCalculate = true;
+                //alert("KONIEC");
+            }
+            //alert(zagadka);
+        }
+        //console.log(zagadka);
+        (zagadka === "0") ? this.screen_VALUE.textContent = "false" : this.screen_VALUE.textContent = this.screen_VALUE.textContent;
+        (zagadka === "1") ? this.screen_VALUE.textContent = "true" : this.screen_VALUE.textContent = this.screen_VALUE.textContent;
     },
-    operation_TAU: function () {
-        this.isResultTAU = true;
+    operation_TAU: function (p01, q01, r01) {
         console.log("Operacja: tautologia");
+        this.isResultTAU = true;
         this.screen_EL.classList.replace('screen_EVA', 'screen_TAU');
         this.screen_POS_2.classList.replace('screen-position_EVA', 'screen-position_TAU');
         this.screen_POS_3.classList.replace('screen-position_EVA', 'screen-position_TAU');
         this.butonGroup_EL.classList.replace('buttons-group_EVA', 'buttons-group_TAU');
+    },
+    operation_CONJCALC: function (expression) {
+        var result = expression;
+        if (expression.length === 3) { // "p|r"
+            switch (expression.charCodeAt(1)) {
+                case 8897:
+                    { // /\
+                        (expression[0] === "0" && expression[2] === "0") ? result = "0" : result = result;
+                        (expression[0] === "1" && expression[2] === "0") ? result = "1" : result = result;
+                        (expression[0] === "0" && expression[2] === "1") ? result = "1" : result = result;
+                        (expression[0] === "1" && expression[2] === "1") ? result = "1" : result = result;
+                    }
+                    break;
+                case 8896:
+                    { // \/
+                        (expression[0] === "0" && expression[2] === "0") ? result = "0" : result = result;
+                        (expression[0] === "1" && expression[2] === "0") ? result = "0" : result = result;
+                        (expression[0] === "0" && expression[2] === "1") ? result = "0" : result = result;
+                        (expression[0] === "1" && expression[2] === "1") ? result = "1" : result = result;
+                    }
+                    break;
+                case 8658:
+                    { // =>
+                        (expression[0] === "0" && expression[2] === "0") ? result = "1" : result = result;
+                        (expression[0] === "1" && expression[2] === "0") ? result = "0" : result = result;
+                        (expression[0] === "0" && expression[2] === "1") ? result = "1" : result = result;
+                        (expression[0] === "1" && expression[2] === "1") ? result = "1" : result = result;
+                    }
+                    break;
+                case 8660:
+                    { // <=>
+                        (expression[0] === "0" && expression[2] === "0") ? result = "1" : result = result;
+                        (expression[0] === "1" && expression[2] === "0") ? result = "0" : result = result;
+                        (expression[0] === "0" && expression[2] === "1") ? result = "0" : result = result;
+                        (expression[0] === "1" && expression[2] === "1") ? result = "1" : result = result;
+                    }
+                    break;
+                case 124:
+                    { // |
+                        (expression[0] === "0" && expression[2] === "0") ? result = "1" : result = result;
+                        (expression[0] === "1" && expression[2] === "0") ? result = "1" : result = result;
+                        (expression[0] === "0" && expression[2] === "1") ? result = "1" : result = result;
+                        (expression[0] === "1" && expression[2] === "1") ? result = "0" : result = result;
+                    }
+                    break;
+            }
+        }
+        else if (expression.length == 2) { // "~p"
+            (expression[1] === "0") ? result = "1" : result = result;
+            (expression[1] === "1") ? result = "0" : result = result;
+        }
+        return result;
     },
     operation_DEL: function () {
         // Skracanie wyrażenia:
