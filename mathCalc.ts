@@ -173,6 +173,7 @@ const Calculator_MathLogic_FUNCTIONS: {
     bt_ID: string,
     value: string,
     value_MEMORY: string,
+    isValid: boolean,
     p01_VAL: string,
     q01_VAL: string,
     r01_VAL: string,
@@ -185,8 +186,6 @@ const Calculator_MathLogic_FUNCTIONS: {
     operation_MODE: Function,
     operation_CALCULATE_1: Function,
     operation_CALCULATE_2: Function,
-    //operation_EVA: Function,
-    //operation_TAU: Function,
     operation_CONJCALC: Function
     operation_DEL: Function,
     operation_AC: Function,
@@ -204,6 +203,7 @@ const Calculator_MathLogic_FUNCTIONS: {
     bt_ID: "",
     value: " ",
     value_MEMORY: "",
+    isValid: false,
     p01_VAL: "0",
     q01_VAL: "0",
     r01_VAL: "0",
@@ -229,9 +229,11 @@ const Calculator_MathLogic_FUNCTIONS: {
                     case "MODE":
                         this.operation_MODE(this.bt_ID);  // OK
                         break;
-                    case "=":
-                        this.operation_CALCULATE_1(this.bt_ID);
-                        break;
+                    case "=": {
+                            if (this.isValid == true) {
+                                this.operation_CALCULATE_1(this.bt_ID);
+                            }
+                        } break;
                     case "BACK":
                         this.operation_DEL(this.bt_ID);  // OK
                         break;
@@ -287,6 +289,7 @@ const Calculator_MathLogic_FUNCTIONS: {
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         if (spaghetti.length <= 2) {
             console.log("Niepoprawna długość wyrażenia.");
+            this.isValid = false;
             //this.screen_INFO.textContent = "Niepoprawna długość wyrażenia!";
             this.screen_VALUE.style.color = badColor;
             return;
@@ -302,6 +305,7 @@ const Calculator_MathLogic_FUNCTIONS: {
         }
         if (bracketLeft_AMOUNT !== bracketRight_AMOUNT) {
             console.log("Niepoprawna liczba nawiasów!");
+            this.isValid = false;
             //this.screen_INFO.textContent = "Niepoprawna liczba nawiasów!";
             this.screen_VALUE.style.color = badColor;
             return;
@@ -314,23 +318,15 @@ const Calculator_MathLogic_FUNCTIONS: {
             spaghetti = "(" + spaghetti + ")";
         } else {
             console.log("Niepoprawne wyrażenie!");
+            this.isValid = false;
             //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
             this.screen_VALUE.style.color = badColor;
             return;
         }
         console.log(spaghetti);
-
-
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // II Etap Walidacji - Poprawna liczba określonych znaków w kolejno wycinanych nawiasach nadrzędnych: (nadrzędne -> potomne)
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-
-
-
-        // Przypomnij sobie działanie tego algorytmu:
-
-
         // Rozkład całego wyrażenia nawiasowego na stopniowe nadrzędne wyrażenia nawiasowe:
         const expression = spaghetti;
         const stack: string[] = [];
@@ -444,19 +440,13 @@ const Calculator_MathLogic_FUNCTIONS: {
             }
             if (not_AMOUNT > 1 || conj_AMOUNT > 1 || word_AMOUNT > 2) {
                 console.log("Niepoprawne wyrażenie!");
+                this.isValid = false;
                 //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                 this.screen_VALUE.style.color = badColor;
                 return;
             }
         }
         console.log("Poprawna dopuszczalna liczba znaków w nawiasach");
-
-
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-
-        
-
         // - - - - - - - - - - - - - - - - - - - - - - - - - -
         // III Etap walidacji - Sąsiedztwo właściwych znaków:
         // - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -466,6 +456,103 @@ const Calculator_MathLogic_FUNCTIONS: {
         let isBad_2: boolean = false;
         console.log("\nIII Etap walidacji - Sąsiedztwo właściwych znaków:");
         console.log(result);
+        /*if (result.length > 1) {
+            for (let i: number = 0; i < result.length - 1; i++) {
+                result[i] = "(" + result[i] + ")";
+            }
+        for (let i: number = 0; i < result.length; i++) {
+            for (let j: number = 0; j < result[i].length - 1; j++) {
+                keyNum = result[i].charCodeAt(j);
+                if (keyNum === 124 || keyNum === 8897 || keyNum === 8896 || keyNum === 8658 || keyNum === 8660) {
+                    // LEWA:
+                    keyNum_LOC = j - 1;
+                    if (result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r" && result[i][keyNum_LOC] !== ")") {
+                        console.log("PRAWY SPÓJNIK: " + result[i][keyNum_LOC]);
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                    // PRAWA:
+                    keyNum_LOC = j + 1;
+                    if (result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r" && result[i][keyNum_LOC] !== "(") {
+                        console.log("PRAWY SPÓJNIK: " + result[i][keyNum_LOC]);
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                } else if (keyNum === 112 || keyNum === 113 || keyNum === 114) {
+                    // LEWA:
+                    keyNum_LOC = j - 1;
+                    if (result[i].charCodeAt(keyNum_LOC) !== 172 && result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== "(" && result[i][keyNum_LOC] !== undefined) {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                    // PRAWA:
+                    keyNum_LOC = j + 1;
+                    if (result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== ")" && result[i][keyNum_LOC] !== undefined) {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                } else if (keyNum === 172) {
+                    // LEWA:
+                    keyNum_LOC = j - 1;
+                    if (result[i][keyNum_LOC] !== "(") {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                    // PRAWA:
+                    keyNum_LOC = j + 1;
+                    if (result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r" && result[i][keyNum_LOC] !== "(") {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                } else if (keyNum === 40) {
+                    // LEWA:
+                    keyNum_LOC = j - 1;
+                    if (result[i].charCodeAt(keyNum_LOC) !== 172 && result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== undefined) {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                    // PRAWA:
+                    keyNum_LOC = j + 1;
+                    if (result[i].charCodeAt(keyNum_LOC) !== 172 && result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r") {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                } else if (keyNum === 41) {
+                    // LEWA:
+                    keyNum_LOC = j - 1;
+                    if (result[i][keyNum_LOC] !== "(" && result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r") {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                    // PRAWA:
+                    keyNum_LOC = j + 1;
+                    if (result[i][keyNum_LOC] !== ")" && result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== undefined) {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                }
+            }
+        }*/
         for (let i: number = 0; i < result.length; i++) {
             for (let j: number = 0; j < result[i].length; j++) {
                 keyNum = result[i].charCodeAt(j);
@@ -495,6 +582,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                     if (is_Bad_1_COUNTER === 2  && isBad_2 === true) {
                         console.log("PRAWY SPÓJNIK: " + result[i][keyNum_LOC]);
                         console.log("Wyrażenie NIE jest poprawne!");
+                        this.isValid = false;
                         //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                         this.screen_VALUE.style.color = badColor;
                         return;
@@ -504,6 +592,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                     keyNum_LOC = j - 1;
                     if (result[i].charCodeAt(keyNum_LOC) !== 172 && result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== "(" && result[i][keyNum_LOC] !== undefined) {
                         console.log("Wyrażenie NIE jest poprawne!");
+                        this.isValid = false;
                         //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                         this.screen_VALUE.style.color = badColor;
                         return;
@@ -512,6 +601,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                     keyNum_LOC = j + 1;
                     if (result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== ")" && result[i][keyNum_LOC] !== undefined) {
                         console.log("Wyrażenie NIE jest poprawne!");
+                        this.isValid = false;
                         //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                         this.screen_VALUE.style.color = badColor;
                         return;
@@ -522,6 +612,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                     //if (result[i][keyNum_LOC] !== "(") {  // Nigdy nie będzie takiej sytuacji, gdyż nawiasy są kasowane...
                     if (result[i][keyNum_LOC] !== undefined) {  // Pozbywając się nawiasu z LEWEJ strony zostaje na samo "". "" doskonale zastępuje "(", więc wpisane wyrażenia z NOT bez nawiasów jest błędne!
                         console.log("Wyrażenie NIE jest poprawne!");
+                        this.isValid = false;
                         //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                         this.screen_VALUE.style.color = badColor;
                         return;
@@ -530,6 +621,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                     keyNum_LOC = j + 1;
                     if (result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r" && result[i][keyNum_LOC] !== undefined) {  // PAMIĘTAJ! Jak pozbywasz się nawiasów w Etapie II, to zamiast nawiasów "(" i ")" piszesz "undefined"!
                         console.log("Wyrażenie NIE jest poprawne!");
+                        this.isValid = false;
                         //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                         this.screen_VALUE.style.color = badColor;
                         return;
@@ -539,6 +631,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                     keyNum_LOC = j - 1;
                     if (result[i].charCodeAt(keyNum_LOC) !== 172 && result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== undefined) {
                         console.log("Wyrażenie NIE jest poprawne!");
+                        this.isValid = false;
                         //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                         this.screen_VALUE.style.color = badColor;
                         return;
@@ -547,6 +640,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                     keyNum_LOC = j + 1;
                     if (result[i].charCodeAt(keyNum_LOC) !== 172 && result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r") {
                         console.log("Wyrażenie NIE jest poprawne!");
+                        this.isValid = false;
                         //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                         this.screen_VALUE.style.color = badColor;
                         return;
@@ -556,6 +650,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                     keyNum_LOC = j - 1;
                     if (result[i][keyNum_LOC] !== "p" && result[i][keyNum_LOC] !== "q" && result[i][keyNum_LOC] !== "r") {
                         console.log("Wyrażenie NIE jest poprawne!");
+                        this.isValid = false;
                         //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                         this.screen_VALUE.style.color = badColor;
                         return;
@@ -564,6 +659,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                     keyNum_LOC = j + 1;
                     if (result[i].charCodeAt(keyNum_LOC) !== 124 && result[i].charCodeAt(keyNum_LOC) !== 8897 && result[i].charCodeAt(keyNum_LOC) !== 8896 && result[i].charCodeAt(keyNum_LOC) !== 8658 && result[i].charCodeAt(keyNum_LOC) !== 8660 && result[i][keyNum_LOC] !== undefined) {
                         console.log("Wyrażenie NIE jest poprawne!");
+                        this.isValid = false;
                         //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                         this.screen_VALUE.style.color = badColor;
                         return;
@@ -571,8 +667,6 @@ const Calculator_MathLogic_FUNCTIONS: {
                 }
             }
         }
-        console.log('Wyrażenie jest ostatecznie prawidłowe!');
-        this.screen_VALUE.style.color = goodColor;
 
         // IV Etap Walidacji - niepoprawne sytuacje: "q|" i "|q" i poprawne: "q|r", "(q|r)|p" i "p|(q|r)", uwzględniając NOT ("~").
         let isNOT: boolean = false;
@@ -586,6 +680,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                 isNOT = false;
                 if (result[i].length < 2 && result.length < 2) {
                     console.log("Wyrażenie NIE jest poprawne!");
+                    this.isValid = false;
                     //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                     this.screen_VALUE.style.color = badColor;
                     return;
@@ -593,17 +688,16 @@ const Calculator_MathLogic_FUNCTIONS: {
             } else {
                 if (result[i].length < 3 && result.length < 2) {
                     console.log("Wyrażenie NIE jest poprawne!");
+                    this.isValid = false;
                     //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                     this.screen_VALUE.style.color = badColor;
                     return;
                 }
             }
         }
-
         // Można się przyczepić do tego, że w IV Etapie Walidacji nie zrobiłem akceptowania wartości jednoznakowej - zmiennych "p", "q" i "r",
         // ale po jakiego grzyba ktoś chciałby obliczyć na kalkulatorze coś tak prostego... przepraszam, to nawet nie jest obliczenie, a
         // podłożenie za zmienną podanej wartości i tyle...
-
         // V Etap Walidacji - Sytuacje typu: "(qVp)|" (this.value)
         let sraczka: string = this.value.split(" ").join("");
         let kloc_LEWY: number = 0;
@@ -617,15 +711,37 @@ const Calculator_MathLogic_FUNCTIONS: {
                 kloc_PRAWY = i + 1;
                 if (sraczka[kloc_LEWY] === undefined || sraczka[kloc_PRAWY] === undefined) {
                     console.log("Wyrażenie NIE jest poprawne!");
+                    this.isValid = false;
                     //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                     this.screen_VALUE.style.color = badColor;
                     return;
                 }
             }
         }
+        // VI Etap Walidacji - Sprawdzenie czy NOT (~) znajduje się w nawiasie:
+        for (let i: number = 0; i < this.value.length; i++) {
+            if (this.value.charCodeAt(i) === 172) {
+                if (this.value[i-1] !== "(") {
+                    console.log("Wyrażenie NIE jest poprawne!");
+                    this.isValid = false;
+                    //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                    this.screen_VALUE.style.color = badColor;
+                    return;
+                }
+                if (this.value[i+1] !== "(" && this.value[i+1] !== "p" && this.value[i+1] !== "q" && this.value[i+1] !== "r") {
+                    console.log("Wyrażenie NIE jest poprawne!");
+                    this.isValid = false;
+                    //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                    this.screen_VALUE.style.color = badColor;
+                    return;
+                }
+            }
+        }
+        // Koniec walidacji:
+        console.log('Wyrażenie jest ostatecznie prawidłowe!');
+        this.isValid = true;
+        this.screen_VALUE.style.color = goodColor;
         this.value_MEMORY = this.screen_VALUE.textContent;
-
-        // Planowane były 3 Etapy Walidacji, ale w trakcie pracy jakoś tak się złożyło, że potrzebowałem dwóch kolejnych... łącznie z ZEROwym.
     },
     operation_CALCULATE_1(): void {// Wykonywanie operacji:
         let result: string = "";
