@@ -172,6 +172,7 @@ const Calculator_MathLogic_FUNCTIONS: {
     bt_DIV: HTMLDivElement,
     bt_ID: string,
     value: string,
+    value_MEMORY: string,
     p01_VAL: string,
     q01_VAL: string,
     r01_VAL: string,
@@ -182,14 +183,15 @@ const Calculator_MathLogic_FUNCTIONS: {
     screen_INFO: HTMLDivElement,
     screen_VALUE: HTMLDivElement,
     operation_MODE: Function,
-    operation_VALID: Function,
+    operation_CALCULATE: Function,
     operation_EVA: Function,
     operation_TAU: Function,
+    operation_CONJCALC: Function
     operation_DEL: Function,
     operation_AC: Function,
     operation_SignValue: Function,
     operation_Sign: Function,
-    /*isEqual: boolean,*/
+    operation_VALID: Function,
     mode_EL: HTMLElement,
     calc_MODE: string,
     isResultTAU: boolean,
@@ -200,6 +202,7 @@ const Calculator_MathLogic_FUNCTIONS: {
     bt_DIV: null,
     bt_ID: "",
     value: " ",
+    value_MEMORY: "",
     p01_VAL: "0",
     q01_VAL: "0",
     r01_VAL: "0",
@@ -226,7 +229,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                         this.operation_MODE(this.bt_ID);  // OK
                         break;
                     case "=":
-                        this.operation_VALID(this.bt_ID);
+                        this.operation_CALCULATE(this.bt_ID);
                         break;
                     case "BACK":
                         this.operation_DEL(this.bt_ID);  // OK
@@ -621,30 +624,147 @@ const Calculator_MathLogic_FUNCTIONS: {
                 }
             }
         }
+        this.value_MEMORY = this.screen_VALUE.textContent;
 
         // Planowane były 3 Etapy Walidacji, ale w trakcie pracy jakoś tak się złożyło, że potrzebowałem dwóch kolejnych... łącznie z ZEROwym.
-        
-        // Wykonywanie operacji:
+    },
+    operation_CALCULATE(): void {// Wykonywanie operacji:
         if (this.calc_MODE === "EVA") {
-            this.operation_EVA();
+            this.operation_EVA(this.p01_VAL, this.q01_VAL, this.r01_VAL);
         } else if (this.calc_MODE === "TAU") {
-            this.operation_TAU();
+            this.operation_TAU(this.p01_VAL, this.q01_VAL, this.r01_VAL);
         }
     },
-    operation_EVA(): void {
-            console.log("Operacja: ewaluacja");
-            this.screen_EL.classList.replace('screen_TAU', 'screen_EVA');
-            this.screen_POS_2.classList.replace('screen-position_TAU', 'screen-position_EVA');
-            this.screen_POS_3.classList.replace('screen-position_TAU', 'screen-position_EVA');
-            this.butonGroup_EL.classList.replace('buttons-group_TAU', 'buttons-group_EVA');
+    operation_EVA(p01: string, q01: string, r01: string): void {
+        console.log("Operacja: ewaluacja");
+        // Zmiana ukadu kalkulatora: robi się to kiedy po wywołaniu "operation_TAU" kliknie się na kalkulatorze dowolny przycisk odpócz przycisku"="
+        this.screen_EL.classList.replace('screen_TAU', 'screen_EVA');
+        this.screen_POS_2.classList.replace('screen-position_TAU', 'screen-position_EVA');
+        this.screen_POS_3.classList.replace('screen-position_TAU', 'screen-position_EVA');
+        this.butonGroup_EL.classList.replace('buttons-group_TAU', 'buttons-group_EVA');
+        let hieroglif: string = "(" + this.value.split(" ").join("") + ")";
+        let zagadka: string = "";
+        for (let i: number = 0; i < hieroglif.length; i++) {
+            if (hieroglif[i] !== "p" && hieroglif[i] !== "q" && hieroglif[i] !== "r") {
+                zagadka += hieroglif[i];
+            } else if (hieroglif[i] === "p") {
+                zagadka += p01;
+            } else if (hieroglif[i] === "q") {
+                zagadka += q01;
+            } else if (hieroglif[i] === "r") {
+                zagadka += r01;
+            }
+        }
+        console.log("--------------------------");
+        console.log("Obliczanie wyrażenia: EVA");
+        console.log("Wyrażenie: " + zagadka);
+
+        // Rozkład wyrażenia nawiasowego na nadrzędne wyrażenia nawiasowe każdego poziomu, zaczynając od najbardziej zagnieżdżonych: ((5+(4-6))+5)
+        let leftBracket_AR: string[] = [];
+        let mostNestLeftBck: number = 0;
+        let curExp: string = "";
+        let isCalculate: boolean = false;
+        let result: string = "";
+        let cutExp_AR: number[] = [];
+        let zagadka_COPY: string = "";
+        let isADD: boolean = true;
+        while (isCalculate == false) {
+            // Szukanie najbardziej zagnieżdżonego nawiasu i obliczanie go: OK
+            for (let i: number = 0; i < zagadka.length; i++) {
+                if (zagadka[i] === "(") {
+                    leftBracket_AR.push(String(i));
+                } else if (zagadka[i] === ")") {
+                    mostNestLeftBck = Number(leftBracket_AR.pop());
+                    curExp = zagadka.slice(mostNestLeftBck, i + 1);  // Kiedy nie masz zwalidowanych danych, po metodzie "pop()" musi pojawić się operator asercji (!) - "pop()!".
+                    // Kiedy wpiszesz np. 4+(-5, to wczutując niestniejący indeks ze znakiem "(" otrzymamy undefined / null (w zależności od języka), a konwertując to na Number otrzymamy BŁĄD!
+                    curExp = curExp.slice(1, (curExp.length - 1));
+                    result = this.operation_CONJCALC(curExp);
+                    //alert("Wynik: " + result);
+                    // Indeksy potrzebne do zmodyfikowania aktualnego stringa-zagadki:
+                    cutExp_AR[0] = mostNestLeftBck;
+                    cutExp_AR[1] = i;
+                    //alert("Indeksy: " + cutExp_AR[0] + " | " + cutExp_AR[1]);
+                    break;
+                }
+            }
+            // Aktualozowanie stringa-zagadki:
+            zagadka_COPY = "";
+            isADD = true;
+            //alert("zagadka.length = " + zagadka.length);
+            for (let i: number = 0; i < zagadka.length; i++) {
+                if (i === cutExp_AR[0]) {
+                    isADD = false;
+                    zagadka_COPY += result;
+                }
+                if (isADD === true) {
+                    zagadka_COPY += zagadka[i];
+                }
+                if (i === cutExp_AR[1]) {
+                    isADD = true;
+                }
+                //alert("zagadka_COPY = " + zagadka_COPY);
+            }
+            zagadka = zagadka_COPY;
+            //alert("zagadka_COPY = " + zagadka_COPY);
+            // Sprawdzanie czy string-zagadka jest obliczony:
+            if (zagadka.length === 1) {
+                isCalculate = true;
+                //alert("KONIEC");
+            }
+            //alert(zagadka);
+        }
+        //console.log(zagadka);
+        (zagadka === "0") ? this.screen_VALUE.textContent = "false" : this.screen_VALUE.textContent = this.screen_VALUE.textContent;
+        (zagadka === "1") ? this.screen_VALUE.textContent = "true" : this.screen_VALUE.textContent = this.screen_VALUE.textContent;
     },
-    operation_TAU(): void {
-        this.isResultTAU = true;
+    operation_TAU(p01: string, q01: string, r01: string): void {
         console.log("Operacja: tautologia");
+        this.isResultTAU = true;
         this.screen_EL.classList.replace('screen_EVA', 'screen_TAU');
         this.screen_POS_2.classList.replace('screen-position_EVA', 'screen-position_TAU');
         this.screen_POS_3.classList.replace('screen-position_EVA', 'screen-position_TAU');
         this.butonGroup_EL.classList.replace('buttons-group_EVA', 'buttons-group_TAU');
+    },
+    operation_CONJCALC(expression: string): string {
+        let result: string = expression;
+        if (expression.length === 3) {  // "p|r"
+            switch (expression.charCodeAt(1)) {
+                case 8897: {  // /\
+                    (expression[0] === "0" && expression[2] === "0") ? result = "0" : result = result;
+                    (expression[0] === "1" && expression[2] === "0") ? result = "1" : result = result;
+                    (expression[0] === "0" && expression[2] === "1") ? result = "1" : result = result;
+                    (expression[0] === "1" && expression[2] === "1") ? result = "1" : result = result;
+                }  break;
+                case 8896: {  // \/
+                    (expression[0] === "0" && expression[2] === "0") ? result = "0" : result = result;
+                    (expression[0] === "1" && expression[2] === "0") ? result = "0" : result = result;
+                    (expression[0] === "0" && expression[2] === "1") ? result = "0" : result = result;
+                    (expression[0] === "1" && expression[2] === "1") ? result = "1" : result = result;
+                } break;
+                case 8658: {  // =>
+                    (expression[0] === "0" && expression[2] === "0") ? result = "1" : result = result;
+                    (expression[0] === "1" && expression[2] === "0") ? result = "0" : result = result;
+                    (expression[0] === "0" && expression[2] === "1") ? result = "1" : result = result;
+                    (expression[0] === "1" && expression[2] === "1") ? result = "1" : result = result;
+                } break;
+                case 8660: {  // <=>
+                    (expression[0] === "0" && expression[2] === "0") ? result = "1" : result = result;
+                    (expression[0] === "1" && expression[2] === "0") ? result = "0" : result = result;
+                    (expression[0] === "0" && expression[2] === "1") ? result = "0" : result = result;
+                    (expression[0] === "1" && expression[2] === "1") ? result = "1" : result = result;
+                } break;
+                case 124: {  // |
+                    (expression[0] === "0" && expression[2] === "0") ? result = "1" : result = result;
+                    (expression[0] === "1" && expression[2] === "0") ? result = "1" : result = result;
+                    (expression[0] === "0" && expression[2] === "1") ? result = "1" : result = result;
+                    (expression[0] === "1" && expression[2] === "1") ? result = "0" : result = result;
+                } break;
+            }
+        } else if (expression.length == 2) {  // "~p"
+            (expression[1] === "0") ? result = "1" : result = result;
+            (expression[1] === "1") ? result = "0" : result = result;
+        }
+        return result;
     },
     operation_DEL(): void {
         // Skracanie wyrażenia:
