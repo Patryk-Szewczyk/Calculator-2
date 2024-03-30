@@ -183,9 +183,10 @@ const Calculator_MathLogic_FUNCTIONS: {
     screen_INFO: HTMLDivElement,
     screen_VALUE: HTMLDivElement,
     operation_MODE: Function,
-    operation_CALCULATE: Function,
-    operation_EVA: Function,
-    operation_TAU: Function,
+    operation_CALCULATE_1: Function,
+    operation_CALCULATE_2: Function,
+    //operation_EVA: Function,
+    //operation_TAU: Function,
     operation_CONJCALC: Function
     operation_DEL: Function,
     operation_AC: Function,
@@ -229,7 +230,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                         this.operation_MODE(this.bt_ID);  // OK
                         break;
                     case "=":
-                        this.operation_CALCULATE(this.bt_ID);
+                        this.operation_CALCULATE_1(this.bt_ID);
                         break;
                     case "BACK":
                         this.operation_DEL(this.bt_ID);  // OK
@@ -614,8 +615,6 @@ const Calculator_MathLogic_FUNCTIONS: {
             if (sraczka.charCodeAt(i) === 124 || sraczka.charCodeAt(i) == 8897 || sraczka.charCodeAt(i) === 8896 || sraczka.charCodeAt(i) === 8658 || sraczka.charCodeAt(i) === 8660) {
                 kloc_LEWY = i - 1;
                 kloc_PRAWY = i + 1;
-                //console.log(sraczka[kloc_LEWY]);
-                //console.log(sraczka[kloc_PRAWY]);
                 if (sraczka[kloc_LEWY] === undefined || sraczka[kloc_PRAWY] === undefined) {
                     console.log("Wyrażenie NIE jest poprawne!");
                     //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
@@ -628,20 +627,59 @@ const Calculator_MathLogic_FUNCTIONS: {
 
         // Planowane były 3 Etapy Walidacji, ale w trakcie pracy jakoś tak się złożyło, że potrzebowałem dwóch kolejnych... łącznie z ZEROwym.
     },
-    operation_CALCULATE(): void {// Wykonywanie operacji:
+    operation_CALCULATE_1(): void {// Wykonywanie operacji:
+        let result: string = "";
+        let result_AR: string[] = [];
+        let is_p: boolean = false;
+        let is_q: boolean = false;
+        let is_r: boolean = false;
+        let wordType_COUNT: number = 0;
         if (this.calc_MODE === "EVA") {
-            this.operation_EVA(this.p01_VAL, this.q01_VAL, this.r01_VAL);
+            // Zmiana ukadu kalkulatora: robi się to kiedy po wywołaniu "operation_TAU" kliknie się na kalkulatorze dowolny przycisk odpócz przycisku"=":
+            this.screen_EL.classList.replace('screen_TAU', 'screen_EVA');
+            this.screen_POS_2.classList.replace('screen-position_TAU', 'screen-position_EVA');
+            this.screen_POS_3.classList.replace('screen-position_TAU', 'screen-position_EVA');
+            this.butonGroup_EL.classList.replace('buttons-group_TAU', 'buttons-group_EVA');
+            result = this.operation_CALCULATE_2(this.p01_VAL, this.q01_VAL, this.r01_VAL);
+            (result === "0") ? this.screen_VALUE.textContent = "false" : this.screen_VALUE.textContent = this.screen_VALUE.textContent;
+            (result === "1") ? this.screen_VALUE.textContent = "true" : this.screen_VALUE.textContent = this.screen_VALUE.textContent;
         } else if (this.calc_MODE === "TAU") {
-            this.operation_TAU(this.p01_VAL, this.q01_VAL, this.r01_VAL);
+            this.isResultTAU = true;
+            this.screen_EL.classList.replace('screen_EVA', 'screen_TAU');
+            this.screen_POS_2.classList.replace('screen-position_EVA', 'screen-position_TAU');
+            this.screen_POS_3.classList.replace('screen-position_EVA', 'screen-position_TAU');
+            this.butonGroup_EL.classList.replace('buttons-group_EVA', 'buttons-group_TAU');
+            for (let i: number = 0; i < this.value.length; i++) {
+                if (is_p == false) {
+                    if (this.value[i] === "p") {
+                        wordType_COUNT++;
+                        is_p = false;
+                    }
+                }
+                if (is_q == false) {
+                    if (this.value[i] === "q") {
+                        wordType_COUNT++;
+                        is_q = false;
+                    }
+                }
+                if (is_r == false) {
+                    if (this.value[i] === "r") {
+                        wordType_COUNT++;
+                        is_r = false;
+                    }
+                }
+            }
+            if (wordType_COUNT === 1) {
+                this.screen_POS_3.textContent = "1";
+            } else if (wordType_COUNT === 2) {
+                this.screen_POS_3.textContent = "2";
+            } else if (wordType_COUNT === 3) {
+                this.screen_POS_3.textContent = "3";
+            }
+            //this.operation_CALCULATE_2(this.p01_VAL, this.q01_VAL, this.r01_VAL);
         }
     },
-    operation_EVA(p01: string, q01: string, r01: string): void {
-        console.log("Operacja: ewaluacja");
-        // Zmiana ukadu kalkulatora: robi się to kiedy po wywołaniu "operation_TAU" kliknie się na kalkulatorze dowolny przycisk odpócz przycisku"="
-        this.screen_EL.classList.replace('screen_TAU', 'screen_EVA');
-        this.screen_POS_2.classList.replace('screen-position_TAU', 'screen-position_EVA');
-        this.screen_POS_3.classList.replace('screen-position_TAU', 'screen-position_EVA');
-        this.butonGroup_EL.classList.replace('buttons-group_TAU', 'buttons-group_EVA');
+    operation_CALCULATE_2(p01: string, q01: string, r01: string): string {
         let hieroglif: string = "(" + this.value.split(" ").join("") + ")";
         let zagadka: string = "";
         for (let i: number = 0; i < hieroglif.length; i++) {
@@ -655,10 +693,6 @@ const Calculator_MathLogic_FUNCTIONS: {
                 zagadka += r01;
             }
         }
-        console.log("--------------------------");
-        console.log("Obliczanie wyrażenia: EVA");
-        console.log("Wyrażenie: " + zagadka);
-
         // Rozkład wyrażenia nawiasowego na nadrzędne wyrażenia nawiasowe każdego poziomu, zaczynając od najbardziej zagnieżdżonych: ((5+(4-6))+5)
         let leftBracket_AR: string[] = [];
         let mostNestLeftBck: number = 0;
@@ -679,18 +713,15 @@ const Calculator_MathLogic_FUNCTIONS: {
                     // Kiedy wpiszesz np. 4+(-5, to wczutując niestniejący indeks ze znakiem "(" otrzymamy undefined / null (w zależności od języka), a konwertując to na Number otrzymamy BŁĄD!
                     curExp = curExp.slice(1, (curExp.length - 1));
                     result = this.operation_CONJCALC(curExp);
-                    //alert("Wynik: " + result);
-                    // Indeksy potrzebne do zmodyfikowania aktualnego stringa-zagadki:
+                    // Indeksy potrzebne do zmodyfikowania stringa-zagadki:
                     cutExp_AR[0] = mostNestLeftBck;
                     cutExp_AR[1] = i;
-                    //alert("Indeksy: " + cutExp_AR[0] + " | " + cutExp_AR[1]);
                     break;
                 }
             }
             // Aktualozowanie stringa-zagadki:
             zagadka_COPY = "";
             isADD = true;
-            //alert("zagadka.length = " + zagadka.length);
             for (let i: number = 0; i < zagadka.length; i++) {
                 if (i === cutExp_AR[0]) {
                     isADD = false;
@@ -702,29 +733,20 @@ const Calculator_MathLogic_FUNCTIONS: {
                 if (i === cutExp_AR[1]) {
                     isADD = true;
                 }
-                //alert("zagadka_COPY = " + zagadka_COPY);
             }
             zagadka = zagadka_COPY;
-            //alert("zagadka_COPY = " + zagadka_COPY);
             // Sprawdzanie czy string-zagadka jest obliczony:
             if (zagadka.length === 1) {
                 isCalculate = true;
-                //alert("KONIEC");
             }
-            //alert(zagadka);
         }
-        //console.log(zagadka);
-        (zagadka === "0") ? this.screen_VALUE.textContent = "false" : this.screen_VALUE.textContent = this.screen_VALUE.textContent;
-        (zagadka === "1") ? this.screen_VALUE.textContent = "true" : this.screen_VALUE.textContent = this.screen_VALUE.textContent;
+        //(zagadka === "0") ? this.screen_VALUE.textContent = "false" : this.screen_VALUE.textContent = this.screen_VALUE.textContent;
+        //(zagadka === "1") ? this.screen_VALUE.textContent = "true" : this.screen_VALUE.textContent = this.screen_VALUE.textContent;
+        return zagadka;
     },
-    operation_TAU(p01: string, q01: string, r01: string): void {
-        console.log("Operacja: tautologia");
-        this.isResultTAU = true;
-        this.screen_EL.classList.replace('screen_EVA', 'screen_TAU');
-        this.screen_POS_2.classList.replace('screen-position_EVA', 'screen-position_TAU');
-        this.screen_POS_3.classList.replace('screen-position_EVA', 'screen-position_TAU');
-        this.butonGroup_EL.classList.replace('buttons-group_EVA', 'buttons-group_TAU');
-    },
+    //operation_TAU(p01: string, q01: string, r01: string): void {
+    //    console.log("Operacja: tautologia");
+    //},
     operation_CONJCALC(expression: string): string {
         let result: string = expression;
         if (expression.length === 3) {  // "p|r"
@@ -774,15 +796,13 @@ const Calculator_MathLogic_FUNCTIONS: {
             this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 1));
         }
         this.screen_VALUE.textContent = this.value;
-        // TESTOWE: ===============================================================================TESTOWE
         this.operation_VALID();
     },
     operation_AC(): void {
         console.clear();
         this.value = " ";
         this.screen_VALUE.textContent = this.value;
-        // TESTOWE: ===============================================================================TESTOWE
-        //this.screen_INFO.textContent = "";
+        this.screen_POS_3.textContent = this.value;
     },
     operation_SignValue(signValue: string): void {
         if (this.calc_MODE === "EVA") {
@@ -821,7 +841,6 @@ const Calculator_MathLogic_FUNCTIONS: {
             this.value += signKey;
         }
         this.screen_VALUE.textContent = this.value;
-        // TESTOWE: ===============================================================================TESTOWE
         this.operation_VALID();
     },
 }
@@ -876,7 +895,7 @@ const Calculator_Euklides_FUNCTIONS: {
             }, false);
         }
     },
-    operation_EUK(id: string): void {
+    operation_EUK(): void {
         // Walidacja poprawności wpisanych danych:
         let baseNum_AR: number[] = this.value.split(", ");
         if (baseNum_AR.length !== 2) {
@@ -916,7 +935,7 @@ const Calculator_Euklides_FUNCTIONS: {
             }
         }
     },
-    operation_DEL(id: string): void {
+    operation_DEL(): void {
         if (this.value[this.value.length - 1] === " ") {
             this.value = this.screen_VALUE.textContent.slice(0, (this.screen_VALUE.textContent.length - 2));
         } else {
@@ -928,12 +947,12 @@ const Calculator_Euklides_FUNCTIONS: {
         this.screen_VALUE.textContent = this.value;
         this.screen_INFO.textContent = "Skrócono wartość";
     },
-    operation_AC(id: string): void {
+    operation_AC(): void {
         this.value = "0";
         this.screen_VALUE.textContent = this.value;
         this.screen_INFO.textContent = "Skasowano wartość";
     },
-    operation_Comma(id: string): void {
+    operation_Comma(): void {
         if (this.value[this.value.length - 1] !== " ") {
             this.value += ", ";
             this.screen_INFO.textContent = "Utworzono pole na nową liczbę";
@@ -1098,7 +1117,7 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
             // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             this.screen_VALUE.textContent = String(this.result);
             this.value = this.screen_VALUE.textContent;
-            // Wyświeetlanie informacji:
+            // Wyświetlanie informacji:
             this.screen_INFO.textContent = "NWD | ";
             for (let i: number = 0; i < this.Both_FAC_InitialValues_STR.length; i++) {
                 this.screen_INFO.textContent += this.Both_FAC_InitialValues_STR[i] + ", ";
@@ -1232,9 +1251,6 @@ const Calculator_NWD_NWW_Faction_FUNCTIONS: {
             this.screen_INFO.textContent = "FAC | " + this.value + " | Wynik:";
             this.result = this.result.slice(0, this.result.length - 2);
             this.FAC_isNotComma = true;
-
-
-
             // Wyznaczanie liczby pierwszej:
             for (let i: number = 0; i < this.result.length; i++) {
                 if (this.result[i] === ",") {
