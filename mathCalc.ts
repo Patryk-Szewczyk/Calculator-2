@@ -633,7 +633,8 @@ const Calculator_MathLogic_FUNCTIONS: {
         let is_p: boolean = false;
         let is_q: boolean = false;
         let is_r: boolean = false;
-        let wordType_COUNT: number = 0;
+        let wordType_STR: string[] = [];
+        let isTAU_COUNTER: number = 0;
         if (this.calc_MODE === "EVA") {
             // Zmiana ukadu kalkulatora: robi się to kiedy po wywołaniu "operation_TAU" kliknie się na kalkulatorze dowolny przycisk odpócz przycisku"=":
             this.screen_EL.classList.replace('screen_TAU', 'screen_EVA');
@@ -649,37 +650,76 @@ const Calculator_MathLogic_FUNCTIONS: {
             this.screen_POS_2.classList.replace('screen-position_EVA', 'screen-position_TAU');
             this.screen_POS_3.classList.replace('screen-position_EVA', 'screen-position_TAU');
             this.butonGroup_EL.classList.replace('buttons-group_EVA', 'buttons-group_TAU');
+            wordType_STR = [];
             for (let i: number = 0; i < this.value.length; i++) {
                 if (is_p == false) {
                     if (this.value[i] === "p") {
-                        wordType_COUNT++;
-                        is_p = false;
+                        wordType_STR.push("p");
+                        is_p = true;
                     }
                 }
                 if (is_q == false) {
                     if (this.value[i] === "q") {
-                        wordType_COUNT++;
-                        is_q = false;
+                        wordType_STR.push("q");
+                        is_q = true;
                     }
                 }
                 if (is_r == false) {
                     if (this.value[i] === "r") {
-                        wordType_COUNT++;
-                        is_r = false;
+                        wordType_STR.push("r");
+                        is_r = true;
                     }
                 }
             }
-            if (wordType_COUNT === 1) {
-                this.screen_POS_3.textContent = "1";
-            } else if (wordType_COUNT === 2) {
-                this.screen_POS_3.textContent = "2";
-            } else if (wordType_COUNT === 3) {
-                this.screen_POS_3.textContent = "3";
+            result_AR = [];
+            isTAU_COUNTER = 0;
+            if (wordType_STR.length === 1) {
+                if (wordType_STR[0] === "p") {
+                    result_AR.push(this.operation_CALCULATE_2("0", undefined, undefined));
+                    result_AR.push(this.operation_CALCULATE_2("1", undefined, undefined));
+                } else if (wordType_STR[0] === "q") {
+                    result_AR.push(this.operation_CALCULATE_2(undefined, "0", undefined));
+                    result_AR.push(this.operation_CALCULATE_2(undefined, "1", undefined));
+                } else if (wordType_STR[0] === "r") {
+                    result_AR.push(this.operation_CALCULATE_2(undefined, undefined, "0"));
+                    result_AR.push(this.operation_CALCULATE_2(undefined, undefined, "1"));
+                }
+            } else if (wordType_STR.length === 2) {
+                if ((wordType_STR[0] === "p" && wordType_STR[1] === "q") || (wordType_STR[0] === "q" && wordType_STR[1] === "p")) {
+                    result_AR.push(this.operation_CALCULATE_2("0", "0", undefined));
+                    result_AR.push(this.operation_CALCULATE_2("1", "0", undefined));
+                    result_AR.push(this.operation_CALCULATE_2("0", "1", undefined));
+                    result_AR.push(this.operation_CALCULATE_2("1", "1", undefined));
+                } else if ((wordType_STR[0] === "q" && wordType_STR[1] === "r") || (wordType_STR[0] === "r" && wordType_STR[1] === "q")) {
+                    result_AR.push(this.operation_CALCULATE_2(undefined, "0", "0"));
+                    result_AR.push(this.operation_CALCULATE_2(undefined, "1", "0"));
+                    result_AR.push(this.operation_CALCULATE_2(undefined, "0", "1"));
+                    result_AR.push(this.operation_CALCULATE_2(undefined, "1", "1"));
+                } else if ((wordType_STR[0] === "p" && wordType_STR[1] === "r") || (wordType_STR[0] === "r" && wordType_STR[1] === "p")) {
+                    result_AR.push(this.operation_CALCULATE_2("0", undefined, "0"));
+                    result_AR.push(this.operation_CALCULATE_2("1", undefined, "0"));
+                    result_AR.push(this.operation_CALCULATE_2("0", undefined, "1"));
+                    result_AR.push(this.operation_CALCULATE_2("1", undefined, "1"));
+                }
+            } else if (wordType_STR.length === 3) {
+                result_AR.push(this.operation_CALCULATE_2("0", "0", "0"));
+                result_AR.push(this.operation_CALCULATE_2("0", "0", "1"));
+                result_AR.push(this.operation_CALCULATE_2("0", "1", "1"));
+                result_AR.push(this.operation_CALCULATE_2("0", "1", "0"));
+                result_AR.push(this.operation_CALCULATE_2("1", "0", "1"));
+                result_AR.push(this.operation_CALCULATE_2("1", "0", "0"));
+                result_AR.push(this.operation_CALCULATE_2("1", "1", "1"));
+                result_AR.push(this.operation_CALCULATE_2("1", "1", "0"));
             }
+            for (let i: number = 0; i < result_AR.length; i++) {
+                (result_AR[i] === "1") ? isTAU_COUNTER++ : isTAU_COUNTER = isTAU_COUNTER;
+            }
+            (isTAU_COUNTER === result_AR.length) ? this.screen_POS_3.textContent = "true" : this.screen_POS_3.textContent = "false";
+            //alert(isTAU_COUNTER + " | " + result_AR.length);
             //this.operation_CALCULATE_2(this.p01_VAL, this.q01_VAL, this.r01_VAL);
         }
     },
-    operation_CALCULATE_2(p01: string, q01: string, r01: string): string {
+    operation_CALCULATE_2(p01: (string | undefined), q01: (string | undefined), r01: (string | undefined)): string {
         let hieroglif: string = "(" + this.value.split(" ").join("") + ")";
         let zagadka: string = "";
         for (let i: number = 0; i < hieroglif.length; i++) {
