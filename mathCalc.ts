@@ -1,3 +1,17 @@
+const Layout_ALL: {
+    setAppBody_Height_AEL: Function,
+} = {
+    setAppBody_Height_AEL(): void {
+        const appBody_EL: HTMLDivElement = document.querySelector('div.app-body');
+        ['load', 'resize'].forEach((ev) => {
+            addEventListener(ev, () => {
+                appBody_EL.style.height = window.innerHeight + 'px';
+            }, false);
+        });
+    }
+}
+Layout_ALL.setAppBody_Height_AEL();
+
 const Layout_DESKTOP: {
     setMenuButton_AEL: Function,
     setScrollBarPosition: Function  // Ustawienie pozycji scrollbaru na właściwym miejscu (ekran kalkulatora)
