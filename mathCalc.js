@@ -27,7 +27,7 @@ var Layout_DESKTOP = {
                             isShow = false;
                             setTimeout(function () {
                                 menuButtonBody_EL.style.display = "none";
-                                sidebar.style.left = '-300px'; // + 65px dla strzałki (5px - cień)
+                                sidebar.style.left = '-306px'; /* + (-6px) cienia*/
                                 menuButton_EL.style.transform = 'rotateZ(180deg)';
                                 sidebar.style.transitionDuration = '0.35s';
                                 setTimeout(function () {
@@ -40,35 +40,6 @@ var Layout_DESKTOP = {
                 }
             }, false);
         });
-        /*menuButton_EL.addEventListener('click', () => {
-            const sidebar: HTMLElement = document.querySelector('nav.dsk-nav-menu');
-            switch (isShow){
-                case false: {
-                    isShow = true;
-                    setTimeout(() => {
-                        menuButtonBody_EL.style.display = "flex";
-                        sidebar.style.left = '0px';
-                        menuButton_EL.style.transform = 'rotateZ(0deg)';
-                        sidebar.style.transitionDuration = '0.35s';
-                        appCover_EL.style.zIndex = "1";
-                        appCover_EL.style.backgroundColor = "0,0,0,0.5";
-                    }, 1);
-                } break;
-                case true: {
-                    isShow = false;
-                    setTimeout(() => {
-                        menuButtonBody_EL.style.display = "none";
-                        sidebar.style.left = '-300px';  // + 65px dla strzałki (5px - cień)
-                        menuButton_EL.style.transform = 'rotateZ(180deg)';
-                        sidebar.style.transitionDuration = '0.35s';
-                        setTimeout(() => {
-                            appCover_EL.style.zIndex = "-1";
-                            appCover_EL.style.backgroundColor = "0,0,0,0.0";
-                        }, 350);
-                    }, 1);
-                } break;
-            }
-        }, false);*/
     },
     setScrollBarPosition: function () {
         window.addEventListener("DOMContentLoaded", function () {
@@ -81,6 +52,33 @@ var Layout_DESKTOP = {
 };
 Layout_DESKTOP.setMenuButton_AEL();
 Layout_DESKTOP.setScrollBarPosition();
+var buttonHover = {
+    setButtonHover_AEL: function () {
+        var calcButton_COLL = document.querySelectorAll('div.buttons-group > .item > div');
+        var _loop_1 = function (i) {
+            calcButton_COLL[i].addEventListener("mouseover", function () {
+                calcButton_COLL[i].style.cursor = "pointer";
+            }, false);
+            calcButton_COLL[i].addEventListener("mouseout", function () {
+                calcButton_COLL[i].style.cursor = "default";
+            }, false);
+            ['click', 'touchend'].forEach(function (ev) {
+                calcButton_COLL[i].addEventListener(ev, function () {
+                    calcButton_COLL[i].style.backgroundColor = "rgba(255,255,255,0.2)";
+                    calcButton_COLL[i].style.transitionDuration = "0.0s";
+                    setTimeout(function () {
+                        calcButton_COLL[i].style.backgroundColor = "rgba(255,255,255,0.0)";
+                        calcButton_COLL[i].style.transitionDuration = "0.1s";
+                    }, 150);
+                }, false);
+            });
+        };
+        for (var i = 0; i < calcButton_COLL.length; i++) {
+            _loop_1(i);
+        }
+    }
+};
+buttonHover.setButtonHover_AEL();
 var LocalStorage_ALL = {
     clcBt_EVT: undefined,
     clcBt_DIV: null,
@@ -266,14 +264,13 @@ var Calculator_MathLogic_FUNCTIONS = {
         this.operation_MODE();
     },
     operation_MODE: function () {
+        var hover_EL = document.createElement('div');
         if (this.calc_MODE === "EVA") {
             this.calc_MODE = "TAU";
-            this.mode_EL.textContent = "EVA";
             this.screen_INFO.textContent = this.screen_INFO_TAU;
         }
         else if (this.calc_MODE === "TAU") {
             this.calc_MODE = "EVA";
-            this.mode_EL.textContent = "TAU";
             this.screen_INFO.textContent = this.screen_INFO_EVA;
         }
     },
