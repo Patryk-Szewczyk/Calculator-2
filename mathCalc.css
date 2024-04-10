@@ -237,7 +237,7 @@ body {
                     }
                 div[class^="ct-"] {
                     width: 100%;
-                    height: calc(100% - 80px);
+                    height: calc(100vh - 80px);
                     background-color: hsl(219, 48%, 34%);
                 }
                 /*- - - - - - - - - - - - - - - - - - -*/
