@@ -456,6 +456,90 @@ const Calculator_MathLogic_FUNCTIONS: {
         let isBad_2: boolean = false;
         console.log("\nIII Etap walidacji - Sąsiedztwo właściwych znaków:");
         console.log(result);
+        /*for (let i: number = 0; i < result.length; i++) {
+            //for (let j: number = 0; j < result[i].length - 1; j++) {
+                keyNum = this.value.charCodeAt(i);
+                if (keyNum === 124 || keyNum === 8897 || keyNum === 8896 || keyNum === 8658 || keyNum === 8660) {
+                    // LEWA:
+                    keyNum_LOC = i - 1;
+                    if (this.value[keyNum_LOC] !== "p" && this.value[keyNum_LOC] !== "q" && this.value[keyNum_LOC] !== "r" && this.value[keyNum_LOC] !== ")") {
+                        console.log("PRAWY SPÓJNIK: " + result[i][keyNum_LOC]);
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                    // PRAWA:
+                    keyNum_LOC = i + 1;
+                    if (this.value[keyNum_LOC] !== "p" && this.value[keyNum_LOC] !== "q" && this.value[keyNum_LOC] !== "r" && this.value[keyNum_LOC] !== "(") {
+                        console.log("PRAWY SPÓJNIK: " + result[i][keyNum_LOC]);
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                } else if (keyNum === 112 || keyNum === 113 || keyNum === 114) {
+                    // LEWA:
+                    keyNum_LOC = i - 1;
+                    if (this.value.charCodeAt(keyNum_LOC) !== 172 && this.value.charCodeAt(keyNum_LOC) !== 124 && this.value.charCodeAt(keyNum_LOC) !== 8897 && this.value.charCodeAt(keyNum_LOC) !== 8896 && this.value.charCodeAt(keyNum_LOC) !== 8658 && this.value.charCodeAt(keyNum_LOC) !== 8660 && this.value[keyNum_LOC] !== "(" && this.value[keyNum_LOC] !== undefined) {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                    // PRAWA:
+                    keyNum_LOC = i + 1;
+                    if (this.value.charCodeAt(keyNum_LOC) !== 124 && this.value.charCodeAt(keyNum_LOC) !== 8897 && this.value.charCodeAt(keyNum_LOC) !== 8896 && this.value.charCodeAt(keyNum_LOC) !== 8658 && this.value.charCodeAt(keyNum_LOC) !== 8660 && this.value[keyNum_LOC] !== ")" && this.value[keyNum_LOC] !== undefined) {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        alert(this.value.charCodeAt(keyNum_LOC));
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                } else if (keyNum === 172) {  // Dopuszczalne są tylko dwa przypadki: "(~(" i "(~r". W skrócie: wyrażenie z NOT musi być zawsze w nawiasie.
+                    if ((this.value[keyNum_LOC - 1] !== "(" && this.value[keyNum_LOC + 1] !== "(") || (this.value[keyNum_LOC - 1] !== "(" && this.value[keyNum_LOC + 1] !== "p") || (this.value[keyNum_LOC - 1] !== "(" && this.value[keyNum_LOC + 1] !== "q") || (this.value[keyNum_LOC - 1] !== "(" && this.value[keyNum_LOC + 1] !== "r")) {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                } else if (keyNum === 40) {
+                    // LEWA:
+                    keyNum_LOC = i - 1;
+                    if (this.value[keyNum_LOC] !== "(" && this.value.charCodeAt(keyNum_LOC) !== 172 && this.value.charCodeAt(keyNum_LOC) !== 124 && this.value.charCodeAt(keyNum_LOC) !== 8897 && this.value.charCodeAt(keyNum_LOC) !== 8896 && this.value.charCodeAt(keyNum_LOC) !== 8658 && this.value.charCodeAt(keyNum_LOC) !== 8660 && this.value[keyNum_LOC] !== undefined) {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                    // PRAWA:
+                    keyNum_LOC = i + 1;
+                    if (this.value.charCodeAt(keyNum_LOC) !== 172 && this.value[keyNum_LOC] !== "p" && this.value[keyNum_LOC] !== "q" && this.value[keyNum_LOC] !== "r") {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                } else if (keyNum === 41) {
+                    // LEWA:
+                    keyNum_LOC = i - 1;
+                    if (this.value[keyNum_LOC] !== "p" && this.value[keyNum_LOC] !== "q" && this.value[keyNum_LOC] !== "r") {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                    // PRAWA:
+                    keyNum_LOC = i + 1;
+                    if (this.value[keyNum_LOC] !== ")" && this.value.charCodeAt(keyNum_LOC) !== 124 && this.value.charCodeAt(keyNum_LOC) !== 8897 && this.value.charCodeAt(keyNum_LOC) !== 8896 && this.value.charCodeAt(keyNum_LOC) !== 8658 && this.value.charCodeAt(keyNum_LOC) !== 8660 && this.value[keyNum_LOC] !== undefined) {
+                        console.log("Wyrażenie NIE jest poprawne!");
+                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                        this.screen_VALUE.style.color = badColor;
+                        return;
+                    }
+                }
+            //}
+        }*/
         for (let i: number = 0; i < result.length; i++) {
             for (let j: number = 0; j < result[i].length; j++) {
                 keyNum = result[i].charCodeAt(j);
@@ -624,17 +708,13 @@ const Calculator_MathLogic_FUNCTIONS: {
         // VI Etap Walidacji - Sprawdzenie czy NOT (~) znajduje się w nawiasie:
         for (let i: number = 0; i < this.value.length; i++) {
             if (this.value.charCodeAt(i) === 172) {
-                if (this.value[i-1] !== "(") {
-                    console.log("Wyrażenie NIE jest poprawne!");
+                if (this.value[i-1] === "(" && (this.value[i+1] === "p" || this.value[i+1] === "q" || this.value[i+1] === "r") && this.value[i+2] === ")") {
+                    alert("Warunek (~p)");
+                } else if (this.value[i-1] === "(" && this.value[i+1] === "(") {
+                    alert("Warunek (~(");
+                } else {
                     this.isValid = false;
-                    //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
-                    this.screen_VALUE.style.color = badColor;
-                    return;
-                }
-                if (this.value[i+1] !== "(" && this.value[i+1] !== "p" && this.value[i+1] !== "q" && this.value[i+1] !== "r") {
                     console.log("Wyrażenie NIE jest poprawne!");
-                    this.isValid = false;
-                    //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
                     this.screen_VALUE.style.color = badColor;
                     return;
                 }
