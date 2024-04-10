@@ -18,22 +18,20 @@ body {
     --dark-font: hsl(0, 0%, 12%);
 }
 
-.app-cover {
-    width: 100%;
-    height: 100vh;
-    position: absolute;
-    z-index: -1;
-    background-color: rgba(0,0,0,0.5);
-}
-
 .app-body {
     width: 100%;
-    height: 100vh;
     display: flex;
     justify-content: flex-start;
     align-items: center;
     background-color: var(--bg-lightBlue);
 }
+    .app-cover {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        z-index: -1;
+        background-color: rgba(0,0,0,0.5);
+    }
 
     .app-desktop {
         width: 100%;
