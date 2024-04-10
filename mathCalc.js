@@ -1,3 +1,14 @@
+var Layout_ALL = {
+    setAppBody_Height_AEL: function () {
+        var appBody_EL = document.querySelector('div.app-body');
+        ['load', 'resize'].forEach(function (ev) {
+            addEventListener(ev, function () {
+                appBody_EL.style.height = window.innerHeight + 'px';
+            }, false);
+        });
+    }
+};
+Layout_ALL.setAppBody_Height_AEL();
 var Layout_DESKTOP = {
     setMenuButton_AEL: function () {
         var menuButtonBody_EL = document.querySelector('div.dsk-menu-button-box');
