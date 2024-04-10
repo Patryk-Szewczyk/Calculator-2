@@ -1,47 +1,73 @@
-const Layout_ALL: {
-    setAppBody_Height_AEL: Function,
-} = {
-    setAppBody_Height_AEL(): void {
-        const appBody_EL: HTMLDivElement = document.querySelector('div.app-body');
-        ['load', 'resize'].forEach((ev) => {
-            addEventListener(ev, () => {
-                appBody_EL.style.height = window.innerHeight + 'px';
-            }, false);
-        });
-    }
-}
-Layout_ALL.setAppBody_Height_AEL();
-
-
-
 const Layout_DESKTOP: {
     setMenuButton_AEL: Function,
     setScrollBarPosition: Function  // Ustawienie pozycji scrollbaru na właściwym miejscu (ekran kalkulatora)
 } = {
     setMenuButton_AEL(): void {
+        const menuButtonBody_EL: HTMLDivElement = document.querySelector('div.dsk-menu-button-box');
         const menuButton_EL: HTMLDivElement = document.querySelector('svg.dsk-menu-arrow');
+        const calcDott_EL: HTMLDivElement = document.querySelector('div.menu-button-dott');
+        const appCover_EL: HTMLDivElement = document.querySelector('div.app-cover');
         let isShow: boolean = false;
-        menuButton_EL.addEventListener('click', () => {
+        [calcDott_EL, menuButton_EL].forEach((element) => {
+            element.addEventListener('click', () => {
+                const sidebar: HTMLElement = document.querySelector('nav.dsk-nav-menu');
+                switch (isShow){
+                    case false: {
+                        isShow = true;
+                        setTimeout(() => {
+                            menuButtonBody_EL.style.display = "flex";
+                            sidebar.style.left = '0px';
+                            menuButton_EL.style.transform = 'rotateZ(0deg)';
+                            sidebar.style.transitionDuration = '0.35s';
+                            appCover_EL.style.zIndex = "1";
+                            appCover_EL.style.backgroundColor = "0,0,0,0.5";
+                        }, 1);
+                    } break;
+                    case true: {
+                        isShow = false;
+                        setTimeout(() => {
+                            menuButtonBody_EL.style.display = "none";
+                            sidebar.style.left = '-300px';  // + 65px dla strzałki (5px - cień)
+                            menuButton_EL.style.transform = 'rotateZ(180deg)';
+                            sidebar.style.transitionDuration = '0.35s';
+                            setTimeout(() => {
+                                appCover_EL.style.zIndex = "-1";
+                                appCover_EL.style.backgroundColor = "0,0,0,0.0";
+                            }, 350);
+                        }, 1);
+                    } break;
+                }
+            }, false);
+        });
+        /*menuButton_EL.addEventListener('click', () => {
             const sidebar: HTMLElement = document.querySelector('nav.dsk-nav-menu');
             switch (isShow){
                 case false: {
                     isShow = true;
                     setTimeout(() => {
+                        menuButtonBody_EL.style.display = "flex";
                         sidebar.style.left = '0px';
                         menuButton_EL.style.transform = 'rotateZ(0deg)';
                         sidebar.style.transitionDuration = '0.35s';
+                        appCover_EL.style.zIndex = "1";
+                        appCover_EL.style.backgroundColor = "0,0,0,0.5";
                     }, 1);
                 } break;
                 case true: {
                     isShow = false;
                     setTimeout(() => {
-                        sidebar.style.left = '-300px';
+                        menuButtonBody_EL.style.display = "none";
+                        sidebar.style.left = '-300px';  // + 65px dla strzałki (5px - cień)
                         menuButton_EL.style.transform = 'rotateZ(180deg)';
                         sidebar.style.transitionDuration = '0.35s';
+                        setTimeout(() => {
+                            appCover_EL.style.zIndex = "-1";
+                            appCover_EL.style.backgroundColor = "0,0,0,0.0";
+                        }, 350);
                     }, 1);
                 } break;
             }
-        }, false);
+        }, false);*/
     },
     setScrollBarPosition() {
         window.addEventListener("DOMContentLoaded", () => {
@@ -64,11 +90,13 @@ const LocalStorage_ALL: {
     clcBt_ID: number,
     clcType_EL: HTMLDivElement,
     getLocalStorage: Function
+    calcTitle_EL: HTMLDivElement
 } = {
     clcBt_EVT: undefined,
     clcBt_DIV: null,
     clcBt_ID: 0,
     clcType_EL: null,
+    calcTitle_EL: document.querySelector('div.cb-title'),
     setPageOpenCalc_AEL(): void {
         const calcButton_COLL: HTMLCollection = document.querySelector('div.nav-button-box').children;
         const calcType_EL: NodeList = document.querySelectorAll('div[class^="ct-"]');
@@ -83,6 +111,7 @@ const LocalStorage_ALL: {
                             if (i === this.clcBt_ID) {
                                 this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                                 this.clcType_EL.style.display = 'block';
+                                this.calcTitle_EL.textContent = "Logika";
                             } else {
                                 this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                                 this.clcType_EL.style.display = 'none';
@@ -95,6 +124,7 @@ const LocalStorage_ALL: {
                             if (i === this.clcBt_ID) {
                                 this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                                 this.clcType_EL.style.display = 'block';
+                                this.calcTitle_EL.textContent = "Euklides";
                             } else {
                                 this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                                 this.clcType_EL.style.display = 'none';
@@ -107,6 +137,7 @@ const LocalStorage_ALL: {
                             if (i === this.clcBt_ID) {
                                 this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                                 this.clcType_EL.style.display = 'block';
+                                this.calcTitle_EL.textContent = "NWD NWW FAC";
                             } else {
                                 this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                                 this.clcType_EL.style.display = 'none';
@@ -129,6 +160,7 @@ const LocalStorage_ALL: {
                         if (i === Number(calcType)) {
                             this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'block';
+                            this.calcTitle_EL.textContent = "Logika";
                         } else {
                             this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'none';
@@ -140,6 +172,7 @@ const LocalStorage_ALL: {
                         if (i === Number(calcType)) {
                             this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'block';
+                            this.calcTitle_EL.textContent = "Euklides";
                         } else {
                             this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'none';
@@ -151,6 +184,7 @@ const LocalStorage_ALL: {
                         if (i === Number(calcType)) {
                             this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'block';
+                            this.calcTitle_EL.textContent = "NWD NWW FAC";
                         } else {
                             this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'none';
@@ -209,8 +243,8 @@ const Calculator_MathLogic_FUNCTIONS: {
     r01_VAL: "0",
     calc_MODE: "TAU",
     isResultTAU: false,
-    screen_INFO_EVA: "Mode: EVA | p = 0, q = 0, r = 0",
-    screen_INFO_TAU: "Mode: TAU",
+    screen_INFO_EVA: "EVA | p = 0, q = 0, r = 0",
+    screen_INFO_TAU: "TAU",
     screen_EL: document.getElementById('screen_TRANSFORM'),
     screen_POS_2: document.getElementById('screen-position-1_TRANSFORM'),
     screen_POS_3: document.getElementById('screen-position-2_TRANSFORM'),
@@ -456,90 +490,6 @@ const Calculator_MathLogic_FUNCTIONS: {
         let isBad_2: boolean = false;
         console.log("\nIII Etap walidacji - Sąsiedztwo właściwych znaków:");
         console.log(result);
-        /*for (let i: number = 0; i < result.length; i++) {
-            //for (let j: number = 0; j < result[i].length - 1; j++) {
-                keyNum = this.value.charCodeAt(i);
-                if (keyNum === 124 || keyNum === 8897 || keyNum === 8896 || keyNum === 8658 || keyNum === 8660) {
-                    // LEWA:
-                    keyNum_LOC = i - 1;
-                    if (this.value[keyNum_LOC] !== "p" && this.value[keyNum_LOC] !== "q" && this.value[keyNum_LOC] !== "r" && this.value[keyNum_LOC] !== ")") {
-                        console.log("PRAWY SPÓJNIK: " + result[i][keyNum_LOC]);
-                        console.log("Wyrażenie NIE jest poprawne!");
-                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
-                        this.screen_VALUE.style.color = badColor;
-                        return;
-                    }
-                    // PRAWA:
-                    keyNum_LOC = i + 1;
-                    if (this.value[keyNum_LOC] !== "p" && this.value[keyNum_LOC] !== "q" && this.value[keyNum_LOC] !== "r" && this.value[keyNum_LOC] !== "(") {
-                        console.log("PRAWY SPÓJNIK: " + result[i][keyNum_LOC]);
-                        console.log("Wyrażenie NIE jest poprawne!");
-                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
-                        this.screen_VALUE.style.color = badColor;
-                        return;
-                    }
-                } else if (keyNum === 112 || keyNum === 113 || keyNum === 114) {
-                    // LEWA:
-                    keyNum_LOC = i - 1;
-                    if (this.value.charCodeAt(keyNum_LOC) !== 172 && this.value.charCodeAt(keyNum_LOC) !== 124 && this.value.charCodeAt(keyNum_LOC) !== 8897 && this.value.charCodeAt(keyNum_LOC) !== 8896 && this.value.charCodeAt(keyNum_LOC) !== 8658 && this.value.charCodeAt(keyNum_LOC) !== 8660 && this.value[keyNum_LOC] !== "(" && this.value[keyNum_LOC] !== undefined) {
-                        console.log("Wyrażenie NIE jest poprawne!");
-                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
-                        this.screen_VALUE.style.color = badColor;
-                        return;
-                    }
-                    // PRAWA:
-                    keyNum_LOC = i + 1;
-                    if (this.value.charCodeAt(keyNum_LOC) !== 124 && this.value.charCodeAt(keyNum_LOC) !== 8897 && this.value.charCodeAt(keyNum_LOC) !== 8896 && this.value.charCodeAt(keyNum_LOC) !== 8658 && this.value.charCodeAt(keyNum_LOC) !== 8660 && this.value[keyNum_LOC] !== ")" && this.value[keyNum_LOC] !== undefined) {
-                        console.log("Wyrażenie NIE jest poprawne!");
-                        alert(this.value.charCodeAt(keyNum_LOC));
-                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
-                        this.screen_VALUE.style.color = badColor;
-                        return;
-                    }
-                } else if (keyNum === 172) {  // Dopuszczalne są tylko dwa przypadki: "(~(" i "(~r". W skrócie: wyrażenie z NOT musi być zawsze w nawiasie.
-                    if ((this.value[keyNum_LOC - 1] !== "(" && this.value[keyNum_LOC + 1] !== "(") || (this.value[keyNum_LOC - 1] !== "(" && this.value[keyNum_LOC + 1] !== "p") || (this.value[keyNum_LOC - 1] !== "(" && this.value[keyNum_LOC + 1] !== "q") || (this.value[keyNum_LOC - 1] !== "(" && this.value[keyNum_LOC + 1] !== "r")) {
-                        console.log("Wyrażenie NIE jest poprawne!");
-                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
-                        this.screen_VALUE.style.color = badColor;
-                        return;
-                    }
-                } else if (keyNum === 40) {
-                    // LEWA:
-                    keyNum_LOC = i - 1;
-                    if (this.value[keyNum_LOC] !== "(" && this.value.charCodeAt(keyNum_LOC) !== 172 && this.value.charCodeAt(keyNum_LOC) !== 124 && this.value.charCodeAt(keyNum_LOC) !== 8897 && this.value.charCodeAt(keyNum_LOC) !== 8896 && this.value.charCodeAt(keyNum_LOC) !== 8658 && this.value.charCodeAt(keyNum_LOC) !== 8660 && this.value[keyNum_LOC] !== undefined) {
-                        console.log("Wyrażenie NIE jest poprawne!");
-                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
-                        this.screen_VALUE.style.color = badColor;
-                        return;
-                    }
-                    // PRAWA:
-                    keyNum_LOC = i + 1;
-                    if (this.value.charCodeAt(keyNum_LOC) !== 172 && this.value[keyNum_LOC] !== "p" && this.value[keyNum_LOC] !== "q" && this.value[keyNum_LOC] !== "r") {
-                        console.log("Wyrażenie NIE jest poprawne!");
-                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
-                        this.screen_VALUE.style.color = badColor;
-                        return;
-                    }
-                } else if (keyNum === 41) {
-                    // LEWA:
-                    keyNum_LOC = i - 1;
-                    if (this.value[keyNum_LOC] !== "p" && this.value[keyNum_LOC] !== "q" && this.value[keyNum_LOC] !== "r") {
-                        console.log("Wyrażenie NIE jest poprawne!");
-                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
-                        this.screen_VALUE.style.color = badColor;
-                        return;
-                    }
-                    // PRAWA:
-                    keyNum_LOC = i + 1;
-                    if (this.value[keyNum_LOC] !== ")" && this.value.charCodeAt(keyNum_LOC) !== 124 && this.value.charCodeAt(keyNum_LOC) !== 8897 && this.value.charCodeAt(keyNum_LOC) !== 8896 && this.value.charCodeAt(keyNum_LOC) !== 8658 && this.value.charCodeAt(keyNum_LOC) !== 8660 && this.value[keyNum_LOC] !== undefined) {
-                        console.log("Wyrażenie NIE jest poprawne!");
-                        //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
-                        this.screen_VALUE.style.color = badColor;
-                        return;
-                    }
-                }
-            //}
-        }*/
         for (let i: number = 0; i < result.length; i++) {
             for (let j: number = 0; j < result[i].length; j++) {
                 keyNum = result[i].charCodeAt(j);
@@ -879,13 +829,8 @@ const Calculator_MathLogic_FUNCTIONS: {
                 isCalculate = true;
             }
         }
-        //(zagadka === "0") ? this.screen_VALUE.textContent = "false" : this.screen_VALUE.textContent = this.screen_VALUE.textContent;
-        //(zagadka === "1") ? this.screen_VALUE.textContent = "true" : this.screen_VALUE.textContent = this.screen_VALUE.textContent;
         return zagadka;
     },
-    //operation_TAU(p01: string, q01: string, r01: string): void {
-    //    console.log("Operacja: tautologia");
-    //},
     operation_CONJCALC(expression: string): string {
         let result: string = expression;
         if (expression.length === 3) {  // "p|r"
@@ -970,7 +915,7 @@ const Calculator_MathLogic_FUNCTIONS: {
                     this.screen_INFO_EVA = "EVA | p = " + this.p01_VAL + ", q = " + this.q01_VAL + ", r = " + this.r01_VAL;
                 }
             }
-            this.screen_INFO.textContent = "Mode: " + this.screen_INFO_EVA;
+            this.screen_INFO.textContent = this.screen_INFO_EVA;
         }
     },
     operation_Sign(signKey: string): void {
@@ -1066,7 +1011,7 @@ const Calculator_Euklides_FUNCTIONS: {
                 this.screen_INFO.textContent = "EUK | " + fixed_A + ", " + fixed_B + " | Wynik:";
             }
             // Dodatkowy przypadek: Kiedy liczby "a" i "b" mają ujemne wartości: (zapobiegnięcie nieskończonej teracji, kiedy liczby nigdy nie będą sobie równe)
-            if (a_LEFT < 0 && b_RIGHT < 0) {
+            if (a_LEFT < 0 || b_RIGHT < 0) {
                 this.value = "1";
                 this.screen_VALUE.textContent = this.value;
                 this.screen_INFO.textContent = "EUK | " + fixed_A + ", " + fixed_B + " | Wynik:";
