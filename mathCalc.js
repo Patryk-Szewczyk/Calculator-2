@@ -230,6 +230,11 @@ var Calculator_MathLogic_FUNCTIONS = {
     r01_VAL: "0",
     calc_MODE: "TAU",
     isResultTAU: false,
+    //expressionForm_AR: "",
+    expressionResult_AR: [],
+    //expressionResult_GROUP_AR: [],
+    //statistics_TAU_AR: [],
+    TAU_TYPE: 0,
     screen_INFO_EVA: "EVA | p = 0, q = 0, r = 0",
     screen_INFO_TAU: "TAU",
     screen_EL: document.getElementById('screen_TRANSFORM'),
@@ -254,7 +259,15 @@ var Calculator_MathLogic_FUNCTIONS = {
                     case "=":
                         {
                             if (_this.isValid == true) {
+                                // Czyszczenie zawartości tablic statystycznych:
+                                if (_this.calc_MODE == "TAU") {
+                                    _this.expressionResult_AR = [];
+                                    //this.expressionResult_GROUP_AR = [];
+                                    _this.statistics_TAU_AR = [];
+                                    //this.ex_idx = -1;
+                                }
                                 _this.operation_CALCULATE_1(_this.bt_ID);
+                                (_this.calc_MODE == "TAU") ? _this.operation_TABLE("(" + _this.value + ")") : null;
                             }
                         }
                         break;
@@ -367,6 +380,7 @@ var Calculator_MathLogic_FUNCTIONS = {
                 startIndex_1 = parseInt(stack.pop()); // Operatora asercji (!) mogłem zastąpić IFem walidującym czy w tablicy w ogóle coś mamy... ale tak jest po prostu czytelniej.
                 subExpression = expression.substring(startIndex_1, i + 1);
                 bracketWord_AR.push(subExpression);
+                //alert(subExpression);
             }
         }
         console.log(bracketWord_AR);
@@ -719,9 +733,11 @@ var Calculator_MathLogic_FUNCTIONS = {
                     }
                 }
             }
+            //this.ex_idx++;        // INKREMENTACJA!
             result_AR = [];
             isTAU_COUNTER = 0;
             if (wordType_STR.length === 1) {
+                this.TAU_TYPE = 2;
                 if (wordType_STR[0] === "p") {
                     result_AR.push(this.operation_CALCULATE_2("0", undefined, undefined));
                     result_AR.push(this.operation_CALCULATE_2("1", undefined, undefined));
@@ -736,6 +752,7 @@ var Calculator_MathLogic_FUNCTIONS = {
                 }
             }
             else if (wordType_STR.length === 2) {
+                this.TAU_TYPE = 4;
                 if ((wordType_STR[0] === "p" && wordType_STR[1] === "q") || (wordType_STR[0] === "q" && wordType_STR[1] === "p")) {
                     result_AR.push(this.operation_CALCULATE_2("0", "0", undefined));
                     result_AR.push(this.operation_CALCULATE_2("1", "0", undefined));
@@ -756,6 +773,7 @@ var Calculator_MathLogic_FUNCTIONS = {
                 }
             }
             else if (wordType_STR.length === 3) {
+                this.TAU_TYPE = 8;
                 result_AR.push(this.operation_CALCULATE_2("0", "0", "0"));
                 result_AR.push(this.operation_CALCULATE_2("0", "0", "1"));
                 result_AR.push(this.operation_CALCULATE_2("0", "1", "1"));
@@ -769,6 +787,7 @@ var Calculator_MathLogic_FUNCTIONS = {
                 (result_AR[i] === "1") ? isTAU_COUNTER++ : isTAU_COUNTER = isTAU_COUNTER;
             }
             (isTAU_COUNTER === result_AR.length) ? this.screen_POS_3.textContent = "true" : this.screen_POS_3.textContent = "false";
+            //
             //alert(isTAU_COUNTER + " | " + result_AR.length);
             //this.operation_CALCULATE_2(this.p01_VAL, this.q01_VAL, this.r01_VAL);
         }
@@ -799,6 +818,7 @@ var Calculator_MathLogic_FUNCTIONS = {
         var cutExp_AR = [];
         var zagadka_COPY = "";
         var isADD = true;
+        //this.ex_idx++;
         while (isCalculate == false) {
             // Szukanie najbardziej zagnieżdżonego nawiasu i obliczanie go: OK
             for (var i = 0; i < zagadka.length; i++) {
@@ -811,12 +831,20 @@ var Calculator_MathLogic_FUNCTIONS = {
                     // Kiedy wpiszesz np. 4+(-5, to wczutując niestniejący indeks ze znakiem "(" otrzymamy undefined / null (w zależności od języka), a konwertując to na Number otrzymamy BŁĄD!
                     curExp = curExp.slice(1, (curExp.length - 1));
                     result = this.operation_CONJCALC(curExp);
+                    // Zapisanie danych statystycznych:
+                    (this.calc_MODE == "TAU") ? this.expressionResult_AR.push(result) : null;
                     // Indeksy potrzebne do zmodyfikowania stringa-zagadki:
                     cutExp_AR[0] = mostNestLeftBck;
                     cutExp_AR[1] = i;
                     break;
                 }
             }
+            // Grupowanie danych statystycznych:
+            //if (this.calc_MODE == "TAU") {
+            //this.expressionResult_GROUP_AR[this.ex_idx] = this.expressionResult_AR;
+            //this.expressionResult_AR = [];
+            //}
+            //(this.calc_MODE == "TAU") ? ex_idx++ : null;
             // Aktualozowanie stringa-zagadki:
             zagadka_COPY = "";
             isADD = true;
@@ -890,7 +918,43 @@ var Calculator_MathLogic_FUNCTIONS = {
             (expression[1] === "0") ? result = "1" : result = result;
             (expression[1] === "1") ? result = "0" : result = result;
         }
+        //this.expressionResult_AR.push(result);
         return result;
+    },
+    operation_TABLE: function (exp) {
+        // Rozkład całego wyrażenia nawiasowego na stopniowe nadrzędne wyrażenia nawiasowe:
+        var expression = exp;
+        var stack = [];
+        this.expressionForm_AR = [];
+        var startIndex_1 = 0;
+        var subExpression = "";
+        for (var i = 0; i < expression.length; i++) {
+            if (expression[i] === "(") {
+                stack.push(i.toString());
+            }
+            else if (expression[i] === ")") {
+                startIndex_1 = parseInt(stack.pop());
+                subExpression = expression.substring(startIndex_1, i + 1);
+                this.expressionForm_AR.push(subExpression);
+                //alert(subExpression);
+            }
+        }
+        console.log(this.expressionForm_AR);
+        // Grupowanie wyników:
+        var joinExp = "";
+        var splitPlace_TARGET = this.TAU_TYPE; // 2 | 4 | 8
+        var splitPlace_COUNTER = 0;
+        for (var i = 0; i < this.expressionResult_AR.length; i++) {
+            joinExp += this.expressionResult_AR[i];
+            splitPlace_COUNTER++;
+            if (splitPlace_COUNTER === splitPlace_TARGET) {
+                joinExp += "#";
+                splitPlace_COUNTER = 0;
+            }
+        }
+        this.expressionResult_AR = joinExp.split("#");
+        (this.expressionResult_AR[this.expressionResult_AR.length - 1] === "") ? this.expressionResult_AR.pop() : null;
+        console.log(this.expressionResult_AR);
     },
     operation_DEL: function () {
         // Skracanie wyrażenia:
@@ -1277,7 +1341,7 @@ var Calculator_NWD_NWW_Faction_FUNCTIONS = {
             this.screen_INFO.textContent += " | Wynik:";
         }
         else if (this.FAC_isNotComma === true) {
-            this.screen_INFO.textContent = "Błąd! Przy NWD potrzeba min 2 liczb";
+            this.screen_INFO.textContent = "Błąd! Przy NWW potrzeba min 2 liczb";
         }
     },
     operation_More_FAC: function (toFacNum) {
