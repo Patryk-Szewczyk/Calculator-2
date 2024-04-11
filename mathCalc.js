@@ -15,15 +15,17 @@ var Layout_ALL = {
         var alertButt_NO = document.querySelector('div.alert-button-no');
         var document_EL = document.documentElement;
         if (document_EL.requestFullscreen) {
-            alertButt_YES.addEventListener('click', function makeFullScreen() {
-                document_EL.requestFullscreen();
-                document_EL.removeEventListener('click', makeFullScreen);
-                document.body.removeChild(alertBody_EL);
-            }, false);
-            alertButt_NO.addEventListener('click', function makeFullScreen() {
-                document_EL.requestFullscreen();
-                window.close();
-            }, false);
+            ['click', 'touchend'].forEach(function (ev) {
+                alertButt_YES.addEventListener(ev, function makeFullScreen() {
+                    document_EL.requestFullscreen();
+                    document_EL.removeEventListener(ev, makeFullScreen);
+                    document.body.removeChild(alertBody_EL);
+                }, false);
+                alertButt_NO.addEventListener(ev, function makeFullScreen() {
+                    document_EL.requestFullscreen();
+                    window.close();
+                }, false);
+            });
         }
     }
 };
