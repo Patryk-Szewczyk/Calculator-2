@@ -564,7 +564,7 @@ body {
                 }
                 /*Ruchome: TAU - - - - - - - - - - - - - - - - - - - - */
                 .ct-logic > .screen_TAU {
-                    height: 350px;
+                    height: calc(350px - 80px);
                     padding: 10px 20px 20px;
                     gap: 10px;
                     justify-content: flex-start;
