@@ -56,7 +56,7 @@ const Layout_DESKTOP: {
                             sidebar.style.left = '0px';
                             menuButton_EL.style.transform = 'rotateZ(0deg)';
                             sidebar.style.transitionDuration = '0.35s';
-                            appCover_EL.style.zIndex = "1";
+                            appCover_EL.style.zIndex = "2";
                             appCover_EL.style.backgroundColor = "0,0,0,0.5";
                         }, 1);
                     } break;
