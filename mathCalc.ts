@@ -1,24 +1,37 @@
 const Layout_ALL: {
     setAppBody_Height_AEL: Function,
+    setFullScreen_AEL: Function
 } = {
     setAppBody_Height_AEL(): void {
         const appBody_EL: HTMLDivElement = document.querySelector('div.app-body');
+        const alertBody: HTMLDivElement = document.querySelector('div.alert-body');
         ['load', 'resize'].forEach((ev) => {
             addEventListener(ev, () => {
                 appBody_EL.style.height = window.innerHeight + 'px';
+                alertBody.style.height = window.innerHeight + 'px';
             }, false);
         });
-        // Pełny ekran:
-        let document_EL = document.documentElement;
+    },
+    setFullScreen_AEL(): void {
+        const alertBody_EL: HTMLDivElement = document.querySelector('div.alert-body');
+        const alertButt_YES: HTMLDivElement = document.querySelector('div.alert-button-yes');
+        const alertButt_NO: HTMLDivElement = document.querySelector('div.alert-button-no');
+        let document_EL: HTMLElement = document.documentElement;
         if (document_EL.requestFullscreen) {
-            document_EL.addEventListener('click', function makeFullScreen() {
+            alertButt_YES.addEventListener('click', function makeFullScreen() {
                 document_EL.requestFullscreen();
                 document_EL.removeEventListener('click', makeFullScreen);
+                document.body.removeChild(alertBody_EL);
+            }, false);
+            alertButt_NO.addEventListener('click', function makeFullScreen() {
+                document_EL.requestFullscreen();
+                window.close();
             }, false);
         }
     }
 }
 Layout_ALL.setAppBody_Height_AEL();
+Layout_ALL.setFullScreen_AEL();
 
 const Layout_DESKTOP: {
     setMenuButton_AEL: Function,
