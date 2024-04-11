@@ -100,7 +100,6 @@ var LocalStorage_ALL = {
     clcBt_DIV: null,
     clcBt_ID: 0,
     clcType_EL: null,
-    calcTitle_EL: document.querySelector('div.cb-title'),
     setPageOpenCalc_AEL: function () {
         var _this = this;
         var calcButton_COLL = document.querySelector('div.nav-button-box').children;
@@ -116,7 +115,6 @@ var LocalStorage_ALL = {
                             if (i_1 === _this.clcBt_ID) {
                                 _this.clcType_EL = calcType_EL[i_1];
                                 _this.clcType_EL.style.display = 'block';
-                                _this.calcTitle_EL.textContent = "Logika";
                             }
                             else {
                                 _this.clcType_EL = calcType_EL[i_1];
@@ -130,7 +128,6 @@ var LocalStorage_ALL = {
                             if (i_2 === _this.clcBt_ID) {
                                 _this.clcType_EL = calcType_EL[i_2];
                                 _this.clcType_EL.style.display = 'block';
-                                _this.calcTitle_EL.textContent = "Euklides";
                             }
                             else {
                                 _this.clcType_EL = calcType_EL[i_2];
@@ -144,7 +141,6 @@ var LocalStorage_ALL = {
                             if (i_3 === _this.clcBt_ID) {
                                 _this.clcType_EL = calcType_EL[i_3];
                                 _this.clcType_EL.style.display = 'block';
-                                _this.calcTitle_EL.textContent = "NWD NWW FAC";
                             }
                             else {
                                 _this.clcType_EL = calcType_EL[i_3];
@@ -168,7 +164,6 @@ var LocalStorage_ALL = {
                         if (i === Number(calcType)) {
                             this.clcType_EL = calcType_EL[i];
                             this.clcType_EL.style.display = 'block';
-                            this.calcTitle_EL.textContent = "Logika";
                         }
                         else {
                             this.clcType_EL = calcType_EL[i];
@@ -181,7 +176,6 @@ var LocalStorage_ALL = {
                         if (i === Number(calcType)) {
                             this.clcType_EL = calcType_EL[i];
                             this.clcType_EL.style.display = 'block';
-                            this.calcTitle_EL.textContent = "Euklides";
                         }
                         else {
                             this.clcType_EL = calcType_EL[i];
@@ -194,7 +188,6 @@ var LocalStorage_ALL = {
                         if (i === Number(calcType)) {
                             this.clcType_EL = calcType_EL[i];
                             this.clcType_EL.style.display = 'block';
-                            this.calcTitle_EL.textContent = "NWD NWW FAC";
                         }
                         else {
                             this.clcType_EL = calcType_EL[i];
