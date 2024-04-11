@@ -18,14 +18,100 @@ body {
     --dark-font: hsl(0, 0%, 12%);
 }
 
+.alert-body {
+    width: 100%;
+    display: flex;
+    position: absolute;
+    z-index: 99;
+    background-color: #555;
+}
+    :root {
+        --albck-width: 300px;
+        --albck-height: 140px
+    }
+    .alert-block {
+        width: var(--albck-width);
+        height: var(--albck-height);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        position: absolute;
+        left: calc(50% - (var(--albck-width) / 2));
+        top: calc(20% - (var(--albck-height) / 2));
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 0px 0px 50px 0px #000;
+    }
+        .alert-title {
+            width: 100%;
+            height: 30%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #222;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1em;
+            font-weight: 600;
+            text-align: center;
+        }
+        .alert-buttons {
+            width: 100%;
+            height: 70%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+            :root {
+                --alert-button-border-width: 4px;
+                --alert-button-border-offest: -4px;
+            }
+            .alert-button-yes, .alert-button-no {
+                width: 100px;
+                height: 100%;
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                outline: var(--alert-button-border-width) solid #333;
+                outline-offset: var(--alert-button-border-offest);
+                box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.5);
+                color: white;
+                font-family: 'Outfit', sans-serif;
+                font-size: 1em;
+                font-weight: 600;
+                border-radius: 10px;
+            }
+            .alert-button-yes {
+                background-color: hsl(120, 55%, 45%);
+            }
+            .alert-button-yes:hover {
+                background-color: hsl(120, 60%, 50%);
+                cursor: pointer;
+            }
+            .alert-button-yes:active {
+                background-color: hsl(120, 65%, 55%);
+            }
+            .alert-button-no {
+                background-color: hsl(348, 83%, 47%);
+            }
+            .alert-button-no:hover {
+                background-color: hsl(348, 88%, 52%);
+                cursor: pointer;
+            }
+            .alert-button-no:active {
+                background-color: hsl(348, 93%, 57%);
+            }
+
 .app-body {
     width: 100%;
     display: flex;
     justify-content: flex-start;
     align-items: center;
     background-color: var(--bg-lightBlue);
-    outline: 4px solid red;
-    outline-offset: -4px;
+    /*outline: 4px solid red;
+    outline-offset: -4px;*/
 }
     .app-cover {
         width: 100%;
@@ -33,8 +119,8 @@ body {
         position: absolute;
         z-index: -1;
         background-color: rgba(0,0,0,0.5);
-        outline: 4px solid orange;
-        outline-offset: -4px;
+        /*outline: 4px solid orange;
+        outline-offset: -4px;*/
     }
 
     .app-desktop {
@@ -44,8 +130,8 @@ body {
         flex-direction: row;
         justify-content: flex-end;
         align-items: center;
-        outline: 4px solid yellow;
-        outline-offset: -4px;
+        /*outline: 4px solid yellow;
+        outline-offset: -4px;*/
     }
 
         nav {
@@ -62,8 +148,8 @@ body {
             background-image: linear-gradient(to right, rgb(47, 93, 177) 20%, rgb(70, 116, 200) 80%);
             box-shadow: 0px 0px 6px 0px black;
             z-index: 10;
-            outline: 4px solid greenyellow;
-            outline-offset: -4px;
+            /*outline: 4px solid greenyellow;
+            outline-offset: -4px;*/
         }
             .dsk-menu-button-box {
                 width: 60px;
@@ -130,7 +216,6 @@ body {
                 flex-direction: row;
                 justify-content: center;
                 align-items: center;
-                border: 0px solid greenyellow;  /*TEST*/
             }
                 .title-prp {
                     width: auto;
@@ -146,7 +231,6 @@ body {
                     font-size: 45px;
                     font-weight: 400;
                     letter-spacing: 1px;
-                    border: 0px solid red;  /*TEST*/
                 }
                     .t-value {
                         display: flex;
@@ -166,7 +250,6 @@ body {
                 flex-direction: column;
                 justify-content: flex-start;
                 align-items: center;
-                border: 0px solid red;  /*TEST*/
             }
                 .nav-button-box div {
                     width: 100%;
@@ -180,7 +263,6 @@ body {
                     align-items: center;
                     background-color: inherit;
                     color: white;
-                    /*font-family: 'Roboto', sans-serif;*/
                     font-family: 'Outfit', sans-serif;
                     font-size: 130%;
                     font-weight: 400;
@@ -205,25 +287,25 @@ body {
             align-items: center;
             position: relative;
             background-color: var(--bg-lightBlue);
-            outline: 4px solid lime;
-            outline-offset: -4px;
+            /*outline: 4px solid lime;
+            outline-offset: -4px;*/
         }
             .calcType-box {
                 width: 600px;
                 height: 100%;
                 position: relative;
                 background-image: linear-gradient(to right, rgb(70, 116, 200) 20%, rgb(47, 93, 177) 80%);
-                outline: 4px solid green;
-                outline-offset: -4px;
+                /*outline: 4px solid green;
+                outline-offset: -4px;*/
             }
                 div[class^="ct-"] {
                     width: 100%;
                     height: 100%;
-                    background-color: hsl(219, 48%, 34%);
-                    outline: 4px solid blue;
-                    outline-offset: -4px;
                     position: relative;
                     z-index: 1;
+                    background-color: hsl(219, 48%, 34%);
+                    /*outline: 4px solid blue;
+                    outline-offset: -4px;*/
                 }
                 .calc-title-box {
                     width: 100%;
@@ -245,7 +327,6 @@ body {
                         font-family: 'Outfit', sans-serif;
                         font-size: 35px;  /*OLD: 45px*/
                         font-weight: 400;
-                        border: 0px solid green;  /*TEST*/
                     }
                     .cb-title::selection {
                         background-color: transparent;
@@ -271,13 +352,6 @@ body {
                     border-width: 0px 6px 3px 6px;
                     border-color: hsl(219, 48%, 34%);
                 }
-                /*.ct-refactoring > .screen,
-                .ct-euklides > .screen {
-                    gap: 30px;
-                }
-                .ct-logic > .screen {
-                    gap: 25px;
-                }*/
                     .screen-position {
                         width: 100%;
                         display: flex;
@@ -285,24 +359,14 @@ body {
                         justify-content: center;
                         overflow: hidden;
                     }
-                    /*.ct-refactoring > .screen > .screen-position:nth-child(1),
-                    .ct-euklides > .screen > .screen-position:nth-child(1),
-                    .ct-logic > .screen > .screen-position:nth-child(1) {
-                        height: 60px;
-                    }*/
                         .screen-hanger {
                             width: 100%;
                             display: flex;
-                            /*justify-content: flex-end;*/
-                            /*outline: 2px solid red;
-                            outline-offset: -2px;*/
                         }
                         .screen-hanger:nth-child(1) {
-                            /*margin-top: 13px;*/
                             justify-content: flex-start;
                         }
                         .screen-hanger:nth-child(2) {
-                            /*margin-top: 13px;*/
                             justify-content: flex-end !important;
                         }
                             .info {
@@ -359,13 +423,11 @@ body {
                     border-right-style: solid;
                     border-right-width: 3px;
                     border-right-color: hsl(219, 48%, 34%);
-                    /*background-color: rgba(255,0,0,0.5);*/
                 }
                 .ct-refactoring > .buttons-group > div:not(:nth-child(-n+4)) {
                     border-top-style: solid;
                     border-top-width: 3px;
                     border-top-color: hsl(219, 48%, 34%);
-                    /*background-color: rgba(0,255,0,0.5);*/
                 }
                 .ct-refactoring > .buttons-group > div:nth-child(4n) {
                     background-color: hsl(219, 54%, 47%);
@@ -521,9 +583,6 @@ body {
                     height: calc(100% - 40px);
                 }
                 /*- - - - - - - - - - - - - - - - - - - - - - - - - -*/
-                /*.ct-logic > .screen > .screen-position:nth-child(3){
-                    outline: 2px solid red;
-                }*/
                 .mode {
                     width: 100%;
                     height: 100%;
@@ -544,7 +603,6 @@ body {
 
 #screen_TRANSFORM {
     justify-content: flex-start;
-    /*gap: 15px;*/
 }
 
 nav.dsk-nav-menu {
