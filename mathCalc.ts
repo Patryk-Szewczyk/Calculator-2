@@ -8,11 +8,14 @@ const Layout_ALL: {
                 appBody_EL.style.height = window.innerHeight + 'px';
             }, false);
         });
-        /*['load', 'resize', 'scroll'].forEach((ev) => {
-            addEventListener(ev, () => {
-                window.scrollTo(0,document.body.scrollHeight);
+        // Pełny ekran:
+        let document_EL = document.documentElement;
+        if (document_EL.requestFullscreen) {
+            document_EL.addEventListener('click', function makeFullScreen() {
+                document_EL.requestFullscreen();
+                document_EL.removeEventListener('click', makeFullScreen);
             }, false);
-        });*/
+        }
     }
 }
 Layout_ALL.setAppBody_Height_AEL();
