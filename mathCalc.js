@@ -1,19 +1,34 @@
 var Layout_ALL = {
     setAppBody_Height_AEL: function () {
         var appBody_EL = document.querySelector('div.app-body');
+        var alertBody = document.querySelector('div.alert-body');
         ['load', 'resize'].forEach(function (ev) {
             addEventListener(ev, function () {
                 appBody_EL.style.height = window.innerHeight + 'px';
+                alertBody.style.height = window.innerHeight + 'px';
             }, false);
         });
-        /*['load', 'resize', 'scroll'].forEach((ev) => {
-            addEventListener(ev, () => {
-                window.scrollTo(0,document.body.scrollHeight);
+    },
+    setFullScreen_AEL: function () {
+        var alertBody_EL = document.querySelector('div.alert-body');
+        var alertButt_YES = document.querySelector('div.alert-button-yes');
+        var alertButt_NO = document.querySelector('div.alert-button-no');
+        var document_EL = document.documentElement;
+        if (document_EL.requestFullscreen) {
+            alertButt_YES.addEventListener('click', function makeFullScreen() {
+                document_EL.requestFullscreen();
+                document_EL.removeEventListener('click', makeFullScreen);
+                document.body.removeChild(alertBody_EL);
             }, false);
-        });*/
+            alertButt_NO.addEventListener('click', function makeFullScreen() {
+                document_EL.requestFullscreen();
+                window.close();
+            }, false);
+        }
     }
 };
 Layout_ALL.setAppBody_Height_AEL();
+Layout_ALL.setFullScreen_AEL();
 var Layout_DESKTOP = {
     setMenuButton_AEL: function () {
         var menuButtonBody_EL = document.querySelector('div.dsk-menu-button-box');
