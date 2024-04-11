@@ -4,11 +4,11 @@ const Layout_ALL: {
 } = {
     setAppBody_Height_AEL(): void {
         const appBody_EL: HTMLDivElement = document.querySelector('div.app-body');
-        const alertBody: HTMLDivElement = document.querySelector('div.alert-body');
+        //const alertBody: HTMLDivElement = document.querySelector('div.alert-body');
         ['load', 'resize'].forEach((ev) => {
             addEventListener(ev, () => {
                 appBody_EL.style.height = window.innerHeight + 'px';
-                alertBody.style.height = window.innerHeight + 'px';
+                //alertBody.style.height = window.innerHeight + 'px';
             }, false);
         });
     },
