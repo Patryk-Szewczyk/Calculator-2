@@ -6,11 +6,11 @@ var Layout_ALL = {
                 appBody_EL.style.height = window.innerHeight + 'px';
             }, false);
         });
-        ['load', 'resize', 'scroll'].forEach(function (ev) {
-            addEventListener(ev, function () {
-                window.scrollTo(0, document.body.scrollHeight);
+        /*['load', 'resize', 'scroll'].forEach((ev) => {
+            addEventListener(ev, () => {
+                window.scrollTo(0,document.body.scrollHeight);
             }, false);
-        });
+        });*/
     }
 };
 Layout_ALL.setAppBody_Height_AEL();
