@@ -108,13 +108,11 @@ const LocalStorage_ALL: {
     clcBt_ID: number,
     clcType_EL: HTMLDivElement,
     getLocalStorage: Function
-    calcTitle_EL: HTMLDivElement
 } = {
     clcBt_EVT: undefined,
     clcBt_DIV: null,
     clcBt_ID: 0,
     clcType_EL: null,
-    calcTitle_EL: document.querySelector('div.cb-title'),
     setPageOpenCalc_AEL(): void {
         const calcButton_COLL: HTMLCollection = document.querySelector('div.nav-button-box').children;
         const calcType_EL: NodeList = document.querySelectorAll('div[class^="ct-"]');
@@ -129,7 +127,6 @@ const LocalStorage_ALL: {
                             if (i === this.clcBt_ID) {
                                 this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                                 this.clcType_EL.style.display = 'block';
-                                this.calcTitle_EL.textContent = "Logika";
                             } else {
                                 this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                                 this.clcType_EL.style.display = 'none';
@@ -142,7 +139,6 @@ const LocalStorage_ALL: {
                             if (i === this.clcBt_ID) {
                                 this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                                 this.clcType_EL.style.display = 'block';
-                                this.calcTitle_EL.textContent = "Euklides";
                             } else {
                                 this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                                 this.clcType_EL.style.display = 'none';
@@ -155,7 +151,6 @@ const LocalStorage_ALL: {
                             if (i === this.clcBt_ID) {
                                 this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                                 this.clcType_EL.style.display = 'block';
-                                this.calcTitle_EL.textContent = "NWD NWW FAC";
                             } else {
                                 this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                                 this.clcType_EL.style.display = 'none';
@@ -178,7 +173,6 @@ const LocalStorage_ALL: {
                         if (i === Number(calcType)) {
                             this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'block';
-                            this.calcTitle_EL.textContent = "Logika";
                         } else {
                             this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'none';
@@ -190,7 +184,6 @@ const LocalStorage_ALL: {
                         if (i === Number(calcType)) {
                             this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'block';
-                            this.calcTitle_EL.textContent = "Euklides";
                         } else {
                             this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'none';
@@ -202,7 +195,6 @@ const LocalStorage_ALL: {
                         if (i === Number(calcType)) {
                             this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'block';
-                            this.calcTitle_EL.textContent = "NWD NWW FAC";
                         } else {
                             this.clcType_EL = calcType_EL[i] as HTMLDivElement;
                             this.clcType_EL.style.display = 'none';
