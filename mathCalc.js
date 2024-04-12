@@ -229,7 +229,8 @@ var Calculator_MathLogic_FUNCTIONS = {
     q01_VAL: "0",
     r01_VAL: "0",
     calc_MODE: "TAU",
-    isResultTAU: false,
+    //isResultTAU: false,   // ANUULOWANO (z powodu braku czasu)
+    isLogicResult: false,
     screen_INFO_EVA: "EVA | p = 0, q = 0, r = 0",
     screen_INFO_TAU: "TAU",
     screen_EL: document.getElementById('screen_TRANSFORM'),
@@ -273,13 +274,22 @@ var Calculator_MathLogic_FUNCTIONS = {
                         _this.operation_Sign(_this.bt_ID); // OK
                         break;
                 }
-                // Po wywołaniu funkji operacji TAU, przywróć układ EVA:
-                if (_this.bt_ID !== "=" && _this.isResultTAU === true) {
-                    _this.isResultTAU = false;
-                    _this.screen_EL.classList.replace('screen_TAU', 'screen_EVA');
-                    _this.screen_POS_2.classList.replace('screen-position_TAU', 'screen-position_EVA');
-                    _this.screen_POS_3.classList.replace('screen-position_TAU', 'screen-position_EVA');
-                    _this.butonGroup_EL.classList.replace('buttons-group_TAU', 'buttons-group_EVA');
+                // Po wywołaniu funkji operacji TAU, przywróć układ EVA:  // ANULOWANO! (z powodu braku czasu)
+                /*if (this.bt_ID !== "=" && this.isResultTAU === true) {
+                    this.isResultTAU = false;
+                    this.screen_EL.classList.replace('screen_TAU', 'screen_EVA');
+                    this.screen_POS_2.classList.replace('screen-position_TAU', 'screen-position_EVA');
+                    this.screen_POS_3.classList.replace('screen-position_TAU', 'screen-position_EVA');
+                    this.butonGroup_EL.classList.replace('buttons-group_TAU', 'buttons-group_EVA');
+                }*/
+                // Usunięcie wyniku:
+                console.log("TEST:");
+                console.log(_this.bt_ID != "=");
+                console.log(_this.isLogicResult == true);
+                console.log("----------------------");
+                if (_this.bt_ID != "=" && _this.isLogicResult == true) {
+                    _this.isLogicResult = false;
+                    _this.operation_AC();
                 }
             }, false);
         }
@@ -729,6 +739,7 @@ var Calculator_MathLogic_FUNCTIONS = {
             //alert(isTAU_COUNTER + " | " + result_AR.length);
             //this.operation_CALCULATE_2(this.p01_VAL, this.q01_VAL, this.r01_VAL);
         }
+        this.isLogicResult = true;
     },
     operation_CALCULATE_2: function (p01, q01, r01) {
         var hieroglif = "(" + this.value.split(" ").join("") + ")";
