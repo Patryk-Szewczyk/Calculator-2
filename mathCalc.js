@@ -230,11 +230,6 @@ var Calculator_MathLogic_FUNCTIONS = {
     r01_VAL: "0",
     calc_MODE: "TAU",
     isResultTAU: false,
-    //expressionForm_AR: "",
-    expressionResult_AR: [],
-    //expressionResult_GROUP_AR: [],
-    //statistics_TAU_AR: [],
-    TAU_TYPE: 0,
     screen_INFO_EVA: "EVA | p = 0, q = 0, r = 0",
     screen_INFO_TAU: "TAU",
     screen_EL: document.getElementById('screen_TRANSFORM'),
@@ -257,19 +252,7 @@ var Calculator_MathLogic_FUNCTIONS = {
                         _this.operation_MODE(_this.bt_ID); // OK
                         break;
                     case "=":
-                        {
-                            if (_this.isValid == true) {
-                                // Czyszczenie zawartości tablic statystycznych:
-                                if (_this.calc_MODE == "TAU") {
-                                    _this.expressionResult_AR = [];
-                                    //this.expressionResult_GROUP_AR = [];
-                                    _this.statistics_TAU_AR = [];
-                                    //this.ex_idx = -1;
-                                }
-                                _this.operation_CALCULATE_1(_this.bt_ID);
-                                (_this.calc_MODE == "TAU") ? _this.operation_TABLE("(" + _this.value + ")") : null;
-                            }
-                        }
+                        (_this.isValid == true) ? _this.operation_CALCULATE_1(_this.bt_ID) : null;
                         break;
                     case "BACK":
                         _this.operation_DEL(_this.bt_ID); // OK
@@ -384,47 +367,6 @@ var Calculator_MathLogic_FUNCTIONS = {
             }
         }
         console.log(bracketWord_AR);
-        /*
-        Ten algorytm służy do rozkładania wyrażeń zawierających nawiasy na ich składowe wyrażenia nadrzędne. Oto szczegółowe wyjaśnienie krok po kroku:
-
-        1. Inicjalizacja zmiennych:
-        expression przechowuje wyrażenie, które ma zostać rozłożone na składowe.
-        stack jest stosu używanego do śledzenia otwierających nawiasów "(".
-        bracketWord_AR to tablica, która będzie przechowywać składowe wyrażenia nadrzędnego.
-        startIndex_1 to indeks początkowy aktualnie przetwarzanego podwyrażenia.
-        subExpression to zmienna, która przechowuje aktualnie przetwarzane podwyrażenie.
-        
-        2. Iteracja po wyrażeniu:
-        Pętla for iteruje po każdym znaku w expression.
-        
-        3.Sprawdzenie nawiasów:
-        Jeśli aktualny znak to "(", to oznacza to, że napotkano otwierający nawias. Indeks tego nawiasu zostaje dodany do stosu stack.
-        
-        4.Rozpoznanie zamykającego nawiasu:
-        Jeśli aktualny znak to ")", oznacza to, że napotkano zamykający nawias.
-        Indeks otwierającego nawiasu jest pobierany ze stosu poprzez stack.pop() i zapisywany w startIndex_1.
-        Następnie wyrażenie między otwierającym i zamykającym nawiasem jest wydzielane przy użyciu expression.substring(startIndex_1, i + 1) i zapisywane w subExpression.
-        subExpression jest następnie dodawane do tablicy bracketWord_AR, reprezentującej składowe wyrażenia nadrzędnego.
-        
-        5.Kontynuacja przetwarzania:
-        Pętla kontynuuje iterację po wyrażeniu, dopóki nie zostaną przeanalizowane wszystkie znaki.
-        Po zakończeniu działania tego algorytmu, tablica bracketWord_AR zawiera wszystkie składowe wyrażenia nadrzędnego, które były otoczone nawiasami.
-        Te składowe są uporządkowane w kolejności, w jakiej zostały napotkane w pierwotnym wyrażeniu.
-
-        Operator ! w TypeScript to tzw. operator asercji typu, który informuje kompilator TypeScript, że pewna wartość nie jest typu null ani undefined, mimo że może tak wyglądać.
-        
-        Operator ! występuje po wywołaniu stack.pop(). Wywołanie stack.pop() zwraca ostatni element z tablicy stack i usuwa go z tej tablicy.
-        Jednakże istnieje możliwość, że tablica stack jest pusta, a wywołanie pop() zwróci wartość undefined, co jest typową sytuacją,
-        gdy tablica jest już pusta.
-        
-        Operator ! w tym kontekście mówi kompilatorowi, że wiemy, że wywołanie stack.pop() nie zwróci wartości
-        undefined, ponieważ jesteśmy pewni, że tablica stack nie jest pusta. W związku z tym nie musi on uwzględniać możliwości,
-        że wartość ta może być undefined, co pozwala uniknąć ostrzeżenia kompilatora o potencjalnie niebezpiecznej operacji.
-        
-        Jednakże należy używać operatora ! z rozwagą, ponieważ może to prowadzić do błędów wykonania w przypadku, gdy wartość rzeczywiście
-        jest null lub undefined, a my mylnie zastosowaliśmy operator asercji typu. W przypadku pewności, że wartość nie będzie null ani undefined,
-        można go użyć, ale zawsze należy sprawdzać, czy taka pewność jest uzasadniona.
-        */
         // Usuwanie potomnych wyrażeń nawiasowych z nawiasów nadrzędnych:
         var expressions = bracketWord_AR;
         var result = [];
@@ -669,10 +611,10 @@ var Calculator_MathLogic_FUNCTIONS = {
         for (var i = 0; i < this.value.length; i++) {
             if (this.value.charCodeAt(i) === 172) {
                 if (this.value[i - 1] === "(" && (this.value[i + 1] === "p" || this.value[i + 1] === "q" || this.value[i + 1] === "r") && this.value[i + 2] === ")") {
-                    alert("Warunek (~p)");
+                    //alert("Warunek (~p)");
                 }
                 else if (this.value[i - 1] === "(" && this.value[i + 1] === "(") {
-                    alert("Warunek (~(");
+                    //alert("Warunek (~(");
                 }
                 else {
                     this.isValid = false;
@@ -698,20 +640,21 @@ var Calculator_MathLogic_FUNCTIONS = {
         var isTAU_COUNTER = 0;
         if (this.calc_MODE === "EVA") {
             // Zmiana ukadu kalkulatora: robi się to kiedy po wywołaniu "operation_TAU" kliknie się na kalkulatorze dowolny przycisk odpócz przycisku"=":
-            this.screen_EL.classList.replace('screen_TAU', 'screen_EVA');
+            // ANULOWANA! (z powodu braku czasu)
+            /*this.screen_EL.classList.replace('screen_TAU', 'screen_EVA');
             this.screen_POS_2.classList.replace('screen-position_TAU', 'screen-position_EVA');
             this.screen_POS_3.classList.replace('screen-position_TAU', 'screen-position_EVA');
-            this.butonGroup_EL.classList.replace('buttons-group_TAU', 'buttons-group_EVA');
+            this.butonGroup_EL.classList.replace('buttons-group_TAU', 'buttons-group_EVA');*/
             result = this.operation_CALCULATE_2(this.p01_VAL, this.q01_VAL, this.r01_VAL);
             (result === "0") ? this.screen_VALUE.textContent = "false" : this.screen_VALUE.textContent = this.screen_VALUE.textContent;
             (result === "1") ? this.screen_VALUE.textContent = "true" : this.screen_VALUE.textContent = this.screen_VALUE.textContent;
         }
         else if (this.calc_MODE === "TAU") {
             this.isResultTAU = true;
-            this.screen_EL.classList.replace('screen_EVA', 'screen_TAU');
+            /*this.screen_EL.classList.replace('screen_EVA', 'screen_TAU');
             this.screen_POS_2.classList.replace('screen-position_EVA', 'screen-position_TAU');
             this.screen_POS_3.classList.replace('screen-position_EVA', 'screen-position_TAU');
-            this.butonGroup_EL.classList.replace('buttons-group_EVA', 'buttons-group_TAU');
+            this.butonGroup_EL.classList.replace('buttons-group_EVA', 'buttons-group_TAU');*/
             wordType_STR = [];
             for (var i = 0; i < this.value.length; i++) {
                 if (is_p == false) {
@@ -733,11 +676,9 @@ var Calculator_MathLogic_FUNCTIONS = {
                     }
                 }
             }
-            //this.ex_idx++;        // INKREMENTACJA!
             result_AR = [];
             isTAU_COUNTER = 0;
             if (wordType_STR.length === 1) {
-                this.TAU_TYPE = 2;
                 if (wordType_STR[0] === "p") {
                     result_AR.push(this.operation_CALCULATE_2("0", undefined, undefined));
                     result_AR.push(this.operation_CALCULATE_2("1", undefined, undefined));
@@ -752,7 +693,6 @@ var Calculator_MathLogic_FUNCTIONS = {
                 }
             }
             else if (wordType_STR.length === 2) {
-                this.TAU_TYPE = 4;
                 if ((wordType_STR[0] === "p" && wordType_STR[1] === "q") || (wordType_STR[0] === "q" && wordType_STR[1] === "p")) {
                     result_AR.push(this.operation_CALCULATE_2("0", "0", undefined));
                     result_AR.push(this.operation_CALCULATE_2("1", "0", undefined));
@@ -773,7 +713,6 @@ var Calculator_MathLogic_FUNCTIONS = {
                 }
             }
             else if (wordType_STR.length === 3) {
-                this.TAU_TYPE = 8;
                 result_AR.push(this.operation_CALCULATE_2("0", "0", "0"));
                 result_AR.push(this.operation_CALCULATE_2("0", "0", "1"));
                 result_AR.push(this.operation_CALCULATE_2("0", "1", "1"));
@@ -786,8 +725,7 @@ var Calculator_MathLogic_FUNCTIONS = {
             for (var i = 0; i < result_AR.length; i++) {
                 (result_AR[i] === "1") ? isTAU_COUNTER++ : isTAU_COUNTER = isTAU_COUNTER;
             }
-            (isTAU_COUNTER === result_AR.length) ? this.screen_POS_3.textContent = "true" : this.screen_POS_3.textContent = "false";
-            //
+            (isTAU_COUNTER === result_AR.length) ? this.screen_VALUE.textContent = "true" : this.screen_VALUE.textContent = "false"; // Dla ekranu statystyk: "screen_POS_3"
             //alert(isTAU_COUNTER + " | " + result_AR.length);
             //this.operation_CALCULATE_2(this.p01_VAL, this.q01_VAL, this.r01_VAL);
         }
@@ -818,7 +756,6 @@ var Calculator_MathLogic_FUNCTIONS = {
         var cutExp_AR = [];
         var zagadka_COPY = "";
         var isADD = true;
-        //this.ex_idx++;
         while (isCalculate == false) {
             // Szukanie najbardziej zagnieżdżonego nawiasu i obliczanie go: OK
             for (var i = 0; i < zagadka.length; i++) {
@@ -831,20 +768,12 @@ var Calculator_MathLogic_FUNCTIONS = {
                     // Kiedy wpiszesz np. 4+(-5, to wczutując niestniejący indeks ze znakiem "(" otrzymamy undefined / null (w zależności od języka), a konwertując to na Number otrzymamy BŁĄD!
                     curExp = curExp.slice(1, (curExp.length - 1));
                     result = this.operation_CONJCALC(curExp);
-                    // Zapisanie danych statystycznych:
-                    (this.calc_MODE == "TAU") ? this.expressionResult_AR.push(result) : null;
                     // Indeksy potrzebne do zmodyfikowania stringa-zagadki:
                     cutExp_AR[0] = mostNestLeftBck;
                     cutExp_AR[1] = i;
                     break;
                 }
             }
-            // Grupowanie danych statystycznych:
-            //if (this.calc_MODE == "TAU") {
-            //this.expressionResult_GROUP_AR[this.ex_idx] = this.expressionResult_AR;
-            //this.expressionResult_AR = [];
-            //}
-            //(this.calc_MODE == "TAU") ? ex_idx++ : null;
             // Aktualozowanie stringa-zagadki:
             zagadka_COPY = "";
             isADD = true;
@@ -918,43 +847,7 @@ var Calculator_MathLogic_FUNCTIONS = {
             (expression[1] === "0") ? result = "1" : result = result;
             (expression[1] === "1") ? result = "0" : result = result;
         }
-        //this.expressionResult_AR.push(result);
         return result;
-    },
-    operation_TABLE: function (exp) {
-        // Rozkład całego wyrażenia nawiasowego na stopniowe nadrzędne wyrażenia nawiasowe:
-        var expression = exp;
-        var stack = [];
-        this.expressionForm_AR = [];
-        var startIndex_1 = 0;
-        var subExpression = "";
-        for (var i = 0; i < expression.length; i++) {
-            if (expression[i] === "(") {
-                stack.push(i.toString());
-            }
-            else if (expression[i] === ")") {
-                startIndex_1 = parseInt(stack.pop());
-                subExpression = expression.substring(startIndex_1, i + 1);
-                this.expressionForm_AR.push(subExpression);
-                //alert(subExpression);
-            }
-        }
-        console.log(this.expressionForm_AR);
-        // Grupowanie wyników:
-        var joinExp = "";
-        var splitPlace_TARGET = this.TAU_TYPE; // 2 | 4 | 8
-        var splitPlace_COUNTER = 0;
-        for (var i = 0; i < this.expressionResult_AR.length; i++) {
-            joinExp += this.expressionResult_AR[i];
-            splitPlace_COUNTER++;
-            if (splitPlace_COUNTER === splitPlace_TARGET) {
-                joinExp += "#";
-                splitPlace_COUNTER = 0;
-            }
-        }
-        this.expressionResult_AR = joinExp.split("#");
-        (this.expressionResult_AR[this.expressionResult_AR.length - 1] === "") ? this.expressionResult_AR.pop() : null;
-        console.log(this.expressionResult_AR);
     },
     operation_DEL: function () {
         // Skracanie wyrażenia:
