@@ -626,18 +626,35 @@ const Calculator_MathLogic_FUNCTIONS: {
         // Można się przyczepić do tego, że w IV Etapie Walidacji nie zrobiłem akceptowania wartości jednoznakowej - zmiennych "p", "q" i "r",
         // ale po jakiego grzyba ktoś chciałby obliczyć na kalkulatorze coś tak prostego... przepraszam, to nawet nie jest obliczenie, a
         // podłożenie za zmienną podanej wartości i tyle...
-        // V Etap Walidacji - Sytuacje typu: "(qVp)|" (this.value)
+        // V Etap Walidacji - Sytuacje typu: "(qVp)|" i (qVp)r (this.value)
         let sraczka: string = this.value.split(" ").join("");
         let kloc_LEWY: number = 0;
         let kloc_PRAWY: number = 0;
         console.log("V Etap Walidacji:");
-        console.log(sraczka);
-        console.log(sraczka.charCodeAt(sraczka.length-1));
+        //console.log(sraczka);
+        //console.log(sraczka.charCodeAt(sraczka.length-1));
+        // Sytuacje typu: "(qVp)|"
         for (let i: number = 0; i < sraczka.length; i++) {
-            if (sraczka.charCodeAt(i) === 124 || sraczka.charCodeAt(i) == 8897 || sraczka.charCodeAt(i) === 8896 || sraczka.charCodeAt(i) === 8658 || sraczka.charCodeAt(i) === 8660) {
+            if (sraczka.charCodeAt(i) === 124 || sraczka.charCodeAt(i) === 8897 || sraczka.charCodeAt(i) === 8896 || sraczka.charCodeAt(i) === 8658 || sraczka.charCodeAt(i) === 8660) {
                 kloc_LEWY = i - 1;
                 kloc_PRAWY = i + 1;
                 if (sraczka[kloc_LEWY] === undefined || sraczka[kloc_PRAWY] === undefined) {
+                    console.log("Wyrażenie NIE jest poprawne!");
+                    this.isValid = false;
+                    //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
+                    this.screen_VALUE.style.color = badColor;
+                    return;
+                }
+            }
+        }
+        // Systuacje typu: "(qVp)r"
+        let minusSign: string = "";
+        let plusSign: string = "";
+        for (let i: number = 0; i < this.value.length; i++) {
+            if (this.value[i] === "p" || this.value[i] === "q" || this.value[i] === "r") {
+                minusSign = this.value[i-1];
+                plusSign = this.value[i+1];
+                if (minusSign === ")" || plusSign === "(") {
                     console.log("Wyrażenie NIE jest poprawne!");
                     this.isValid = false;
                     //this.screen_INFO.textContent = "Wyrażenie NIE jest poprawne!";
@@ -650,9 +667,9 @@ const Calculator_MathLogic_FUNCTIONS: {
         for (let i: number = 0; i < this.value.length; i++) {
             if (this.value.charCodeAt(i) === 172) {
                 if (this.value[i-1] === "(" && (this.value[i+1] === "p" || this.value[i+1] === "q" || this.value[i+1] === "r") && this.value[i+2] === ")") {
-                    //alert("Warunek (~p)");
+                    // Warunek: (~p)
                 } else if (this.value[i-1] === "(" && this.value[i+1] === "(") {
-                    //alert("Warunek (~(");
+                    // Warunek: (~(
                 } else {
                     this.isValid = false;
                     console.log("Wyrażenie NIE jest poprawne!");
@@ -988,9 +1005,13 @@ const Calculator_Euklides_FUNCTIONS: {
                 return;
             }
         }
+        if (String(baseNum_AR[0]) === "0" || String(baseNum_AR[1]) === "0") {
+            this.screen_INFO.textContent = "Błąd! Liczby muszą być dodatnie!";
+            return;
+        }
         // Algorytm euklidesa:
-        const fixed_A: number = baseNum_AR[0], fixed_B: number = baseNum_AR[1];
-        let a_LEFT: number = baseNum_AR[0], b_RIGHT: number = baseNum_AR[1];
+        const fixed_A: number = Number(baseNum_AR[0]), fixed_B: number = Number(baseNum_AR[1]);
+        let a_LEFT: number = Number(baseNum_AR[0]), b_RIGHT: number = Number(baseNum_AR[1]);
         while(a_LEFT !== b_RIGHT) {
             if (a_LEFT > b_RIGHT) {
                 a_LEFT = a_LEFT - b_RIGHT;
